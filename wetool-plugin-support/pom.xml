@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.code4everything</groupId>
+    <artifactId>wetool-plugin-support</artifactId>
+    <packaging>jar</packaging>
+    <version>1.5.0</version>
+
+    <properties>
+        <java.veresion>1.8</java.veresion>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <hutool.version>4.6.2</hutool.version>
+    </properties>
+
+    <!--私有仓库使用-->
+    <repositories>
+        <repository>
+            <id>ease-maven</id>
+            <url>http://maven.code4everything.org/repository</url>
+        </repository>
+    </repositories>
+
+    <!--私有仓库发布-->
+    <distributionManagement>
+        <repository>
+            <id>ease-maven</id>
+            <url>ftp://maven.code4everything.org/repository</url>
+        </repository>
+    </distributionManagement>
+
+    <dependencies>
+        <!--基础工具-->
+        <dependency>
+            <groupId>org.code4everything</groupId>
+            <artifactId>boot-surface</artifactId>
+            <version>1.1.6</version>
+        </dependency>
+        <!--快速开发工具-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.8</version>
+        </dependency>
+        <!--单元测试-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13-beta-3</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>1.0-beta-6</version>
+            </extension>
+        </extensions>
+    </build>
+</project>
