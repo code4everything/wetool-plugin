@@ -6,7 +6,7 @@
     <groupId>org.code4everything</groupId>
     <artifactId>wetool-plugin-sample</artifactId>
     <packaging>jar</packaging>
-    <version>1.5.0</version>
+    <version>1.0.0</version>
 
     <properties>
         <java.veresion>1.8</java.veresion>
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>org.code4everything</groupId>
             <artifactId>wetool-plugin-support</artifactId>
-            <version>1.5.0</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

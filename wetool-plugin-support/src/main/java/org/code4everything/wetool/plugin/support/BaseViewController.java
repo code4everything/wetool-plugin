@@ -18,7 +18,7 @@ public interface BaseViewController {
      *
      * @param files 文件列表
      *
-     * @since 1.5.0
+     * @since 1.0.0
      */
     default void openMultiFiles(List<File> files) {}
 
@@ -27,7 +27,7 @@ public interface BaseViewController {
      *
      * @param file 文件
      *
-     * @since 1.5.0
+     * @since 1.0.0
      */
     default void openFile(File file) {
         setFileContent(FileUtil.readUtf8String(file));
@@ -38,7 +38,7 @@ public interface BaseViewController {
      *
      * @param content 文件内容（UTF8）
      *
-     * @since 1.5.0
+     * @since 1.0.0
      */
     default void setFileContent(String content) {}
 
@@ -47,7 +47,7 @@ public interface BaseViewController {
      *
      * @param file 将内容保存到指定的文件
      *
-     * @since 1.5.0
+     * @since 1.0.0
      */
     default void saveFile(File file) {
         String content = getSavingContent();
@@ -61,7 +61,7 @@ public interface BaseViewController {
      *
      * @return 需要保存的字符串
      *
-     * @since 1.5.0
+     * @since 1.0.0
      */
     default String getSavingContent() {return "";}
 
@@ -70,7 +70,7 @@ public interface BaseViewController {
      *
      * @param event 拖曳事件
      *
-     * @since 1.5.0
+     * @since 1.0.0
      */
     default void dragFileOver(DragEvent event) {}
 
@@ -79,7 +79,7 @@ public interface BaseViewController {
      *
      * @param event 拖曳事件
      *
-     * @since 1.5.0
+     * @since 1.0.0
      */
     default void dragFileDropped(DragEvent event) {}
 }

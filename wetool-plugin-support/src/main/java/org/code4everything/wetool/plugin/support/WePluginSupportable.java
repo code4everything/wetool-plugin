@@ -15,7 +15,7 @@ public interface WePluginSupportable {
      *
      * @return 返回的 {@link MenuItem} 将自动添加到插件菜单
      *
-     * @since 1.5.0
+     * @since 1.0.0
      */
     MenuItem registerPlugin();
 }

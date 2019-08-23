@@ -23,28 +23,28 @@ public class WePluginInfo implements BaseBean, Serializable {
     /**
      * 插件作者
      *
-     * @since 1.5.0
+     * @since 1.0.0
      */
     private String author;
 
     /**
      * 插件名称
      *
-     * @since 1.5.0
+     * @since 1.0.0
      */
     private String name;
 
     /**
      * 插件版本
      *
-     * @since 1.5.0
+     * @since 1.0.0
      */
     private String version;
 
     /**
      * 实现了 {@link org.code4everything.wetool.plugin.support.WePluginSupportable} 的类
      *
-     * @since 1.5.0
+     * @since 1.0.0
      */
     private String supportedClass;
 }

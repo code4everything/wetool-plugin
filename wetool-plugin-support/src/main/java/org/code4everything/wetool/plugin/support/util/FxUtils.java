@@ -154,7 +154,7 @@ public class FxUtils {
     /**
      * 插件加载视图请调用此方法
      *
-     * @since 1.5.0
+     * @since 1.0.0
      */
     public static Pane loadFxml(WePluginSupportable supportable, String url) {
         Class clazz = supportable.getClass();
