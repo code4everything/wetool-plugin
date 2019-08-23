@@ -47,4 +47,10 @@ public class WePluginInfo implements BaseBean, Serializable {
      * @since 1.0.0
      */
     private String supportedClass;
+
+    public WePluginInfo(String author, String name, String version) {
+        this.author = author;
+        this.name = name;
+        this.version = version;
+    }
 }

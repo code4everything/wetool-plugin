@@ -1,6 +1,6 @@
 {
-    "author": "EasePan",
+    "author": "ease",
     "version": "1.0.0",
-    "name": "PluginSample",
+    "name": "sample",
     "supportedClass": "org.code4everything.wetool.plugin.sample.WetoolSupporter"
 }

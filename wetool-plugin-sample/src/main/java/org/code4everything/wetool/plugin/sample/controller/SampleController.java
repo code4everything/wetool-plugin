@@ -25,7 +25,7 @@ public class SampleController implements BaseViewController {
     public TextArea textArea;
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         BeanFactory.registerView(TAB_ID, TAB_NAME, this);
     }
 
