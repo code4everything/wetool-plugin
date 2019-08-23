@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <!--私有仓库使用-->
+    <!--私有仓库-->
     <repositories>
         <repository>
             <id>ease-maven</id>

@@ -1,17 +1,15 @@
 package org.code4everything.wetool.plugin.sample.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
-import org.code4everything.wetool.plugin.support.WePluginInfo;
-import org.code4everything.wetool.plugin.support.WePluginSupportable;
+import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
 /**
  * @author pantao
  * @since 2019/8/22
  */
-public class SampleController implements WePluginSupportable {
+public class SampleController implements BaseViewController {
 
     /**
      * 自定义tabId，用来防止与其他插件发生名称冲突
@@ -32,12 +30,12 @@ public class SampleController implements WePluginSupportable {
     }
 
     @Override
-    public WePluginInfo getInfo() {
-        return null;
+    public void setFileContent(String content) {
+        textArea.setText(content);
     }
 
     @Override
-    public MenuItem registerPlugin() {
-        return null;
+    public String getSavingContent() {
+        return textArea.getText();
     }
 }

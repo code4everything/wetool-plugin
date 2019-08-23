@@ -8,16 +8,7 @@ import javafx.scene.control.MenuItem;
  * @author pantao
  * @since 2019/8/22
  */
-public interface WePluginSupportable extends BaseViewController {
-
-    /**
-     * 获取插件信息
-     *
-     * @return 插件信息
-     *
-     * @since 1.5.0
-     */
-    WePluginInfo getInfo();
+public interface WePluginSupportable {
 
     /**
      * 注册插件

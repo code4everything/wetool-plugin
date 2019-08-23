@@ -22,6 +22,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.function.VoidFunction;
 import org.code4everything.wetool.plugin.support.BaseViewController;
+import org.code4everything.wetool.plugin.support.WePluginSupportable;
 import org.code4everything.wetool.plugin.support.constant.AppConsts;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
@@ -30,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -146,8 +148,23 @@ public class FxUtils {
     }
 
     public static Pane loadFxml(String url) {
+        return loadFxml(FxUtils.class.getResource(url), FxUtils.class.getClassLoader());
+    }
+
+    /**
+     * 插件加载视图请调用此方法
+     *
+     * @since 1.5.0
+     */
+    public static Pane loadFxml(WePluginSupportable supportable, String url) {
+        Class clazz = supportable.getClass();
+        return loadFxml(clazz.getResource(url), clazz.getClassLoader());
+    }
+
+    private static Pane loadFxml(URL url, ClassLoader loader) {
+        FXMLLoader.setDefaultClassLoader(loader);
         try {
-            return FXMLLoader.load(WeUtils.class.getResource(url));
+            return FXMLLoader.load(url);
         } catch (Exception e) {
             FxDialogs.showException(AppConsts.Tip.FXML_ERROR, e);
             return null;
