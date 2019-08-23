@@ -3,7 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>org.code4everything</groupId>
     <artifactId>wetool-plugin-test</artifactId>
     <version>1.0.0</version>
@@ -13,7 +12,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hutool.version>4.6.2</hutool.version>
     </properties>
 
     <!--私有仓库-->
@@ -23,6 +21,14 @@
             <url>http://maven.code4everything.org/repository</url>
         </repository>
     </repositories>
+
+    <!--私有仓库发布-->
+    <distributionManagement>
+        <repository>
+            <id>ease-maven</id>
+            <url>ftp://maven.code4everything.org/repository</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
         <dependency>
@@ -44,5 +50,12 @@
                 </configuration>
             </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>1.0-beta-6</version>
+            </extension>
+        </extensions>
     </build>
 </project>
