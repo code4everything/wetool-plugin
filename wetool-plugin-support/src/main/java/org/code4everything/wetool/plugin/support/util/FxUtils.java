@@ -53,6 +53,9 @@ public class FxUtils {
         openTab(tabContent, AppConsts.Title.APP_TITLE, tabName);
     }
 
+    /**
+     * 插件打开自己的选项卡请条用此方法
+     */
     public static void openTab(Node tabContent, String tabId, String tabName) {
         // 校验参数
         Preconditions.checkNotNull(tabContent, "tab content node must not null");

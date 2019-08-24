@@ -1,8 +1,9 @@
 package org.code4everything.wetool.plugin.support.util;
 
+import cn.hutool.core.util.ObjectUtil;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TextArea;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
@@ -13,6 +14,9 @@ import org.code4everything.wetool.plugin.support.constant.AppConsts;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * @author pantao
@@ -21,6 +25,71 @@ import java.io.StringWriter;
 @Slf4j
 @UtilityClass
 public class FxDialogs {
+
+    public static void showDialog(String header, Node dialogPane) {
+        showDialog(header, dialogPane, null, null);
+    }
+
+    public static <R> void showDialog(String header, Node dialogPane, DialogWinnable<R> winnable) {
+        showDialog(header, dialogPane, winnable, null);
+    }
+
+    public static <R> void showDialog(String header, Node dialogPane, DialogWinnable<R> winnable, R defaultR) {
+        Platform.runLater(() -> {
+            Dialog<R> dialog = new Dialog<>();
+            dialog.setTitle(AppConsts.Title.APP_TITLE);
+            dialog.setHeaderText(header);
+            dialog.setResizable(true);
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.getDialogPane().setContent(dialogPane);
+
+            dialog.setResultConverter(param -> {
+                if (ObjectUtil.isNotNull(winnable) && param.getButtonData().isDefaultButton()) {
+                    return winnable.convertResult();
+                }
+                return defaultR;
+            });
+
+            ButtonType ok = new ButtonType("确定", ButtonBar.ButtonData.OK_DONE);
+            ButtonType cancel = new ButtonType("取消", ButtonBar.ButtonData.CANCEL_CLOSE);
+            dialog.getDialogPane().getButtonTypes().addAll(ok, cancel);
+
+            Optional<R> result = dialog.showAndWait();
+            if (ObjectUtil.isNotNull(winnable)) {
+                winnable.consumeResult(result.orElse(defaultR));
+            }
+        });
+    }
+
+    public static <T> void showChoice(String header, String content, Consumer<T> consumer,
+                                      Collection<? extends T> items) {
+        Platform.runLater(() -> {
+            ChoiceDialog<T> dialog = new ChoiceDialog<>();
+            dialog.setTitle(AppConsts.Title.APP_TITLE);
+            dialog.setHeaderText(header);
+            dialog.setContentText(content);
+            dialog.setResizable(true);
+            dialog.getItems().addAll(items);
+            Optional<T> result = dialog.showAndWait();
+            if (ObjectUtil.isNotNull(consumer)) {
+                consumer.accept(result.orElse(null));
+            }
+        });
+    }
+
+    public static void showTextInput(String header, String content, Consumer<String> consumer) {
+        Platform.runLater(() -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle(AppConsts.Title.APP_TITLE);
+            dialog.setHeaderText(header);
+            dialog.setContentText(content);
+            dialog.setResizable(true);
+            Optional<String> result = dialog.showAndWait();
+            if (ObjectUtil.isNotNull(consumer)) {
+                consumer.accept(result.orElse(""));
+            }
+        });
+    }
 
     public static void showSuccess() {
         showInformation(null, AppConsts.Tip.OPERATION_SUCCESS);
