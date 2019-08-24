@@ -14,6 +14,7 @@ import org.code4everything.wetool.plugin.support.config.WeTab;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * @author pantao
@@ -53,6 +54,7 @@ public class WetoolTest extends WeApplication {
         config.setClipboardSize(20);
         config.setFileFilter("^[^.].*$");
         config.setQuickStarts(new ArrayList<>());
+        config.setPluginDisables(new HashSet<>());
 
         WeInitialize initialize = new WeInitialize();
         initialize.setFullscreen(false);

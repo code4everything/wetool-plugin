@@ -1,9 +1,6 @@
 package org.code4everything.wetool.plugin.support.config;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.code4everything.boot.base.bean.BaseBean;
 
 import java.io.Serializable;
@@ -16,6 +13,7 @@ import java.io.Serializable;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "supportedClass")
 public class WePluginInfo implements BaseBean, Serializable {
 
     private static final long serialVersionUID = -8103599072656856290L;

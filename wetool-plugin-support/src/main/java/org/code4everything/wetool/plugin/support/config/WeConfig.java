@@ -6,16 +6,16 @@ import cn.hutool.core.lang.Pair;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPath;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.bean.BaseBean;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -68,9 +68,16 @@ public class WeConfig implements BaseBean, Serializable {
      */
     private List<WeStart> quickStarts;
 
+    /**
+     * 此集合内的插件将不会加载
+     */
+    private Set<WePluginInfo> pluginDisables;
+
     private transient LinkedList<Pair<Date, String>> clipboardHistory = new LinkedList<>();
 
     private transient Pattern filterPattern = Pattern.compile("");
+
+    private transient JSONObject configJson;
 
     @Override
     public void init() {
@@ -86,6 +93,38 @@ public class WeConfig implements BaseBean, Serializable {
             WeUtils.exitSystem();
         }
         filterPattern = null;
+    }
+
+    /**
+     * 获取自定义配置
+     *
+     * @param path FastJson路径语法
+     */
+    public <T> T getConfig(String path, Class<T> clazz) {
+        return JSON.parseObject(JSON.toJSONString(getConfig(path)), clazz);
+    }
+
+    /**
+     * 获取自定义配置
+     *
+     * @param path FastJson路径语法
+     */
+    public Object getConfig(String path) {
+        Object object = JSONPath.eval(configJson, path);
+        if (Objects.isNull(object)) {
+            // 重新加载配置
+            configJson = JSON.parseObject(FileUtil.readUtf8String(currentPath));
+            object = JSONPath.eval(configJson, path);
+        }
+        return object;
+    }
+
+    /**
+     * 禁止外部访问
+     */
+    @Generated
+    private JSONObject getConfigJson() {
+        return configJson;
     }
 
     @Generated
