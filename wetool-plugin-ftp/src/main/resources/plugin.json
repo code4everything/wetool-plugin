@@ -1,0 +1,6 @@
+{
+    "author": "ease",
+    "name": "ftp",
+    "version": "1.0.0",
+    "supportedClass": "org.code4everything.wetool.plugin.ftp.WetoolSupporter"
+}

@@ -13,6 +13,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <hutool.version>4.6.2</hutool.version>
     </properties>
 
     <!--私有仓库-->
@@ -37,6 +38,18 @@
             <groupId>org.code4everything</groupId>
             <artifactId>boot-surface</artifactId>
             <version>1.1.6</version>
+        </dependency>
+        <!--系统工具-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-system</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+        <!--扩展工具-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-extra</artifactId>
+            <version>${hutool.version}</version>
         </dependency>
         <!--快速开发工具-->
         <dependency>
