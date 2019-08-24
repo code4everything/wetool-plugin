@@ -6,8 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import org.apache.commons.net.ftp.FTPFile;
 import org.code4everything.wetool.plugin.ftp.FtpManager;
 import org.code4everything.wetool.plugin.ftp.constant.FtpConsts;
 import org.code4everything.wetool.plugin.ftp.model.LastUsedInfo;
@@ -16,7 +16,6 @@ import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +45,8 @@ public class UploadDialogController implements BaseViewController {
 
         saveDir.setValue(lastUsedInfo.getRemoteSaveDir());
         uploadFile.setText(lastUsedInfo.getUploadFile());
+
+        saveDir.getSelectionModel().selectedItemProperty().addListener((obs, old, nw) -> endCaretPosition());
     }
 
     public void chooseFile() {
@@ -76,25 +77,28 @@ public class UploadDialogController implements BaseViewController {
     }
 
     public void keyReleased(KeyEvent keyEvent) {
-        FxUtils.enterDo(keyEvent, () -> {
+        if (keyEvent.getCode() == KeyCode.SLASH) {
             if (FtpManager.isFtpNotSelected(ftpName)) {
                 FxDialogs.showError(FtpConsts.SELECT_FTP);
                 return;
             }
-            String path = StrUtil.nullToEmpty(saveDir.getValue());
+            endCaretPosition();
+            String path = saveDir.getValue();
             List<String> children = childrenMap.get(path);
             if (CollUtil.isEmpty(children)) {
                 // 从FTP服务器列出子目录
-                List<FTPFile> files = FtpManager.listChildren(ftpName, path, false);
-                if (CollUtil.isNotEmpty(files)) {
-                    final List<String> list = new ArrayList<>();
-                    files.forEach(file -> list.add(file.getName()));
-                    children = list;
-                    childrenMap.put(path, children);
-                }
+                children = FtpManager.listChildren(ftpName, path, false);
+                childrenMap.put(path, children);
             }
             saveDir.getItems().clear();
+            saveDir.setValue(path);
             saveDir.getItems().addAll(children);
-        });
+        }
+    }
+
+    private void endCaretPosition() {
+        ftpName.requestFocus();
+        saveDir.requestFocus();
+        saveDir.getEditor().positionCaret(Integer.MAX_VALUE);
     }
 }

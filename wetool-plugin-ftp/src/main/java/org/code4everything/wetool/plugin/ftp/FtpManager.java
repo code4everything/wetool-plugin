@@ -1,6 +1,5 @@
 package org.code4everything.wetool.plugin.ftp;
 
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.extra.ftp.Ftp;
 import javafx.scene.control.ComboBox;
 import lombok.experimental.UtilityClass;
@@ -15,7 +14,6 @@ import org.code4everything.wetool.plugin.support.util.FxDialogs;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,26 +29,20 @@ public class FtpManager {
 
     private static final int RETRIES = 3;
 
-    public static List<FTPFile> listChildren(ComboBox<String> ftpName, String path, boolean containsFile) {
+    public static List<String> listChildren(ComboBox<String> ftpName, String path, boolean containsFile) {
         FTPFile[] ftpFiles = getFtp(ftpName).lsFiles(path);
-        List<FTPFile> dirs = new ArrayList<>();
-        if (ArrayUtil.isNotEmpty(ftpFiles)) {
-            if (containsFile) {
-                return Arrays.asList(ftpFiles);
-            } else {
-                // 过滤文件
-                for (FTPFile ftpFile : ftpFiles) {
-                    if (ftpFile.isDirectory()) {
-                        dirs.add(ftpFile);
-                    }
-                }
+        List<String> dirs = new ArrayList<>();
+        for (int i = 2; i < ftpFiles.length; i++) {
+            FTPFile ftpFile = ftpFiles[i];
+            if (containsFile || ftpFile.isDirectory()) {
+                dirs.add(path + ftpFile.getName());
             }
         }
+        log.info("list file from ftp path: {}, result: {}", path, dirs);
         return dirs;
     }
 
     public static void upload(ComboBox<String> ftpName, String path, File file) {
-        USED_INFO.setUploadFtpName(ftpName.getSelectionModel().getSelectedItem());
         USED_INFO.setRemoteSaveDir(path);
         USED_INFO.setUploadFile(file.getAbsolutePath());
         retry(() -> {
@@ -103,8 +95,9 @@ public class FtpManager {
                 ftp.reconnectIfTimeout();
             }
             BeanFactory.register(generateFtpKey(name), ftp);
-            log.info("ftp {} connected", name);
+            log.info("ftp[{}] connected", name);
         }
+        USED_INFO.setUploadFtpName(name);
         return ftp;
     }
 

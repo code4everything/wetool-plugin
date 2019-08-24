@@ -13,7 +13,7 @@
         </padding>
         <ComboBox fx:id="ftpName" maxHeight="1.7976931348623157E308" prefWidth="150.0" promptText="选择FTP服务器"
                   HBox.hgrow="NEVER"/>
-        <ComboBox fx:id="saveDir" editable="true" maxHeight="1.7976931348623157E308" onKeyPressed="#keyReleased"
+        <ComboBox fx:id="saveDir" editable="true" maxHeight="1.7976931348623157E308" onKeyReleased="#keyReleased"
                   maxWidth="1.7976931348623157E308" prefWidth="150.0" promptText="远程目录" HBox.hgrow="ALWAYS">
             <HBox.margin>
                 <Insets left="10.0"/>
