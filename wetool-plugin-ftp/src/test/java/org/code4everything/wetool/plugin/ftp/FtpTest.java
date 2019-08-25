@@ -27,6 +27,7 @@ public class FtpTest {
         ftpConfig.setUsername("root");
         ftpConfig.setPassword("root");
         ftpConfig.setReconnect(false);
+        ftpConfig.setSelect(true);
 
         ftps.add(ftpConfig);
         json.put("ftps", ftps);

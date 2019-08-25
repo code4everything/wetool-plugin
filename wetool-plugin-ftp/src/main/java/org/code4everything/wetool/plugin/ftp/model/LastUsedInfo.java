@@ -45,6 +45,10 @@ public class LastUsedInfo {
         ftpNames.add(ftpName);
     }
 
+    public void setDefaultFtp(String ftpName) {
+        downloadFtpName = uploadFtpName = ftpName;
+    }
+
     @Generated
     public String getDownloadFtpName() {
         return Objects.isNull(downloadFtpName) ? uploadFtpName : downloadFtpName;

@@ -6,8 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.wetool.plugin.ftp.FtpManager;
 import org.code4everything.wetool.plugin.ftp.constant.FtpConsts;
 import org.code4everything.wetool.plugin.ftp.model.LastUsedInfo;
@@ -77,13 +77,13 @@ public class UploadDialogController implements BaseViewController {
     }
 
     public void keyReleased(KeyEvent keyEvent) {
-        if (keyEvent.getCode() == KeyCode.SLASH) {
+        FxUtils.enterDo(keyEvent, () -> {
             if (FtpManager.isFtpNotSelected(ftpName)) {
                 FxDialogs.showError(FtpConsts.SELECT_FTP);
                 return;
             }
             endCaretPosition();
-            String path = saveDir.getValue();
+            String path = StrUtil.addSuffixIfNot(saveDir.getValue(), StringConsts.Sign.SLASH);
             List<String> children = childrenMap.get(path);
             if (CollUtil.isEmpty(children)) {
                 // 从FTP服务器列出子目录
@@ -91,12 +91,18 @@ public class UploadDialogController implements BaseViewController {
                 childrenMap.put(path, children);
             }
             saveDir.getItems().clear();
-            saveDir.setValue(path);
+            saveDir.getItems().add(path);
             saveDir.getItems().addAll(children);
-        }
+            saveDir.getSelectionModel().selectFirst();
+            saveDir.show();
+        });
     }
 
+    /**
+     * 将光标移到尾部
+     */
     private void endCaretPosition() {
+        // 通过失去焦点，获取焦点，片刻获取变化后的值
         ftpName.requestFocus();
         saveDir.requestFocus();
         saveDir.getEditor().positionCaret(Integer.MAX_VALUE);

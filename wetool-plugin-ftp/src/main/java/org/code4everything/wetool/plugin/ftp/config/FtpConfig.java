@@ -59,6 +59,11 @@ public class FtpConfig implements BaseBean {
      */
     private Boolean reconnect;
 
+    /**
+     * 是否默认为默认的FTP，默认：false
+     */
+    private Boolean select;
+
     @Generated
     public String getHost() {
         return StrUtil.isEmpty(host) ? "127.0.0.1" : host;
@@ -82,5 +87,10 @@ public class FtpConfig implements BaseBean {
     @Generated
     public boolean getReconnect() {
         return Boolean.TRUE.equals(reconnect);
+    }
+
+    @Generated
+    public boolean getSelect() {
+        return Boolean.TRUE.equals(select);
     }
 }

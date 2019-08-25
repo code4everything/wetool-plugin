@@ -32,6 +32,7 @@ public class FtpManager {
     public static List<String> listChildren(ComboBox<String> ftpName, String path, boolean containsFile) {
         FTPFile[] ftpFiles = getFtp(ftpName).lsFiles(path);
         List<String> dirs = new ArrayList<>();
+        // 忽略 . 和 ..
         for (int i = 2; i < ftpFiles.length; i++) {
             FTPFile ftpFile = ftpFiles[i];
             if (containsFile || ftpFile.isDirectory()) {

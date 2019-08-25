@@ -32,6 +32,9 @@ public class WetoolSupporter implements WePluginSupportable {
                 continue;
             }
             LastUsedInfo.getInstance().addFtpName(config.getName());
+            if (config.getSelect()) {
+                LastUsedInfo.getInstance().setDefaultFtp(config.getName());
+            }
             BeanFactory.register(FtpManager.generateConfigKey(config.getName()), config);
         }
     }
