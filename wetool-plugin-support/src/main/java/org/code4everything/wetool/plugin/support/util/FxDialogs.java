@@ -43,16 +43,18 @@ public class FxDialogs {
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.getDialogPane().setContent(dialogPane);
 
-            dialog.setResultConverter(param -> {
-                if (ObjectUtil.isNotNull(winnable) && param.getButtonData().isDefaultButton()) {
-                    return winnable.convertResult();
-                }
-                return defaultR;
-            });
-
             ButtonType ok = new ButtonType("确定", ButtonBar.ButtonData.OK_DONE);
+            if (ObjectUtil.isNotNull(winnable)) {
+                dialog.setResultConverter(param -> {
+                    if (param.getButtonData().isDefaultButton()) {
+                        return winnable.convertResult();
+                    }
+                    return defaultR;
+                });
+                dialog.getDialogPane().getButtonTypes().add(ok);
+            }
             ButtonType cancel = new ButtonType("取消", ButtonBar.ButtonData.CANCEL_CLOSE);
-            dialog.getDialogPane().getButtonTypes().addAll(ok, cancel);
+            dialog.getDialogPane().getButtonTypes().add(cancel);
 
             Optional<R> result = dialog.showAndWait();
             if (ObjectUtil.isNotNull(winnable)) {

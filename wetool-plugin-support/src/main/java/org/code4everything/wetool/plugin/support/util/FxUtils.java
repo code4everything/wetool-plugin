@@ -16,6 +16,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.experimental.UtilityClass;
@@ -100,6 +101,14 @@ public class FxUtils {
 
     public static void chooseFile(Callable<File> callable) {
         File file = getFileChooser().showOpenDialog(getStage());
+        handleFileCallable(file, callable);
+    }
+
+    public static void chooseFolder(Callable<File> callable) {
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle(AppConsts.Title.APP_TITLE);
+        chooser.setInitialDirectory(new File(WeUtils.getConfig().getFileChooserInitDir()));
+        File file = chooser.showDialog(getStage());
         handleFileCallable(file, callable);
     }
 
