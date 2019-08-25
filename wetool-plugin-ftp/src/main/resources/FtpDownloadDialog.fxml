@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="700.0"
       xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.code4everything.wetool.plugin.ftp.controller.UploadDialogController">
+      fx:controller="org.code4everything.wetool.plugin.ftp.controller.DownloadDialogController">
     <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="300.0"
           VBox.vgrow="ALWAYS">
         <padding>
@@ -13,7 +13,7 @@
         </padding>
         <ComboBox fx:id="ftpName" maxHeight="1.7976931348623157E308" prefWidth="150.0" promptText="选择FTP服务器"
                   HBox.hgrow="NEVER"/>
-        <ComboBox fx:id="remotePath" editable="true" maxHeight="1.7976931348623157E308" promptText="远程目录，回车以列出子目录"
+        <ComboBox fx:id="remotePath" editable="true" maxHeight="1.7976931348623157E308" promptText="远程文件，回车以列出子文件"
                   maxWidth="1.7976931348623157E308" onKeyReleased="#listChildren" prefWidth="150.0" HBox.hgrow="ALWAYS">
             <HBox.margin>
                 <Insets left="10.0"/>
@@ -25,7 +25,7 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
         </padding>
         <TextField fx:id="localPath" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                   onDragDropped="#dragFileDropped" onDragOver="#dragFileOver" promptText="上传的文件或目录"
+                   onDragDropped="#dragFileDropped" onDragOver="#dragFileOver" promptText="本地保存的目录"
                    HBox.hgrow="ALWAYS"/>
         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
                 onAction="#choosePath" text="浏览" HBox.hgrow="NEVER">
@@ -34,7 +34,7 @@
             </HBox.margin>
         </Button>
         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                onAction="#upload" prefWidth="100.0" text="上传" HBox.hgrow="NEVER" fx:id="uploadButton">
+                onAction="#download" prefWidth="100.0" text="下载" HBox.hgrow="NEVER" fx:id="downloadButton">
             <HBox.margin>
                 <Insets left="10.0"/>
             </HBox.margin>

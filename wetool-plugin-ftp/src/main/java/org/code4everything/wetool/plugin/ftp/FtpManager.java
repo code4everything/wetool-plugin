@@ -29,6 +29,21 @@ public class FtpManager {
 
     private static final int RETRIES = 3;
 
+    public static void download(ComboBox<String> ftpName, String file, File path) {
+        USED_INFO.setLocalSaveDir(path.getAbsolutePath());
+        USED_INFO.setDownloadFile(file);
+        retry(() -> {
+            getFtp(ftpName).download(file, path);
+            log.info("'{}' download to '{}' success", file, path.getAbsolutePath());
+            FxDialogs.showSuccess();
+            return true;
+        });
+    }
+
+    public static boolean exists(ComboBox<String> ftpName, String file) {
+        return getFtp(ftpName).exist(file);
+    }
+
     public static List<String> listChildren(ComboBox<String> ftpName, String path, boolean containsFile) {
         FTPFile[] ftpFiles = getFtp(ftpName).lsFiles(path);
         List<String> dirs = new ArrayList<>();

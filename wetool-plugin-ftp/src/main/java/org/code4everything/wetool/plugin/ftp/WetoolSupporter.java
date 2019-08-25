@@ -57,7 +57,8 @@ public class WetoolSupporter implements WePluginSupportable {
         // 下载文件
         item = new java.awt.MenuItem(FtpConsts.DOWNLOAD_FILE);
         item.addActionListener(e -> {
-
+            Node dialogPane = FxUtils.loadFxml(this, "/FtpDownloadDialog.fxml");
+            FxDialogs.showDialog(null, dialogPane);
         });
         menu.add(item);
         return menu;
