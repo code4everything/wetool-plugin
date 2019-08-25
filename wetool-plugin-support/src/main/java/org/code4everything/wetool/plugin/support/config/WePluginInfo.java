@@ -40,6 +40,13 @@ public class WePluginInfo implements BaseBean, Serializable {
     private String version;
 
     /**
+     * 要求Wetool-Plugin-Support的最低版本号（即依赖的wetool-plugin-support版本号），例如：1.0.0
+     *
+     * @since 1.0.0
+     */
+    private String requireWetoolVersion;
+
+    /**
      * 实现了 {@link org.code4everything.wetool.plugin.support.WePluginSupportable} 的类
      *
      * @since 1.0.0

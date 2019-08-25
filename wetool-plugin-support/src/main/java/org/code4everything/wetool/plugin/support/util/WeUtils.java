@@ -33,6 +33,23 @@ public class WeUtils {
         return BeanFactory.get(WeConfig.class);
     }
 
+    public static boolean isRequiredVersion(String currVer, String reqVer) {
+        String[] currArr = currVer.split("\\.");
+        String[] reqArr = reqVer.split("\\.");
+        int len = Math.max(currArr.length, reqArr.length);
+        for (int i = 0; i < len; i++) {
+            int curr = i < currArr.length ? Integer.parseInt(currArr[i]) : 0;
+            int req = i < reqArr.length ? Integer.parseInt(reqArr[i]) : 0;
+            if (curr > req) {
+                return true;
+            }
+            if (curr < req) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static String compressString(String string) {
         string = string.trim();
         if (string.length() > getCompressLen()) {

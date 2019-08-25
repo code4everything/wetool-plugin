@@ -11,6 +11,8 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class AppConsts {
 
+    public static final String CURRENT_VERSION = "1.0.0";
+
     @UtilityClass
     public static class Tip {
 

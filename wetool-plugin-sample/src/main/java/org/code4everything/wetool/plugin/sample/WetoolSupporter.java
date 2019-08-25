@@ -5,6 +5,7 @@ import javafx.scene.control.MenuItem;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.sample.controller.SampleController;
 import org.code4everything.wetool.plugin.support.WePluginSupportable;
+import org.code4everything.wetool.plugin.support.config.WePluginInfo;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
@@ -16,8 +17,9 @@ import org.code4everything.wetool.plugin.support.util.FxUtils;
 public class WetoolSupporter implements WePluginSupportable {
 
     @Override
-    public void initialize() {
+    public boolean initialize() {
         log.info("initialize sample plugin");
+        return true;
     }
 
     @Override
@@ -36,5 +38,10 @@ public class WetoolSupporter implements WePluginSupportable {
         final java.awt.MenuItem item = new java.awt.MenuItem("插件示例");
         item.addActionListener(e -> FxDialogs.showInformation(SampleController.TAB_NAME, "welcome to wetool plugin"));
         return item;
+    }
+
+    @Override
+    public void registered(WePluginInfo info, MenuItem barMenu, java.awt.MenuItem trayMenu) {
+        log.info("plugin sample registered success");
     }
 }
