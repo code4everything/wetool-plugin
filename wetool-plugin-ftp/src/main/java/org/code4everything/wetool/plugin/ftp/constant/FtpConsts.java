@@ -9,9 +9,13 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class FtpConsts {
 
+    public static final String TAB_NAME = "简易FTP客户端";
+
     public static final String AUTHOR = "ease";
 
     public static final String NAME = "ftp";
+
+    public static final String TAB_ID = FtpConsts.AUTHOR + FtpConsts.NAME;
 
     public static final String FTP = "FTP";
 

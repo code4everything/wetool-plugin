@@ -23,8 +23,8 @@ public class UploadDialogController extends AbstractDialogController {
 
     @FXML
     private void initialize() {
-        LastUsedInfo f = LastUsedInfo.getInstance();
-        super.initialize(f.getFtpNames(), f.getUploadFtpName(), f.getRemoteSaveDir(), f.getUploadFile(), false);
+        LastUsedInfo info = LastUsedInfo.getInstance();
+        super.initialize(info, info.getRemoteSaveDir(), info.getUploadFile(), false);
     }
 
     @Override

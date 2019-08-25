@@ -113,7 +113,7 @@ public class FtpManager {
             BeanFactory.register(generateFtpKey(name), ftp);
             log.info("ftp[{}] connected", name);
         }
-        USED_INFO.setUploadFtpName(name);
+        USED_INFO.setFtpName(name);
         return ftp;
     }
 

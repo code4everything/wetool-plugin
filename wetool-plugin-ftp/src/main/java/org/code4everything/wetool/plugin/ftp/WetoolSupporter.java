@@ -1,5 +1,6 @@
 package org.code4everything.wetool.plugin.ftp;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
 import javafx.scene.Node;
@@ -22,7 +23,7 @@ import org.code4everything.wetool.plugin.support.util.WeUtils;
 public class WetoolSupporter implements WePluginSupportable {
 
     @Override
-    public void initialize() {
+    public boolean initialize() {
         JSONArray ftps = WeUtils.getConfig().getConfig("ftps", JSONArray.class);
         for (int i = 0; i < ftps.size(); i++) {
             FtpConfig config = ftps.getObject(i, FtpConfig.class);
@@ -33,15 +34,26 @@ public class WetoolSupporter implements WePluginSupportable {
             }
             LastUsedInfo.getInstance().addFtpName(config.getName());
             if (config.getSelect()) {
-                LastUsedInfo.getInstance().setDefaultFtp(config.getName());
+                LastUsedInfo.getInstance().setFtpName(config.getName());
             }
             BeanFactory.register(FtpManager.generateConfigKey(config.getName()), config);
         }
+        if (CollUtil.isEmpty(LastUsedInfo.getInstance().getFtpNames())) {
+            log.error("ftp config not found, plugin will exit");
+            return false;
+        }
+        return true;
     }
 
     @Override
     public MenuItem registerBarMenu() {
-        return null;
+        String tabName = FtpConsts.TAB_NAME;
+        MenuItem item = new MenuItem(tabName);
+        item.setOnAction(e -> {
+            Node node = FxUtils.loadFxml(this, "/FtpTabView.fxml");
+            FxUtils.openTab(node, FtpConsts.TAB_ID, tabName);
+        });
+        return item;
     }
 
     @Override

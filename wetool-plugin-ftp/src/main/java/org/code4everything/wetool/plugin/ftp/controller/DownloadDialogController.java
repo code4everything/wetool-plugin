@@ -8,6 +8,7 @@ import org.code4everything.wetool.plugin.ftp.constant.FtpConsts;
 import org.code4everything.wetool.plugin.ftp.model.LastUsedInfo;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.File;
 
@@ -22,18 +23,18 @@ public class DownloadDialogController extends AbstractDialogController {
 
     @FXML
     private void initialize() {
-        LastUsedInfo f = LastUsedInfo.getInstance();
-        super.initialize(f.getFtpNames(), f.getDownloadFtpName(), f.getDownloadFile(), f.getLocalSaveDir(), true);
+        LastUsedInfo info = LastUsedInfo.getInstance();
+        super.initialize(info, info.getDownloadFile(), info.getLocalSaveDir(), true);
     }
 
     @Override
     public void choosePath() {
-        FxUtils.chooseFolder(file -> localPath.setText(getFolder(file)));
+        FxUtils.chooseFolder(file -> localPath.setText(file.getAbsolutePath()));
     }
 
     @Override
     public void dragFileDropped(DragEvent event) {
-        FxUtils.dropFiles(event, file -> localPath.setText(getFolder(file.get(0))));
+        FxUtils.dropFiles(event, file -> localPath.setText(WeUtils.parseFolder(file.get(0))));
     }
 
     public void download() {
@@ -41,18 +42,15 @@ public class DownloadDialogController extends AbstractDialogController {
             FxDialogs.showError(FtpConsts.SELECT_FTP);
             return;
         }
+        downloadButton.setDisable(true);
         if (!FtpManager.exists(ftpName, remotePath.getValue())) {
             FxDialogs.showError(FtpConsts.FILE_NOT_EXISTS);
+            downloadButton.setDisable(false);
             return;
         }
-        downloadButton.setDisable(true);
         downloadButton.setText("下载中。。。");
         FtpManager.download(ftpName, remotePath.getValue(), new File(localPath.getText()));
         downloadButton.setDisable(false);
         downloadButton.setText("下载");
-    }
-
-    private String getFolder(File file) {
-        return file.isFile() ? file.getParent() : file.getAbsolutePath();
     }
 }

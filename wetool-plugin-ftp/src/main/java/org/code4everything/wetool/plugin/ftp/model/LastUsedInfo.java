@@ -1,7 +1,6 @@
 package org.code4everything.wetool.plugin.ftp.model;
 
 import lombok.Data;
-import lombok.Generated;
 import lombok.ToString;
 
 import java.util.HashSet;
@@ -18,9 +17,7 @@ public class LastUsedInfo {
 
     private static final LastUsedInfo LAST_USED_INFO = new LastUsedInfo();
 
-    private String downloadFtpName;
-
-    private String uploadFtpName;
+    private String ftpName;
 
     private String remoteSaveDir;
 
@@ -43,19 +40,5 @@ public class LastUsedInfo {
             ftpNames = new HashSet<>(4, 1);
         }
         ftpNames.add(ftpName);
-    }
-
-    public void setDefaultFtp(String ftpName) {
-        downloadFtpName = uploadFtpName = ftpName;
-    }
-
-    @Generated
-    public String getDownloadFtpName() {
-        return Objects.isNull(downloadFtpName) ? uploadFtpName : downloadFtpName;
-    }
-
-    @Generated
-    public String getUploadFtpName() {
-        return Objects.isNull(uploadFtpName) ? downloadFtpName : uploadFtpName;
     }
 }

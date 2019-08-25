@@ -10,6 +10,7 @@ import javafx.scene.input.KeyEvent;
 import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.wetool.plugin.ftp.FtpManager;
 import org.code4everything.wetool.plugin.ftp.constant.FtpConsts;
+import org.code4everything.wetool.plugin.ftp.model.LastUsedInfo;
 import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
@@ -17,7 +18,6 @@ import org.code4everything.wetool.plugin.support.util.FxUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author pantao
@@ -38,11 +38,10 @@ public abstract class AbstractDialogController implements BaseViewController {
 
     private boolean containsFile;
 
-    void initialize(Set<String> ftpNames, String defaultFtpName, String defaultRemotePath, String defaultLocalPath,
-                    boolean containsFile) {
+    void initialize(LastUsedInfo info, String defaultRemotePath, String defaultLocalPath, boolean containsFile) {
         this.containsFile = containsFile;
-        ftpName.getItems().addAll(ftpNames);
-        ftpName.getSelectionModel().select(defaultFtpName);
+        ftpName.getItems().addAll(info.getFtpNames());
+        ftpName.getSelectionModel().select(info.getFtpName());
 
         remotePath.setValue(defaultRemotePath);
         localPath.setText(defaultLocalPath);
@@ -67,7 +66,8 @@ public abstract class AbstractDialogController implements BaseViewController {
                 return;
             }
             endCaretPosition();
-            String path = StrUtil.addSuffixIfNot(remotePath.getValue(), StringConsts.Sign.SLASH);
+            String path = StrUtil.emptyToDefault(remotePath.getValue(), StringConsts.Sign.SLASH);
+            path = StrUtil.addSuffixIfNot(path, StringConsts.Sign.SLASH);
             List<String> children = childrenMap.get(path);
             if (CollUtil.isEmpty(children)) {
                 // 从FTP服务器列出子目录
