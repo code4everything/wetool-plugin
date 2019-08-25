@@ -1,5 +1,7 @@
 package org.code4everything.wetool.plugin.ftp;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.extra.ftp.Ftp;
 import javafx.scene.control.ComboBox;
 import lombok.experimental.UtilityClass;
@@ -8,6 +10,9 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.code4everything.boot.base.function.BooleanFunction;
 import org.code4everything.wetool.plugin.ftp.config.FtpConfig;
 import org.code4everything.wetool.plugin.ftp.constant.FtpConsts;
+import org.code4everything.wetool.plugin.ftp.controller.FtpController;
+import org.code4everything.wetool.plugin.ftp.model.FtpDownload;
+import org.code4everything.wetool.plugin.ftp.model.FtpUpload;
 import org.code4everything.wetool.plugin.ftp.model.LastUsedInfo;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
@@ -16,6 +21,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author pantao
@@ -25,9 +32,27 @@ import java.util.Objects;
 @UtilityClass
 public class FtpManager {
 
+    private static final Queue<FtpUpload> UPLOAD_QUEUE = new LinkedBlockingQueue<>();
+
+    private static final Queue<FtpDownload> DOWNLOAD_QUEUE = new LinkedBlockingQueue<>();
+
     private static final LastUsedInfo USED_INFO = LastUsedInfo.getInstance();
 
     private static final int RETRIES = 3;
+
+    public static boolean delete(ComboBox<String> ftpName, String file) {
+        try {
+            if (getFtp(ftpName).delFile(file)) {
+                log.info("delete file '{}' success", file);
+                return true;
+            } else {
+                log.error("delete file '{}' failed", file);
+            }
+        } catch (Exception e) {
+            log.error("delete ftp file error", e);
+        }
+        return false;
+    }
 
     public static void download(ComboBox<String> ftpName, String file, File path) {
         USED_INFO.setLocalSaveDir(path.getAbsolutePath());
@@ -40,8 +65,38 @@ public class FtpManager {
         });
     }
 
-    public static boolean exists(ComboBox<String> ftpName, String file) {
-        return getFtp(ftpName).exist(file);
+    public static void download(ComboBox<String> ftpName, List<String> files, File path) {
+        boolean shouldExe = DOWNLOAD_QUEUE.isEmpty();
+        String name = ftpName.getSelectionModel().getSelectedItem();
+        if (CollUtil.isNotEmpty(files)) {
+            // 锁住队列，并将文件添加队列
+            synchronized (DOWNLOAD_QUEUE) {
+                shouldExe = DOWNLOAD_QUEUE.isEmpty();
+                files.forEach(file -> DOWNLOAD_QUEUE.offer(new FtpDownload(name, file, path)));
+            }
+        }
+        FtpController controller = BeanFactory.get(FtpController.class);
+        if (shouldExe) {
+            // 异步下载
+            ThreadUtil.execute(() -> {
+                while (!DOWNLOAD_QUEUE.isEmpty()) {
+                    FtpDownload ftp = DOWNLOAD_QUEUE.poll();
+                    String absPath = path.getAbsolutePath();
+                    if (getFtp(ftp.getName()).exist(ftp.getFile())) {
+                        controller.updateStatus("download '{}' to '{}'", ftp.getFile(), absPath);
+                        try {
+                            getFtp(ftp.getName()).download(ftp.getFile(), path);
+                            log.info("'{}' download to '{}' success", ftp.getFile(), absPath);
+                        } catch (Exception e) {
+                            log.error("download failed", e);
+                        }
+                    } else {
+                        log.error("download to path[{}] failed: file '{}' not exists", absPath, ftp.getFile());
+                    }
+                }
+                controller.updateStatus("");
+            });
+        }
     }
 
     public static List<String> listChildren(ComboBox<String> ftpName, String path, boolean containsFile) {
@@ -56,6 +111,44 @@ public class FtpManager {
         }
         log.info("list file from ftp path: {}, result: {}", path, dirs);
         return dirs;
+    }
+
+    public static void upload(ComboBox<String> ftpName, String path, List<File> files) {
+        boolean shouldExe = UPLOAD_QUEUE.isEmpty();
+        String name = ftpName.getSelectionModel().getSelectedItem();
+        if (CollUtil.isNotEmpty(files)) {
+            // 锁住队列，并将文件添加队列
+            synchronized (UPLOAD_QUEUE) {
+                shouldExe = UPLOAD_QUEUE.isEmpty();
+                files.forEach(file -> UPLOAD_QUEUE.offer(new FtpUpload(name, path, file)));
+            }
+        }
+        FtpController controller = BeanFactory.get(FtpController.class);
+        if (shouldExe) {
+            // 异步上传
+            ThreadUtil.execute(() -> {
+                while (!UPLOAD_QUEUE.isEmpty()) {
+                    FtpUpload ftp = UPLOAD_QUEUE.poll();
+                    String absPath = ftp.getFile().getAbsolutePath();
+                    if (ftp.getFile().exists()) {
+                        controller.updateStatus("upload '{}' to '{}'", absPath, path);
+                        try {
+                            boolean res = getFtp(ftp.getName()).upload(ftp.getPath(), ftp.getFile());
+                            if (res) {
+                                log.info("'{}' upload to '{}' success", absPath, path);
+                            } else {
+                                log.error("'{}' upload to '{}' failed", absPath, path);
+                            }
+                        } catch (Exception e) {
+                            log.error("upload failed", e);
+                        }
+                    } else {
+                        log.error("upload to path[{}] failed: file '{}' not exists", ftp.getPath(), absPath);
+                    }
+                }
+                controller.updateStatus("");
+            });
+        }
     }
 
     public static void upload(ComboBox<String> ftpName, String path, File file) {
@@ -97,8 +190,11 @@ public class FtpManager {
         }
     }
 
-    private static Ftp getFtp(ComboBox<String> ftpName) {
-        String name = ftpName.getSelectionModel().getSelectedItem();
+    public static Ftp getFtp(ComboBox<String> ftpName) {
+        return getFtp(ftpName.getSelectionModel().getSelectedItem());
+    }
+
+    public static Ftp getFtp(String name) {
         Ftp ftp = BeanFactory.get(generateFtpKey(name));
         if (Objects.isNull(ftp)) {
             FtpConfig g = BeanFactory.get(generateConfigKey(name));

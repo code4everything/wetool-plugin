@@ -43,7 +43,7 @@ public class DownloadDialogController extends AbstractDialogController {
             return;
         }
         downloadButton.setDisable(true);
-        if (!FtpManager.exists(ftpName, remotePath.getValue())) {
+        if (!FtpManager.getFtp(ftpName).exist(remotePath.getValue())) {
             FxDialogs.showError(FtpConsts.FILE_NOT_EXISTS);
             downloadButton.setDisable(false);
             return;

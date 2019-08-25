@@ -29,6 +29,10 @@ public class LastUsedInfo {
 
     private Set<String> ftpNames;
 
+    private String localDir;
+
+    private String remoteDir;
+
     private LastUsedInfo() {}
 
     public static LastUsedInfo getInstance() {

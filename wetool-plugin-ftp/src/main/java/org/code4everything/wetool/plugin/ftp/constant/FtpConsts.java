@@ -28,4 +28,8 @@ public class FtpConsts {
     public static final String SELECT_FTP = "请选择一个FTP服务器";
 
     public static final String FILE_NOT_EXISTS = "选择的文件不存在";
+
+    public static final String UPLOAD_COMPLETED = "上传完成";
+
+    public static final String DOWNLOAD_COMPLETED = "下载完成";
 }
