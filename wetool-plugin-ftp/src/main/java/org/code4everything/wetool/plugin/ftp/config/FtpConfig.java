@@ -1,7 +1,10 @@
 package org.code4everything.wetool.plugin.ftp.config;
 
+import cn.hutool.core.collection.CollUtil;
+import com.google.common.collect.Lists;
 import lombok.*;
 import org.code4everything.boot.base.bean.BaseBean;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,9 +21,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class FtpConfig implements BaseBean, Serializable {
 
-    public static final String KEY_CAMEL = "easeFtp";
-
-    public static final String KEY_LOWER = "ease-ftp";
+    private static final List<String> KEYS = Lists.newArrayList("easeFtp", "EaseFtp", "ease_ftp", "ftp", "FTP");
 
     private static final long serialVersionUID = 6979297033248219537L;
 
@@ -30,6 +31,18 @@ public class FtpConfig implements BaseBean, Serializable {
     private Boolean showOnStartup;
 
     private List<FtpInfo> ftps;
+
+    public static FtpConfig getConfig() {
+        FtpConfig config = null;
+        for (String key : KEYS) {
+            if (Objects.isNull(config) || CollUtil.isEmpty(config.getFtps())) {
+                config = WeUtils.getConfig().getConfig(key, FtpConfig.class);
+            } else {
+                break;
+            }
+        }
+        return config;
+    }
 
     public static List<FtpInfo> getFtps(FtpConfig ftpConfig) {
         if (Objects.isNull(ftpConfig) || Objects.isNull(ftpConfig.getFtps())) {

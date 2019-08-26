@@ -1,7 +1,11 @@
 package org.code4everything.wetool.plugin.ftp.model;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
+import lombok.Generated;
 import lombok.ToString;
+import org.code4everything.boot.base.constant.StringConsts;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -44,5 +48,15 @@ public class LastUsedInfo {
             ftpNames = new HashSet<>(4, 1);
         }
         ftpNames.add(ftpName);
+    }
+
+    @Generated
+    public String getLocalDir() {
+        return StrUtil.emptyToDefault(localDir, FileUtil.getUserHomePath());
+    }
+
+    @Generated
+    public String getRemoteDir() {
+        return StrUtil.emptyToDefault(remoteDir, StringConsts.Sign.SLASH);
     }
 }

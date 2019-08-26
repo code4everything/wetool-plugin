@@ -1,6 +1,7 @@
 package org.code4everything.wetool.plugin.ftp;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -14,10 +15,8 @@ import org.code4everything.wetool.plugin.support.WePluginSupportable;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
-import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author pantao
@@ -31,10 +30,7 @@ public class WetoolSupporter implements WePluginSupportable {
     @Override
     public boolean initialize() {
         // 获取配置
-        ftpConfig = WeUtils.getConfig().getConfig(FtpConfig.KEY_CAMEL, FtpConfig.class);
-        if (Objects.isNull(ftpConfig) || CollUtil.isEmpty(ftpConfig.getFtps())) {
-            ftpConfig = WeUtils.getConfig().getConfig(FtpConfig.KEY_LOWER, FtpConfig.class);
-        }
+        ftpConfig = FtpConfig.getConfig();
         List<FtpInfo> ftps = FtpConfig.getFtps(ftpConfig);
         for (FtpInfo ftpInfo : ftps) {
             if (StrUtil.isEmpty(ftpInfo.getName())) {
@@ -49,7 +45,7 @@ public class WetoolSupporter implements WePluginSupportable {
             BeanFactory.register(FtpManager.generateConfigKey(ftpInfo.getName()), ftpInfo);
             // 是否进行初始化连接
             if (ftpInfo.isInitConnect()) {
-                FtpManager.getFtp(ftpInfo.getName());
+                ThreadUtil.execute(() -> FtpManager.getFtp(ftpInfo.getName()));
             }
         }
         if (CollUtil.isEmpty(LastUsedInfo.getInstance().getFtpNames())) {

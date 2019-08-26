@@ -29,10 +29,10 @@ public class FtpTest {
         ftpInfo.setPassword("root");
         ftpInfo.setReconnect(true);
         ftpInfo.setSelect(true);
-        ftpInfo.setLazyConnect(true);
+        ftpInfo.setLazyConnect(false);
 
         ftpConfig.addFtp(ftpInfo);
-        json.put(FtpConfig.KEY_CAMEL, ftpConfig);
+        json.put("easeFtp", ftpConfig);
         config.setConfigJson(json);
 
         WetoolTest.runTest(new WetoolSupporter(), config, args);

@@ -178,7 +178,7 @@ public class FtpManager {
         return !USED_INFO.getFtpNames().contains(comboBox.getSelectionModel().getSelectedItem());
     }
 
-    static String generateConfigKey(String ftpName) {
+    public static String generateConfigKey(String ftpName) {
         return FtpConsts.AUTHOR + FtpConsts.NAME + ftpName;
     }
 

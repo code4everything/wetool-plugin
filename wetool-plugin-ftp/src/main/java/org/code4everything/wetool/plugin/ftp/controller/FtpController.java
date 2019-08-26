@@ -2,8 +2,10 @@ package org.code4everything.wetool.plugin.ftp.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.google.common.collect.Lists;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -14,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPFile;
 import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.wetool.plugin.ftp.FtpManager;
+import org.code4everything.wetool.plugin.ftp.config.FtpInfo;
 import org.code4everything.wetool.plugin.ftp.constant.FtpConsts;
 import org.code4everything.wetool.plugin.ftp.model.LastUsedInfo;
 import org.code4everything.wetool.plugin.support.BaseViewController;
@@ -30,6 +33,8 @@ import java.util.*;
  */
 @Slf4j
 public class FtpController implements BaseViewController {
+
+    private final FTPFile defaultFtpFile = new FTPFile();
 
     private final Map<String, FTPFile> ftpFileMap = new HashMap<>(64);
 
@@ -57,6 +62,7 @@ public class FtpController implements BaseViewController {
     @FXML
     private void initialize() {
         log.info("open tab for {}[{}]", FtpConsts.NAME, FtpConsts.AUTHOR);
+        defaultFtpFile.setType(1);
         BeanFactory.registerView(FtpConsts.TAB_ID, FtpConsts.TAB_NAME, this);
 
         uploadStatus.setText("");
@@ -72,6 +78,8 @@ public class FtpController implements BaseViewController {
 
         ftpName.getItems().addAll(info.getFtpNames());
         ftpName.getSelectionModel().select(info.getFtpName());
+
+        listLocalFiles(new File(getLocalPath()));
     }
 
     public void updateUploadStatus(String status, Object... params) {
@@ -132,7 +140,7 @@ public class FtpController implements BaseViewController {
 
     public void deleteRemoteFile() {
         List<String> files = getSelectedRemoteFiles(false);
-        files.forEach(file -> FtpManager.delete(ftpName, file, ftpFileMap.get(file).isDirectory()));
+        files.forEach(file -> FtpManager.delete(ftpName, file, getFtpFile(file).isDirectory()));
         listRemoteFiles(getRemotePath());
     }
 
@@ -161,15 +169,39 @@ public class FtpController implements BaseViewController {
     public void set2RemotePath(MouseEvent event) {
         FxUtils.doubleClicked(event, () -> {
             String path = getSelectedRemoteFiles(false).get(0);
-            if (ftpFileMap.get(path).isDirectory()) {
+            if (getFtpFile(path).isDirectory()) {
                 remotePath.setText(path);
                 listRemoteFiles(path);
             }
         });
     }
 
+    public void copyRemoteFileLink() {
+        List<String> files = getSelectedRemoteFiles(true);
+        FtpInfo info = BeanFactory.get(FtpManager.generateConfigKey(ftpName.getSelectionModel().getSelectedItem()));
+        String prefix = String.format("ftp://%s:%s", info.getHost(), info.getPort());
+        String sep = "";
+        StringBuilder builder = new StringBuilder();
+        for (String file : files) {
+            builder.append(sep).append(prefix).append(file);
+            sep = "\r\n";
+        }
+        set2Clipboard(builder.toString());
+    }
+
+    public void copyLocalFileLink() {
+        List<File> files = getSelectedLocalFiles(true);
+        String sep = "";
+        StringBuilder builder = new StringBuilder();
+        for (File file : files) {
+            builder.append(sep).append(file.getAbsolutePath());
+            sep = "\r\n";
+        }
+        set2Clipboard(builder.toString());
+    }
+
     private void listRemoteFiles(String path) {
-        if (ftpFileMap.containsKey(path) && !ftpFileMap.get(path).isDirectory()) {
+        if (ftpFileMap.containsKey(path) && !getFtpFile(path).isDirectory()) {
             // 如果已知路径不是文件夹，则不继续
             return;
         }
@@ -179,7 +211,7 @@ public class FtpController implements BaseViewController {
         if (!slash.equals(path)) {
             remoteFiles.getItems().add(parseParentPath(path));
         }
-        remoteFiles.getItems().add(setType2Folder(path));
+        remoteFiles.getItems().add(path);
         path = StrUtil.addSuffixIfNot(path, slash);
         remoteFiles.getItems().addAll(FtpManager.listChildren(ftpName, path, true, ftpFileMap));
     }
@@ -188,17 +220,7 @@ public class FtpController implements BaseViewController {
         String slash = StringConsts.Sign.SLASH;
         String parent = StrUtil.addPrefixIfNot(StrUtil.removeSuffix(remotePath, slash), slash);
         int idx = parent.lastIndexOf(StringConsts.Sign.SLASH);
-        parent = StrUtil.emptyToDefault(parent.substring(0, idx), slash);
-        return setType2Folder(parent);
-    }
-
-    private String setType2Folder(String path) {
-        if (!ftpFileMap.containsKey(path)) {
-            FTPFile ftpFile = new FTPFile();
-            ftpFile.setType(1);
-            ftpFileMap.put(path, ftpFile);
-        }
-        return path;
+        return StrUtil.emptyToDefault(parent.substring(0, idx), slash);
     }
 
     private void listLocalFiles(File path) {
@@ -212,13 +234,13 @@ public class FtpController implements BaseViewController {
         }
     }
 
-    private List<String> getSelectedRemoteFiles(boolean addTypedIfEmpty) {
+    private List<String> getSelectedRemoteFiles(boolean usingDefault) {
         List<String> selectedFiles = remoteFiles.getSelectionModel().getSelectedItems();
         if (Objects.isNull(selectedFiles)) {
             selectedFiles = new ArrayList<>();
         }
-        if (CollUtil.isEmpty(selectedFiles) && addTypedIfEmpty && FtpManager.getFtp(ftpName).exist(getRemotePath())) {
-            selectedFiles.add(getRemotePath());
+        if (CollUtil.isEmpty(selectedFiles) && usingDefault && FtpManager.getFtp(ftpName).exist(getRemotePath())) {
+            return Lists.newArrayList(getRemotePath());
         }
         return selectedFiles;
     }
@@ -243,7 +265,7 @@ public class FtpController implements BaseViewController {
             selectedFiles = new ArrayList<>();
         }
         if (CollUtil.isEmpty(selectedFiles) && addTypedIfEmpty && FileUtil.exist(localPath.getText())) {
-            selectedFiles.add(new File(localPath.getText()));
+            return Lists.newArrayList(new File(localPath.getText()));
         }
         return selectedFiles;
     }
@@ -255,5 +277,15 @@ public class FtpController implements BaseViewController {
             }
             statusLabel.setText(StrUtil.format(status, params));
         });
+    }
+
+    private void set2Clipboard(String string) {
+        if (StrUtil.isNotEmpty(string)) {
+            ClipboardUtil.setStr(string);
+        }
+    }
+
+    private FTPFile getFtpFile(String path) {
+        return ftpFileMap.getOrDefault(path, defaultFtpFile);
     }
 }
