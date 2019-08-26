@@ -2,11 +2,12 @@ package org.code4everything.wetool.plugin.ftp;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONArray;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.ftp.config.FtpConfig;
+import org.code4everything.wetool.plugin.ftp.config.FtpInfo;
 import org.code4everything.wetool.plugin.ftp.constant.FtpConsts;
 import org.code4everything.wetool.plugin.ftp.model.LastUsedInfo;
 import org.code4everything.wetool.plugin.support.WePluginSupportable;
@@ -15,6 +16,9 @@ import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 
+import java.util.List;
+import java.util.Objects;
+
 /**
  * @author pantao
  * @since 2019/8/23
@@ -22,21 +26,27 @@ import org.code4everything.wetool.plugin.support.util.WeUtils;
 @Slf4j
 public class WetoolSupporter implements WePluginSupportable {
 
+    private FtpConfig ftpConfig;
+
     @Override
     public boolean initialize() {
-        JSONArray ftps = WeUtils.getConfig().getConfig("ftps", JSONArray.class);
-        for (int i = 0; i < ftps.size(); i++) {
-            FtpConfig config = ftps.getObject(i, FtpConfig.class);
-            if (StrUtil.isEmpty(config.getName())) {
+        // 获取配置
+        ftpConfig = WeUtils.getConfig().getConfig(FtpConfig.KEY_CAMEL, FtpConfig.class);
+        if (Objects.isNull(ftpConfig) || CollUtil.isEmpty(ftpConfig.getFtps())) {
+            ftpConfig = WeUtils.getConfig().getConfig(FtpConfig.KEY_LOWER, FtpConfig.class);
+        }
+        List<FtpInfo> ftps = FtpConfig.getFtps(ftpConfig);
+        for (FtpInfo ftpInfo : ftps) {
+            if (StrUtil.isEmpty(ftpInfo.getName())) {
                 // 无效的配置
-                log.info("invalid ftp config, the name of ftp connection must not be empty: {}", config);
+                log.info("invalid ftp config, the name of ftp connection must not be empty: {}", ftpInfo);
                 continue;
             }
-            LastUsedInfo.getInstance().addFtpName(config.getName());
-            if (config.getSelect()) {
-                LastUsedInfo.getInstance().setFtpName(config.getName());
+            LastUsedInfo.getInstance().addFtpName(ftpInfo.getName());
+            if (ftpInfo.getSelect()) {
+                LastUsedInfo.getInstance().setFtpName(ftpInfo.getName());
             }
-            BeanFactory.register(FtpManager.generateConfigKey(config.getName()), config);
+            BeanFactory.register(FtpManager.generateConfigKey(ftpInfo.getName()), ftpInfo);
         }
         if (CollUtil.isEmpty(LastUsedInfo.getInstance().getFtpNames())) {
             log.error("ftp config not found, plugin will exit");
@@ -47,12 +57,11 @@ public class WetoolSupporter implements WePluginSupportable {
 
     @Override
     public MenuItem registerBarMenu() {
-        String tabName = FtpConsts.TAB_NAME;
-        MenuItem item = new MenuItem(tabName);
-        item.setOnAction(e -> {
-            Node node = FxUtils.loadFxml(this, "/FtpTabView.fxml");
-            FxUtils.openTab(node, FtpConsts.TAB_ID, tabName);
-        });
+        MenuItem item = new MenuItem(FtpConsts.TAB_NAME);
+        if (ftpConfig.getShowOnStartup()) {
+            openTab();
+        }
+        item.setOnAction(e -> openTab());
         return item;
     }
 
@@ -74,5 +83,12 @@ public class WetoolSupporter implements WePluginSupportable {
         });
         menu.add(item);
         return menu;
+    }
+
+    private void openTab() {
+        Platform.runLater(() -> {
+            Node node = FxUtils.loadFxml(this, "/FtpTabView.fxml");
+            FxUtils.openTab(node, FtpConsts.TAB_ID, FtpConsts.TAB_NAME);
+        });
     }
 }

@@ -1,8 +1,8 @@
 package org.code4everything.wetool.plugin.ftp;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.code4everything.wetool.plugin.ftp.config.FtpConfig;
+import org.code4everything.wetool.plugin.ftp.config.FtpInfo;
 import org.code4everything.wetool.plugin.support.config.WeConfig;
 import org.code4everything.wetool.plugin.test.WetoolTest;
 
@@ -16,21 +16,22 @@ public class FtpTest {
         // 模拟配置文件
         WeConfig config = WetoolTest.getConfig();
         JSONObject json = new JSONObject();
-        JSONArray ftps = new JSONArray();
-
         FtpConfig ftpConfig = new FtpConfig();
-        ftpConfig.setName("test");
-        ftpConfig.setCharset("utf-8");
-        ftpConfig.setAnonymous(false);
-        ftpConfig.setHost("192.168.1.234");
-        ftpConfig.setPort(21);
-        ftpConfig.setUsername("root");
-        ftpConfig.setPassword("root");
-        ftpConfig.setReconnect(false);
-        ftpConfig.setSelect(true);
+        ftpConfig.setShowOnStartup(true);
 
-        ftps.add(ftpConfig);
-        json.put("ftps", ftps);
+        FtpInfo ftpInfo = new FtpInfo();
+        ftpInfo.setName("test");
+        ftpInfo.setCharset("utf-8");
+        ftpInfo.setAnonymous(false);
+        ftpInfo.setHost("192.168.1.234");
+        ftpInfo.setPort(21);
+        ftpInfo.setUsername("root");
+        ftpInfo.setPassword("root");
+        ftpInfo.setReconnect(false);
+        ftpInfo.setSelect(true);
+
+        ftpConfig.addFtp(ftpInfo);
+        json.put(FtpConfig.KEY_CAMEL, ftpConfig);
         config.setConfigJson(json);
 
         WetoolTest.runTest(new WetoolSupporter(), config, args);

@@ -8,7 +8,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPFile;
 import org.code4everything.boot.base.function.BooleanFunction;
-import org.code4everything.wetool.plugin.ftp.config.FtpConfig;
+import org.code4everything.wetool.plugin.ftp.config.FtpInfo;
 import org.code4everything.wetool.plugin.ftp.constant.FtpConsts;
 import org.code4everything.wetool.plugin.ftp.controller.FtpController;
 import org.code4everything.wetool.plugin.ftp.model.FtpDownload;
@@ -66,6 +66,7 @@ public class FtpManager {
     }
 
     public static void download(ComboBox<String> ftpName, List<String> files, File path) {
+        LastUsedInfo.getInstance().setLocalDir(path.getAbsolutePath());
         boolean shouldExe = DOWNLOAD_QUEUE.isEmpty();
         String name = ftpName.getSelectionModel().getSelectedItem();
         if (CollUtil.isNotEmpty(files)) {
@@ -83,7 +84,7 @@ public class FtpManager {
                     FtpDownload ftp = DOWNLOAD_QUEUE.poll();
                     String absPath = path.getAbsolutePath();
                     if (getFtp(ftp.getName()).exist(ftp.getFile())) {
-                        controller.updateStatus("download '{}' to '{}'", ftp.getFile(), absPath);
+                        controller.updateDownloadStatus("download '{}' to '{}'", ftp.getFile(), absPath);
                         try {
                             getFtp(ftp.getName()).download(ftp.getFile(), path);
                             log.info("'{}' download to '{}' success", ftp.getFile(), absPath);
@@ -94,7 +95,7 @@ public class FtpManager {
                         log.error("download to path[{}] failed: file '{}' not exists", absPath, ftp.getFile());
                     }
                 }
-                controller.updateStatus("");
+                controller.updateDownloadStatus("");
             });
         }
     }
@@ -114,6 +115,7 @@ public class FtpManager {
     }
 
     public static void upload(ComboBox<String> ftpName, String path, List<File> files) {
+        LastUsedInfo.getInstance().setRemoteDir(path);
         boolean shouldExe = UPLOAD_QUEUE.isEmpty();
         String name = ftpName.getSelectionModel().getSelectedItem();
         if (CollUtil.isNotEmpty(files)) {
@@ -131,7 +133,7 @@ public class FtpManager {
                     FtpUpload ftp = UPLOAD_QUEUE.poll();
                     String absPath = ftp.getFile().getAbsolutePath();
                     if (ftp.getFile().exists()) {
-                        controller.updateStatus("upload '{}' to '{}'", absPath, path);
+                        controller.updateUploadStatus("upload '{}' to '{}'", absPath, path);
                         try {
                             boolean res = getFtp(ftp.getName()).upload(ftp.getPath(), ftp.getFile());
                             if (res) {
@@ -146,7 +148,7 @@ public class FtpManager {
                         log.error("upload to path[{}] failed: file '{}' not exists", ftp.getPath(), absPath);
                     }
                 }
-                controller.updateStatus("");
+                controller.updateUploadStatus("");
             });
         }
     }
@@ -197,13 +199,13 @@ public class FtpManager {
     public static Ftp getFtp(String name) {
         Ftp ftp = BeanFactory.get(generateFtpKey(name));
         if (Objects.isNull(ftp)) {
-            FtpConfig g = BeanFactory.get(generateConfigKey(name));
-            if (g.getAnonymous()) {
-                ftp = new Ftp(g.getHost(), g.getPort(), "anonymous", "", g.getCharset());
+            FtpInfo fo = BeanFactory.get(generateConfigKey(name));
+            if (fo.getAnonymous()) {
+                ftp = new Ftp(fo.getHost(), fo.getPort(), "anonymous", "", fo.getCharset());
             } else {
-                ftp = new Ftp(g.getHost(), g.getPort(), g.getUsername(), g.getPassword(), g.getCharset());
+                ftp = new Ftp(fo.getHost(), fo.getPort(), fo.getUsername(), fo.getPassword(), fo.getCharset());
             }
-            if (g.getReconnect()) {
+            if (fo.getReconnect()) {
                 ftp.reconnectIfTimeout();
             }
             BeanFactory.register(generateFtpKey(name), ftp);

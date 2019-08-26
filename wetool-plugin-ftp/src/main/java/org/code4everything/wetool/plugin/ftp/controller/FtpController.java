@@ -7,6 +7,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.wetool.plugin.ftp.FtpManager;
@@ -42,15 +44,23 @@ public class FtpController implements BaseViewController {
     public ListView<String> remoteFiles;
 
     @FXML
-    public Label statusLabel;
+    public ComboBox<String> ftpName;
 
     @FXML
-    public ComboBox<String> ftpName;
+    public Label uploadStatus;
+
+    @FXML
+    public Label downloadStatus;
 
     @FXML
     private void initialize() {
         log.info("open tab for {}[{}]", FtpConsts.NAME, FtpConsts.AUTHOR);
         BeanFactory.registerView(FtpConsts.TAB_ID, FtpConsts.TAB_NAME, this);
+
+        uploadStatus.setText("");
+        downloadStatus.setText("");
+
+
         localFiles.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         remoteFiles.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
@@ -62,13 +72,12 @@ public class FtpController implements BaseViewController {
         ftpName.getSelectionModel().select(info.getFtpName());
     }
 
-    public void updateStatus(String statusText, Object... params) {
-        Platform.runLater(() -> {
-            if (StrUtil.isEmpty(statusText)) {
-                FxDialogs.showInformation(null, "上传完成");
-            }
-            statusLabel.setText(StrUtil.format(statusText, params));
-        });
+    public void updateUploadStatus(String status, Object... params) {
+        updateStatus(uploadStatus, status, FtpConsts.UPLOAD_COMPLETED, params);
+    }
+
+    public void updateDownloadStatus(String status, Object... params) {
+        updateStatus(downloadStatus, status, FtpConsts.DOWNLOAD_COMPLETED, params);
     }
 
     @Override
@@ -105,22 +114,22 @@ public class FtpController implements BaseViewController {
         getSelectedLocalFiles(false).removeIf(File::delete);
     }
 
-    public void downloadButtonClicked() {
-
-    }
-
     public void makeRemoteDir() {
         if (StrUtil.isNotEmpty(remotePath.getText())) {
             FtpManager.getFtp(ftpName).mkDirs(remotePath.getText());
         }
     }
 
-    public void downloadMenuClicked() {
-
+    public void download() {
+        FtpManager.download(ftpName, getSelectedRemoteFiles(true), new File(getLocalPath()));
     }
 
     public void deleteRemoteFile() {
         getSelectedRemoteFiles(false).removeIf(file -> FtpManager.delete(ftpName, file));
+    }
+
+    public void listLocalFiles(KeyEvent keyEvent) {
+        FxUtils.enterDo(keyEvent, () -> listLocalFiles(new File(getLocalPath())));
     }
 
     public void upload() {
@@ -139,7 +148,17 @@ public class FtpController implements BaseViewController {
     }
 
     private String getRemotePath() {
-        return StrUtil.nullToDefault(remotePath.getText(), StringConsts.Sign.SLASH);
+        if (StrUtil.isEmpty(remotePath.getText())) {
+            remotePath.setText(StringConsts.Sign.SLASH);
+        }
+        return remotePath.getText();
+    }
+
+    private String getLocalPath() {
+        if (StrUtil.isEmpty(localPath.getText())) {
+            localPath.setText(FileUtil.getUserHomePath());
+        }
+        return localPath.getText();
     }
 
     private List<File> getSelectedLocalFiles(boolean addTypedIfEmpty) {
@@ -151,5 +170,32 @@ public class FtpController implements BaseViewController {
             selectedFiles.add(new File(localPath.getText()));
         }
         return selectedFiles;
+    }
+
+    private void updateStatus(Label statusLabel, String status, String tip, Object... params) {
+        Platform.runLater(() -> {
+            if (StrUtil.isEmpty(status)) {
+                FxDialogs.showInformation(null, tip);
+            }
+            statusLabel.setText(StrUtil.format(status, params));
+        });
+    }
+
+    public void set2LocalPath(MouseEvent mouseEvent) {
+        FxUtils.doubleClicked(mouseEvent, () -> {
+            File file = getSelectedLocalFiles(false).get(0);
+            if (file.isDirectory()) {
+                localPath.setText(file.getAbsolutePath());
+                listLocalFiles(file);
+            }
+        });
+    }
+
+    private void listLocalFiles(File path) {
+        if (path.exists() && path.isDirectory()) {
+            localFiles.getItems().clear();
+            localFiles.getItems().add(path);
+            localFiles.getItems().addAll(FileUtil.ls(path.getAbsolutePath()));
+        }
     }
 }

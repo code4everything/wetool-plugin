@@ -1,11 +1,11 @@
 package org.code4everything.wetool.plugin.ftp.config;
 
-import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.*;
 import org.code4everything.boot.base.bean.BaseBean;
 
-import java.nio.charset.Charset;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -16,81 +16,34 @@ import java.util.Objects;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class FtpConfig implements BaseBean {
+public class FtpConfig implements BaseBean, Serializable {
 
-    /**
-     * 自定义FTP连接名
-     */
-    @NonNull
-    private String name;
+    public static final String KEY_CAMEL = "easeFtp";
 
-    /**
-     * 主机，默认：127.0.0.1
-     */
-    private String host;
+    public static final String KEY_LOWER = "ease-ftp";
 
-    /**
-     * 端口，默认：21
-     */
-    private Integer port;
+    private static final long serialVersionUID = 6979297033248219537L;
 
-    /**
-     * 是否匿名登录FTP，默认：false
-     */
-    private Boolean anonymous;
+    private Boolean showOnStartup;
 
-    /**
-     * 用户名
-     */
-    private String username;
+    private List<FtpInfo> ftps;
 
-    /**
-     * 密码
-     */
-    private String password;
+    public static List<FtpInfo> getFtps(FtpConfig ftpConfig) {
+        if (Objects.isNull(ftpConfig) || Objects.isNull(ftpConfig.getFtps())) {
+            return new ArrayList<>();
+        }
+        return ftpConfig.getFtps();
+    }
 
-    /**
-     * 编码，默认：utf-8
-     */
-    private String charset;
-
-    /**
-     * 是否自动重连，默认：false
-     */
-    private Boolean reconnect;
-
-    /**
-     * 是否默认为默认的FTP，默认：false
-     */
-    private Boolean select;
-
-    @Generated
-    public String getHost() {
-        return StrUtil.isEmpty(host) ? "127.0.0.1" : host;
+    public void addFtp(FtpInfo ftpInfo) {
+        if (Objects.isNull(ftps)) {
+            ftps = new ArrayList<>();
+        }
+        ftps.add(ftpInfo);
     }
 
     @Generated
-    public int getPort() {
-        return Objects.isNull(port) ? 21 : port;
-    }
-
-    @Generated
-    public boolean getAnonymous() {
-        return Boolean.TRUE.equals(anonymous);
-    }
-
-    @Generated
-    public Charset getCharset() {
-        return CharsetUtil.charset(charset);
-    }
-
-    @Generated
-    public boolean getReconnect() {
-        return Boolean.TRUE.equals(reconnect);
-    }
-
-    @Generated
-    public boolean getSelect() {
-        return Boolean.TRUE.equals(select);
+    public boolean getShowOnStartup() {
+        return Boolean.TRUE.equals(showOnStartup);
     }
 }
