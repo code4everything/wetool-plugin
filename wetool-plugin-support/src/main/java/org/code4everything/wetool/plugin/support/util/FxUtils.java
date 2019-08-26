@@ -11,10 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextInputControl;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -44,6 +41,8 @@ import java.util.Objects;
 @Slf4j
 @UtilityClass
 public class FxUtils {
+
+    private static final int DOUBLE_CLICK = 2;
 
     public static BaseViewController getSelectedTabController() {
         Tab tab = getTabPane().getSelectionModel().getSelectedItem();
@@ -159,6 +158,12 @@ public class FxUtils {
         }
     }
 
+    public static void doubleClicked(MouseEvent event, VoidFunction function) {
+        if (event.getClickCount() == DOUBLE_CLICK) {
+            function.call();
+        }
+    }
+
     public static Pane loadFxml(String url) {
         return loadFxml(FxUtils.class.getResource(url), FxUtils.class.getClassLoader());
     }
@@ -174,6 +179,11 @@ public class FxUtils {
     }
 
     private static Pane loadFxml(URL url, ClassLoader loader) {
+        String nodeKey = url.toString();
+        if (BeanFactory.isRegistered(nodeKey)) {
+            // 从缓存中取出视图
+            return BeanFactory.get(nodeKey);
+        }
         FXMLLoader.setDefaultClassLoader(loader);
         try {
             return FXMLLoader.load(url);

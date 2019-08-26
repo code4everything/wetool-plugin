@@ -23,6 +23,7 @@ public class WePluginInfo implements BaseBean, Serializable {
      *
      * @since 1.0.0
      */
+    @NonNull
     private String author;
 
     /**
@@ -30,6 +31,7 @@ public class WePluginInfo implements BaseBean, Serializable {
      *
      * @since 1.0.0
      */
+    @NonNull
     private String name;
 
     /**
@@ -37,6 +39,7 @@ public class WePluginInfo implements BaseBean, Serializable {
      *
      * @since 1.0.0
      */
+    @NonNull
     private String version;
 
     /**
@@ -44,6 +47,7 @@ public class WePluginInfo implements BaseBean, Serializable {
      *
      * @since 1.0.0
      */
+    @NonNull
     private String requireWetoolVersion;
 
     /**
@@ -51,6 +55,7 @@ public class WePluginInfo implements BaseBean, Serializable {
      *
      * @since 1.0.0
      */
+    @NonNull
     private String supportedClass;
 
     public WePluginInfo(String author, String name, String version) {
