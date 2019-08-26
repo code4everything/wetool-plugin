@@ -47,6 +47,10 @@ public class WetoolSupporter implements WePluginSupportable {
                 LastUsedInfo.getInstance().setFtpName(ftpInfo.getName());
             }
             BeanFactory.register(FtpManager.generateConfigKey(ftpInfo.getName()), ftpInfo);
+            // 是否进行初始化连接
+            if (ftpInfo.isInitConnect()) {
+                FtpManager.getFtp(ftpInfo.getName());
+            }
         }
         if (CollUtil.isEmpty(LastUsedInfo.getInstance().getFtpNames())) {
             log.error("ftp config not found, plugin will exit");

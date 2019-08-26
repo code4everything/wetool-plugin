@@ -18,7 +18,7 @@
                 </padding>
                 <TextField fx:id="localPath" maxHeight="1.7976931348623157E308" onKeyReleased="#listLocalFiles"
                            maxWidth="1.7976931348623157E308" promptText="本地目录，回车以列出子文件"
-                           HBox.hgrow="ALWAYS"/>
+                           HBox.hgrow="ALWAYS" onDragOver="#dragFileOver" onDragDropped="#dragFileDropped"/>
                 <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                         mnemonicParsing="false" onAction="#makeLocalDir" text="创建目录" HBox.hgrow="NEVER">
                     <HBox.margin>
@@ -74,7 +74,7 @@
                         <Insets right="10.0"/>
                     </HBox.margin>
                 </ComboBox>
-                <TextField fx:id="remotePath" maxHeight="1.7976931348623157E308"
+                <TextField fx:id="remotePath" maxHeight="1.7976931348623157E308" onKeyReleased="#listRemoteFiles"
                            maxWidth="1.7976931348623157E308" promptText="远程目录，回车以列出子文件" HBox.hgrow="ALWAYS"/>
                 <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                         mnemonicParsing="false" onAction="#makeRemoteDir" text="创建目录" HBox.hgrow="NEVER">
@@ -84,7 +84,7 @@
                 </Button>
             </HBox>
             <ListView fx:id="remoteFiles" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                      minHeight="0.0" minWidth="0.0" VBox.vgrow="ALWAYS">
+                      minHeight="0.0" minWidth="0.0" VBox.vgrow="ALWAYS" onMouseClicked="#set2RemotePath">
                 <VBox.margin>
                     <Insets right="10.0"/>
                 </VBox.margin>

@@ -67,9 +67,18 @@ public class FtpInfo implements BaseBean, Serializable {
      */
     private Boolean select;
 
+    /**
+     * 是否在使用时才开始连接ftp，而不是初始化就连接，默认：true
+     */
+    private Boolean lazyConnect;
+
+    public boolean isInitConnect() {
+        return Boolean.FALSE.equals(lazyConnect);
+    }
+
     @Generated
     public String getHost() {
-        return StrUtil.isEmpty(host) ? "127.0.0.1" : host;
+        return StrUtil.emptyToDefault(host, "127.0.0.1");
     }
 
     @Generated

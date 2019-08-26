@@ -2,6 +2,7 @@ package org.code4everything.wetool.plugin.ftp;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.ftp.Ftp;
 import javafx.scene.control.ComboBox;
 import lombok.experimental.UtilityClass;
@@ -18,10 +19,7 @@ import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -40,9 +38,10 @@ public class FtpManager {
 
     private static final int RETRIES = 3;
 
-    public static boolean delete(ComboBox<String> ftpName, String file) {
+    public static boolean delete(ComboBox<String> ftpName, String file, boolean isDir) {
         try {
-            if (getFtp(ftpName).delFile(file)) {
+            boolean res = isDir ? getFtp(ftpName).delDir(file) : getFtp(ftpName).delFile(file);
+            if (res) {
                 log.info("delete file '{}' success", file);
                 return true;
             } else {
@@ -101,13 +100,22 @@ public class FtpManager {
     }
 
     public static List<String> listChildren(ComboBox<String> ftpName, String path, boolean containsFile) {
+        return listChildren(ftpName, path, containsFile, null);
+    }
+
+    public static List<String> listChildren(ComboBox<String> ftpName, String path, boolean containsFile, Map<String,
+            FTPFile> map) {
         FTPFile[] ftpFiles = getFtp(ftpName).lsFiles(path);
         List<String> dirs = new ArrayList<>();
         // 忽略 . 和 ..
         for (int i = 2; i < ftpFiles.length; i++) {
             FTPFile ftpFile = ftpFiles[i];
+            String file = path + ftpFile.getName();
             if (containsFile || ftpFile.isDirectory()) {
-                dirs.add(path + ftpFile.getName());
+                dirs.add(file);
+            }
+            if (ObjectUtil.isNotNull(map)) {
+                map.put(file, ftpFile);
             }
         }
         log.info("list file from ftp path: {}, result: {}", path, dirs);

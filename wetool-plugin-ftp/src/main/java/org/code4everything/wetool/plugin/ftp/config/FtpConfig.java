@@ -24,6 +24,9 @@ public class FtpConfig implements BaseBean, Serializable {
 
     private static final long serialVersionUID = 6979297033248219537L;
 
+    /**
+     * 初始化时是否打开选项卡，默认：false
+     */
     private Boolean showOnStartup;
 
     private List<FtpInfo> ftps;

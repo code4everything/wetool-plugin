@@ -2,6 +2,7 @@ package org.code4everything.wetool.plugin.ftp.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -10,6 +11,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.net.ftp.FTPFile;
 import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.wetool.plugin.ftp.FtpManager;
 import org.code4everything.wetool.plugin.ftp.constant.FtpConsts;
@@ -20,9 +22,7 @@ import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author pantao
@@ -30,6 +30,8 @@ import java.util.Objects;
  */
 @Slf4j
 public class FtpController implements BaseViewController {
+
+    private final Map<String, FTPFile> ftpFileMap = new HashMap<>(64);
 
     @FXML
     public TextField localPath;
@@ -102,7 +104,8 @@ public class FtpController implements BaseViewController {
 
     public void makeLocalDir() {
         if (StrUtil.isNotEmpty(localPath.getText())) {
-            FileUtil.mkdir(localPath.getText());
+            File path = FileUtil.mkdir(localPath.getText());
+            listLocalFiles(path.getParentFile());
         }
     }
 
@@ -111,12 +114,19 @@ public class FtpController implements BaseViewController {
     }
 
     public void deleteLocalFile() {
-        getSelectedLocalFiles(false).removeIf(File::delete);
+        getSelectedLocalFiles(false).forEach(file -> {
+            if (file.delete()) {
+                localFiles.getItems().remove(file);
+            }
+        });
+        listLocalFiles(new File(getLocalPath()));
     }
 
     public void makeRemoteDir() {
-        if (StrUtil.isNotEmpty(remotePath.getText())) {
+        String path = remotePath.getText();
+        if (StrUtil.isNotEmpty(path) && !StringConsts.Sign.SLASH.equals(path)) {
             FtpManager.getFtp(ftpName).mkDirs(remotePath.getText());
+            listRemoteFiles(parseParentPath(path));
         }
     }
 
@@ -125,7 +135,13 @@ public class FtpController implements BaseViewController {
     }
 
     public void deleteRemoteFile() {
-        getSelectedRemoteFiles(false).removeIf(file -> FtpManager.delete(ftpName, file));
+        getSelectedRemoteFiles(false).forEach(file -> {
+            if (FtpManager.delete(ftpName, file, ftpFileMap.get(file).isDirectory())) {
+                remoteFiles.getItems().remove(file);
+                ftpFileMap.remove(file);
+            }
+        });
+        listRemoteFiles(getRemotePath());
     }
 
     public void listLocalFiles(KeyEvent keyEvent) {
@@ -134,6 +150,74 @@ public class FtpController implements BaseViewController {
 
     public void upload() {
         FtpManager.upload(ftpName, getRemotePath(), getSelectedLocalFiles(true));
+    }
+
+    public void set2LocalPath(MouseEvent mouseEvent) {
+        FxUtils.doubleClicked(mouseEvent, () -> {
+            File file = getSelectedLocalFiles(false).get(0);
+            if (file.isDirectory()) {
+                localPath.setText(file.getAbsolutePath());
+                listLocalFiles(file);
+            }
+        });
+    }
+
+    public void listRemoteFiles(KeyEvent keyEvent) {
+        FxUtils.enterDo(keyEvent, () -> listRemoteFiles(getRemotePath()));
+    }
+
+    public void set2RemotePath(MouseEvent event) {
+        FxUtils.doubleClicked(event, () -> {
+            String path = getSelectedRemoteFiles(false).get(0);
+            if (ftpFileMap.get(path).isDirectory()) {
+                remotePath.setText(path);
+                listRemoteFiles(path);
+            }
+        });
+    }
+
+    private void listRemoteFiles(String path) {
+        if (ftpFileMap.containsKey(path) && !ftpFileMap.get(path).isDirectory()) {
+            // 如果已知路径不是文件夹，则不继续
+            return;
+        }
+        String slash = StringConsts.Sign.SLASH;
+        remoteFiles.getItems().clear();
+        ftpFileMap.clear();
+        if (!slash.equals(path)) {
+            remoteFiles.getItems().add(parseParentPath(path));
+        }
+        remoteFiles.getItems().add(setType2Folder(path));
+        path = StrUtil.addSuffixIfNot(path, slash);
+        remoteFiles.getItems().addAll(FtpManager.listChildren(ftpName, path, true, ftpFileMap));
+    }
+
+    private String parseParentPath(String remotePath) {
+        String slash = StringConsts.Sign.SLASH;
+        String parent = StrUtil.addPrefixIfNot(StrUtil.removeSuffix(remotePath, slash), slash);
+        int idx = parent.lastIndexOf(StringConsts.Sign.SLASH);
+        parent = StrUtil.emptyToDefault(parent.substring(0, idx), slash);
+        return setType2Folder(parent);
+    }
+
+    private String setType2Folder(String path) {
+        if (!ftpFileMap.containsKey(path)) {
+            FTPFile ftpFile = new FTPFile();
+            ftpFile.setType(1);
+            ftpFileMap.put(path, ftpFile);
+        }
+        return path;
+    }
+
+    private void listLocalFiles(File path) {
+        if (path.exists() && path.isDirectory()) {
+            localFiles.getItems().clear();
+            if (ObjectUtil.isNotNull(path.getParentFile())) {
+                localFiles.getItems().add(path.getParentFile());
+            }
+            localFiles.getItems().add(path);
+            localFiles.getItems().addAll(FileUtil.ls(path.getAbsolutePath()));
+        }
     }
 
     private List<String> getSelectedRemoteFiles(boolean addTypedIfEmpty) {
@@ -179,23 +263,5 @@ public class FtpController implements BaseViewController {
             }
             statusLabel.setText(StrUtil.format(status, params));
         });
-    }
-
-    public void set2LocalPath(MouseEvent mouseEvent) {
-        FxUtils.doubleClicked(mouseEvent, () -> {
-            File file = getSelectedLocalFiles(false).get(0);
-            if (file.isDirectory()) {
-                localPath.setText(file.getAbsolutePath());
-                listLocalFiles(file);
-            }
-        });
-    }
-
-    private void listLocalFiles(File path) {
-        if (path.exists() && path.isDirectory()) {
-            localFiles.getItems().clear();
-            localFiles.getItems().add(path);
-            localFiles.getItems().addAll(FileUtil.ls(path.getAbsolutePath()));
-        }
     }
 }
