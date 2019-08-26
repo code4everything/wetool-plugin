@@ -145,7 +145,7 @@ public class WeConfig implements BaseBean, Serializable {
 
     @Generated
     public String getFileChooserInitDir() {
-        return StrUtil.isEmpty(fileChooserInitDir) ? FileUtil.getUserHomePath() : fileChooserInitDir;
+        return StrUtil.emptyToDefault(fileChooserInitDir, FileUtil.getUserHomePath());
     }
 
     public void appendClipboardHistory(Date date, String content) {

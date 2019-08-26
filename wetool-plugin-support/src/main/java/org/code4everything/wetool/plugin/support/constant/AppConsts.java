@@ -28,6 +28,6 @@ public class AppConsts {
     @UtilityClass
     public static class Title {
 
-        public static final String APP_TITLE = "工具集";
+        public static final String APP_TITLE = "WeTool";
     }
 }
