@@ -69,7 +69,7 @@
                     <Insets/>
                 </VBox.margin>
                 <ComboBox fx:id="ftpName" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                          promptText="选择FTP服务器">
+                          promptText="选择FTP服务器" prefWidth="100">
                     <HBox.margin>
                         <Insets right="10.0"/>
                     </HBox.margin>

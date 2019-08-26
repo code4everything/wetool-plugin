@@ -27,8 +27,9 @@ public class FtpTest {
         ftpInfo.setPort(21);
         ftpInfo.setUsername("root");
         ftpInfo.setPassword("root");
-        ftpInfo.setReconnect(false);
+        ftpInfo.setReconnect(true);
         ftpInfo.setSelect(true);
+        ftpInfo.setLazyConnect(true);
 
         ftpConfig.addFtp(ftpInfo);
         json.put(FtpConfig.KEY_CAMEL, ftpConfig);

@@ -114,11 +114,7 @@ public class FtpController implements BaseViewController {
     }
 
     public void deleteLocalFile() {
-        getSelectedLocalFiles(false).forEach(file -> {
-            if (file.delete()) {
-                localFiles.getItems().remove(file);
-            }
-        });
+        getSelectedLocalFiles(false).forEach(File::delete);
         listLocalFiles(new File(getLocalPath()));
     }
 
@@ -135,12 +131,8 @@ public class FtpController implements BaseViewController {
     }
 
     public void deleteRemoteFile() {
-        getSelectedRemoteFiles(false).forEach(file -> {
-            if (FtpManager.delete(ftpName, file, ftpFileMap.get(file).isDirectory())) {
-                remoteFiles.getItems().remove(file);
-                ftpFileMap.remove(file);
-            }
-        });
+        List<String> files = getSelectedRemoteFiles(false);
+        files.forEach(file -> FtpManager.delete(ftpName, file, ftpFileMap.get(file).isDirectory()));
         listRemoteFiles(getRemotePath());
     }
 
