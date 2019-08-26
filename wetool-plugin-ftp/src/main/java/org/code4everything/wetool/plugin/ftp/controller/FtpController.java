@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPFile;
 import org.code4everything.boot.base.constant.StringConsts;
@@ -135,7 +136,14 @@ public class FtpController implements BaseViewController {
     }
 
     public void download() {
-        FtpManager.download(ftpName, getSelectedRemoteFiles(true), new File(getLocalPath()));
+        List<String> files = getSelectedRemoteFiles(true);
+        List<Pair<String, Boolean>> downloadFiles = new ArrayList<>(files.size());
+        files.forEach(file -> {
+            boolean isFolder = ftpFileMap.containsKey(file) && ftpFileMap.get(file).isDirectory();
+            downloadFiles.add(new Pair<>(file, isFolder));
+
+        });
+        FtpManager.download(ftpName, downloadFiles, new File(getLocalPath()));
     }
 
     public void deleteRemoteFile() {
@@ -211,7 +219,7 @@ public class FtpController implements BaseViewController {
         if (!slash.equals(path)) {
             remoteFiles.getItems().add(parseParentPath(path));
         }
-        remoteFiles.getItems().add(path);
+        remoteFiles.getItems().add(setType2Folder(path));
         path = StrUtil.addSuffixIfNot(path, slash);
         remoteFiles.getItems().addAll(FtpManager.listChildren(ftpName, path, true, ftpFileMap));
     }
@@ -220,7 +228,15 @@ public class FtpController implements BaseViewController {
         String slash = StringConsts.Sign.SLASH;
         String parent = StrUtil.addPrefixIfNot(StrUtil.removeSuffix(remotePath, slash), slash);
         int idx = parent.lastIndexOf(StringConsts.Sign.SLASH);
-        return StrUtil.emptyToDefault(parent.substring(0, idx), slash);
+        parent = StrUtil.emptyToDefault(parent.substring(0, idx), slash);
+        return setType2Folder(parent);
+    }
+
+    private String setType2Folder(String path) {
+        if (!ftpFileMap.containsKey(path)) {
+            ftpFileMap.put(path, defaultFtpFile);
+        }
+        return path;
     }
 
     private void listLocalFiles(File path) {

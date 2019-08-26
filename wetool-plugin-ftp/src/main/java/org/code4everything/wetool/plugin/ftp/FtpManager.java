@@ -2,11 +2,15 @@ package org.code4everything.wetool.plugin.ftp;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.ftp.Ftp;
 import javafx.scene.control.ComboBox;
+import javafx.util.Pair;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.code4everything.boot.base.function.BooleanFunction;
 import org.code4everything.wetool.plugin.ftp.config.FtpInfo;
@@ -64,7 +68,7 @@ public class FtpManager {
         });
     }
 
-    public static void download(ComboBox<String> ftpName, List<String> files, File path) {
+    public static void download(ComboBox<String> ftpName, List<Pair<String, Boolean>> files, File path) {
         LastUsedInfo.getInstance().setLocalDir(path.getAbsolutePath());
         boolean shouldExe = DOWNLOAD_QUEUE.isEmpty();
         String name = ftpName.getSelectionModel().getSelectedItem();
@@ -72,7 +76,7 @@ public class FtpManager {
             // 锁住队列，并将文件添加队列
             synchronized (DOWNLOAD_QUEUE) {
                 shouldExe = DOWNLOAD_QUEUE.isEmpty();
-                files.forEach(file -> DOWNLOAD_QUEUE.offer(new FtpDownload(name, file, path)));
+                files.forEach(f -> DOWNLOAD_QUEUE.offer(new FtpDownload(name, f.getKey(), f.getValue(), path)));
             }
         }
         FtpController controller = BeanFactory.get(FtpController.class);
@@ -81,17 +85,24 @@ public class FtpManager {
             ThreadUtil.execute(() -> {
                 while (!DOWNLOAD_QUEUE.isEmpty()) {
                     FtpDownload ftp = DOWNLOAD_QUEUE.poll();
-                    String absPath = path.getAbsolutePath();
-                    if (getFtp(ftp.getName()).exist(ftp.getFile())) {
-                        controller.updateDownloadStatus("download '{}' to '{}'", ftp.getFile(), absPath);
-                        try {
-                            getFtp(ftp.getName()).download(ftp.getFile(), path);
-                            log.info("'{}' download to '{}' success", ftp.getFile(), absPath);
-                        } catch (Exception e) {
-                            log.error("download failed", e);
-                        }
-                    } else {
+                    String absPath = ftp.getPath().getAbsolutePath();
+                    if (!getFtp(ftp.getName()).exist(ftp.getFile())) {
                         log.error("download to path[{}] failed: file '{}' not exists", absPath, ftp.getFile());
+                        continue;
+                    }
+                    if (ftp.getDirectory()) {
+                        FTPFile[] ftpFiles = getFtp(ftp.getName()).lsFiles(ftp.getFile());
+                        for (int i = 2; i < ftpFiles.length; i++) {
+                            DOWNLOAD_QUEUE.offer(FtpDownload.childDownload(ftp, ftpFiles[i]));
+                        }
+                        continue;
+                    }
+                    controller.updateDownloadStatus("download '{}' to '{}'", ftp.getFile(), absPath);
+                    try {
+                        getFtp(ftp.getName()).download(ftp.getFile(), ftp.getPath());
+                        log.info("'{}' download to '{}' success", ftp.getFile(), absPath);
+                    } catch (Exception e) {
+                        log.error("download failed", e);
                     }
                 }
                 controller.updateDownloadStatus("");
@@ -140,20 +151,30 @@ public class FtpManager {
                 while (!UPLOAD_QUEUE.isEmpty()) {
                     FtpUpload ftp = UPLOAD_QUEUE.poll();
                     String absPath = ftp.getFile().getAbsolutePath();
-                    if (ftp.getFile().exists()) {
-                        controller.updateUploadStatus("upload '{}' to '{}'", absPath, path);
-                        try {
-                            boolean res = getFtp(ftp.getName()).upload(ftp.getPath(), ftp.getFile());
-                            if (res) {
-                                log.info("'{}' upload to '{}' success", absPath, path);
-                            } else {
-                                log.error("'{}' upload to '{}' failed", absPath, path);
-                            }
-                        } catch (Exception e) {
-                            log.error("upload failed", e);
-                        }
-                    } else {
+                    if (!ftp.getFile().exists()) {
                         log.error("upload to path[{}] failed: file '{}' not exists", ftp.getPath(), absPath);
+                        continue;
+                    }
+                    if (ftp.getFile().isDirectory()) {
+                        String folder = StrUtil.addSuffixIfNot(ftp.getPath(), "/") + ftp.getFile().getName();
+                        File[] children = ftp.getFile().listFiles();
+                        if (ArrayUtil.isNotEmpty(children)) {
+                            for (File file : children) {
+                                UPLOAD_QUEUE.offer(new FtpUpload(ftp.getName(), folder, file));
+                            }
+                        }
+                        continue;
+                    }
+                    controller.updateUploadStatus("upload '{}' to '{}'", absPath, ftp.getPath());
+                    try {
+                        boolean res = getFtp(ftp.getName()).upload(ftp.getPath(), ftp.getFile());
+                        if (res) {
+                            log.info("'{}' upload to '{}' success", absPath, ftp.getPath());
+                        } else {
+                            log.error("'{}' upload to '{}' failed", absPath, ftp.getPath());
+                        }
+                    } catch (Exception e) {
+                        log.error("upload failed", e);
                     }
                 }
                 controller.updateUploadStatus("");
@@ -218,6 +239,10 @@ public class FtpManager {
             }
             BeanFactory.register(generateFtpKey(name), ftp);
             log.info("ftp[{}] connected", name);
+        }
+        FTPClient client = ftp.getClient();
+        if (!client.isConnected() || !client.isAvailable()) {
+            ftp.init();
         }
         USED_INFO.setFtpName(name);
         return ftp;
