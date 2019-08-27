@@ -3,6 +3,7 @@ package org.code4everything.wetool.plugin.support.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.base.Preconditions;
@@ -56,7 +57,14 @@ public class FxUtils {
      * 插件请调用下面的 {@link #openTab(Node, String, String)} 方法，而不是调用此方法
      */
     public static void openTab(Node tabContent, String tabName) {
-        openTab(tabContent, AppConsts.Title.APP_TITLE, tabName);
+        openTab(tabContent, AppConsts.Title.APP_TITLE, tabName, null);
+    }
+
+    /**
+     * 插件请调用下面的 {@link #openTab(Node, String, String, Callable)} 方法，而不是调用此方法
+     */
+    public static void openTab(Node tabContent, String tabName, Callable<Tab> callable) {
+        openTab(tabContent, AppConsts.Title.APP_TITLE, tabName, callable);
     }
 
     /**
@@ -67,6 +75,18 @@ public class FxUtils {
      * @param tabName 自定义tabName，即选项卡标题
      */
     public static void openTab(Node tabContent, String tabId, String tabName) {
+        openTab(tabContent, tabId, tabName, null);
+    }
+
+    /**
+     * 打开选项卡
+     *
+     * @param tabContent 视图内容
+     * @param tabId 自定义tabId，防止与其他插件名称冲突
+     * @param tabName 自定义tabName，即选项卡标题
+     * @param callable tab被添加后的回调函数，可自定义一些属性，添加一些事件监听等，可为Null
+     */
+    public static void openTab(Node tabContent, String tabId, String tabName, Callable<Tab> callable) {
         // 校验参数
         Preconditions.checkNotNull(tabContent, "tab content node must not null");
         Preconditions.checkArgument(StrUtil.isNotEmpty(tabId), "tab id must not empty, please set a custom unique id");
@@ -86,6 +106,9 @@ public class FxUtils {
             }
         }
 
+        if (ObjectUtil.isNotNull(callable)) {
+            callable.call(tab);
+        }
         tabPane.getTabs().add(tab);
         tabPane.getSelectionModel().select(tabPane.getTabs().size() - 1);
     }
