@@ -17,6 +17,37 @@
 - 安装有Maven、Git开发环境（必须）
 - 安装了SceneBuilder 2.0以上版本（建议）
 
+### Maven
+
+个人Maven仓库
+
+``` xml
+<repository>
+    <id>ease-maven</id>
+    <url>http://maven.code4everything.org/repository</url>
+</repository>
+```
+
+插件基础支持库
+
+``` xml
+<dependency>
+    <groupId>org.code4everything</groupId>
+    <artifactId>wetool-plugin-support</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+插件测试支持库
+
+``` xml
+<dependency>
+    <groupId>org.code4everything</groupId>
+    <artifactId>wetool-plugin-test</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
 ### 插件开发
 
 - [快速开始](quick_start.md)
