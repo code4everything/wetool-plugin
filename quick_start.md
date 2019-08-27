@@ -214,3 +214,6 @@
    > 运行`SampleTest`类即可调试运行
 
 8. 发布，使用`mvn package`打包后，将`jar`包拖入您`wetool.jar`的同级目录的`plugins`目录下即可
+
+
+> 本示例完整代码请参考：[wetool-plugin-sample](/wetool-plugin-sample)

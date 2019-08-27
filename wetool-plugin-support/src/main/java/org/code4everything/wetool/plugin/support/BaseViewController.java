@@ -8,6 +8,8 @@ import java.io.File;
 import java.util.List;
 
 /**
+ * 实现本接口的选项卡视图控制器，同时还需注册到BeanFactory，本接口方法才会生效
+ *
  * @author pantao
  * @since 2019/7/4
  **/

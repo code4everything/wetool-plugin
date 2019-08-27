@@ -26,14 +26,37 @@ import java.util.function.Consumer;
 @UtilityClass
 public class FxDialogs {
 
+    /**
+     * 弹出对话框
+     *
+     * @param header 头部，可为Null
+     * @param dialogPane 对话框的视图内容
+     */
     public static void showDialog(String header, Node dialogPane) {
         showDialog(header, dialogPane, null, null);
     }
 
+    /**
+     * 弹出对话框
+     *
+     * @param header 头部，可为Null
+     * @param dialogPane 对话框的视图内容
+     * @param winnable 对话框的结果处理回调，可为Null
+     * @param <R> 结果类型
+     */
     public static <R> void showDialog(String header, Node dialogPane, DialogWinnable<R> winnable) {
         showDialog(header, dialogPane, winnable, null);
     }
 
+    /**
+     * 弹出对话框
+     *
+     * @param header 头部，可为Null
+     * @param dialogPane 对话框的视图内容
+     * @param winnable 对话框的结果处理回调，可为Null
+     * @param defaultR 默认结果，可为Null
+     * @param <R> 结果类型
+     */
     public static <R> void showDialog(String header, Node dialogPane, DialogWinnable<R> winnable, R defaultR) {
         Platform.runLater(() -> {
             Dialog<R> dialog = new Dialog<>();
@@ -63,6 +86,15 @@ public class FxDialogs {
         });
     }
 
+    /**
+     * 弹出Choice选择框
+     *
+     * @param header 头部，可为Null
+     * @param content 提示内容，可为Null
+     * @param consumer，处理结果的回调
+     * @param items Choice可有的选项
+     * @param <T> 结果类型
+     */
     public static <T> void showChoice(String header, String content, Consumer<T> consumer,
                                       Collection<? extends T> items) {
         Platform.runLater(() -> {
@@ -79,6 +111,13 @@ public class FxDialogs {
         });
     }
 
+    /**
+     * 弹出文本输入框
+     *
+     * @param header 头部，可为Null
+     * @param content 提示内容，可为Null
+     * @param consumer 处理结果的回调
+     */
     public static void showTextInput(String header, String content, Consumer<String> consumer) {
         Platform.runLater(() -> {
             TextInputDialog dialog = new TextInputDialog();

@@ -6,8 +6,8 @@
 ### 仓库说明
 
 - 插件基础支持库：[wetool-plugin-support](/wetool-plugin-support)
-- 插件测试支持库：[wetool-plugin-test](/wetool-plugin-test)
-- 插件开发实例：[wetool-plugin-sample](/wetool-plugin-sample)
+- 插件开发测试支持库：[wetool-plugin-test](/wetool-plugin-test)
+- 插件开发示例：[wetool-plugin-sample](/wetool-plugin-sample)
 
 ### 开发须知
 
@@ -34,3 +34,5 @@
 ### 参与贡献
 
 欢迎提Issue、Pull Request，参与开发，如果觉得项目还不错，请Star一下哦~
+
+> 使用插件前请确保已安装[`wetool.jar`](https://gitee.com/code4everything/wetool)

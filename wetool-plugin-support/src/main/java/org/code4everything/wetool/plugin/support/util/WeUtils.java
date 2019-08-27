@@ -29,10 +29,19 @@ public class WeUtils {
 
     private static int compressLen = 0;
 
+    /**
+     * 获取用户的配置
+     */
     public static WeConfig getConfig() {
         return BeanFactory.get(WeConfig.class);
     }
 
+    /**
+     * 检测版本是否要求
+     *
+     * @param currVer 当前版本
+     * @param reqVer 要求的最低版本
+     */
     public static boolean isRequiredVersion(String currVer, String reqVer) {
         String[] currArr = currVer.split("\\.");
         String[] reqArr = reqVer.split("\\.");
@@ -50,6 +59,9 @@ public class WeUtils {
         return true;
     }
 
+    /**
+     * 压缩字符串
+     */
     public static String compressString(String string) {
         string = string.trim();
         if (string.length() > getCompressLen()) {
@@ -58,6 +70,12 @@ public class WeUtils {
         return string.replaceAll("(\\s{2,}|\r\n|\r|\n)", " ");
     }
 
+    /**
+     * 将目标文件列表中的文件以递归的方式添加到源文件列表，添加过程将使用用户配置过滤规则来过滤文件
+     *
+     * @param src 源文件列表
+     * @param adds 目标文件列表
+     */
     public static void addFiles(List<File> src, List<File> adds) {
         if (CollUtil.isEmpty(adds)) {
             return;
@@ -77,10 +95,18 @@ public class WeUtils {
         }
     }
 
+    /**
+     * 如果文件是文件夹，则直接返回其路径，否则返回其上级节点路径
+     */
     public static String parseFolder(File file) {
         return file.isDirectory() ? file.getAbsolutePath() : file.getParent();
     }
 
+    /**
+     * 替换变量%(TIME|time)%和"%(DATE|date)%"
+     *
+     * @param str 需要替换的字符串
+     */
     public static String replaceVariable(String str) {
         str = StrUtil.nullToEmpty(str);
         if (StrUtil.isNotEmpty(str)) {
@@ -91,6 +117,12 @@ public class WeUtils {
         return str;
     }
 
+    /**
+     * 字符串转整型
+     *
+     * @param num 字符串
+     * @param minVal 最小值
+     */
     public static int parseInt(String num, int minVal) {
         int n = 0;
         if (NumberUtil.isNumber(num)) {
@@ -99,6 +131,9 @@ public class WeUtils {
         return Math.max(n, minVal);
     }
 
+    /**
+     * 退出系统
+     */
     public static void exitSystem() {
         log.info("wetool exited");
         System.exit(IntegerConsts.ZERO);
