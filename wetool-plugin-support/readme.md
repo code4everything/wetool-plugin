@@ -23,13 +23,13 @@ BeanFactory.registerView(String, String, BaseViewController);
 BeanFactory.register(String, Object);
 ```
 
-[更多方法请参考](/src/main/java/org/code4everything/wetool/plugin/support/factory/BeanFactory.java)
+[更多方法请参考](src/main/java/org/code4everything/wetool/plugin/support/factory/BeanFactory.java)
 
 ### 仅适用本插件库的特定工具类
 
-[WeUtils](/src/main/java/org/code4everything/wetool/plugin/support/util/WeUtils.java)
+[WeUtils](src/main/java/org/code4everything/wetool/plugin/support/util/WeUtils.java)
 
-[FxUtils](/src/main/java/org/code4everything/wetool/plugin/support/util/FxUtils.java)
+[FxUtils](src/main/java/org/code4everything/wetool/plugin/support/util/FxUtils.java)
 
 ``` java
 // 打开选项卡，参数说明：视图内容，自定义tabId，自定义tabName
@@ -48,7 +48,7 @@ FxUtils.openFile(File);
 FxUtils.loadFxml(WePluginSupportable, String);
 ```
   
-[FxDialogs](/src/main/java/org/code4everything/wetool/plugin/support/util/FxDialogs.java)
+[FxDialogs](src/main/java/org/code4everything/wetool/plugin/support/util/FxDialogs.java)
 
 ``` java
 FxDialogs.showDialog

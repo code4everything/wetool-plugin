@@ -5,9 +5,9 @@
 
 ### 仓库说明
 
-- 插件基础支持库：[wetool-plugin-support](/wetool-plugin-support)
-- 插件开发测试支持库：[wetool-plugin-test](/wetool-plugin-test)
-- 插件开发示例：[wetool-plugin-sample](/wetool-plugin-sample)
+- 插件基础支持库：[wetool-plugin-support](wetool-plugin-support)
+- 插件开发测试支持库：[wetool-plugin-test](wetool-plugin-test)
+- 插件开发示例：[wetool-plugin-sample](wetool-plugin-sample)
 
 ### 开发须知
 
@@ -19,17 +19,17 @@
 
 ### 插件开发
 
-- [快速开始](/quick_start.md)
+- [快速开始](quick_start.md)
 
-- [参考文档](/wetool-plugin-support/readme.md)
+- [参考文档](wetool-plugin-support/readme.md)
 
-- [插件提交](/wetool-plugin-repository/readme.md)
+- [插件提交](wetool-plugin-repository/readme.md)
 
 ### 拿来即用
 
-- [插件仓库](/wetool-plugin-repository)
+- [插件仓库](wetool-plugin-repository)
 
-- [简易FTP客户端](/wetool-plugin-ftp)
+- [简易FTP客户端](wetool-plugin-ftp)
 
 ### 参与贡献
 

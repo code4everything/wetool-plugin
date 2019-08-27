@@ -187,7 +187,7 @@
     }
     ```
 
-6. 在`resources`目录下新建`plugin.json`文件，并根据[`WePluginInfo`](/wetool-plugin-support/src/main/java/org/code4everything/wetool/plugin/support/config/WePluginInfo.java)类中的属性进行配置，
+6. 在`resources`目录下新建`plugin.json`文件，并根据[`WePluginInfo`](wetool-plugin-support/src/main/java/org/code4everything/wetool/plugin/support/config/WePluginInfo.java)类中的属性进行配置，
 例如：
 
     ``` json
@@ -216,4 +216,4 @@
 8. 发布，使用`mvn package`打包后，将`jar`包拖入您`wetool.jar`的同级目录的`plugins`目录下即可
 
 
-> 本示例完整代码请参考：[wetool-plugin-sample](/wetool-plugin-sample)
+> 本示例完整代码请参考：[wetool-plugin-sample](wetool-plugin-sample)
