@@ -19,7 +19,7 @@ public interface WePluginSupportable {
     default boolean initialize() {return true;}
 
     /**
-     * 注册插件到主界面菜单
+     * 注册插件到主界面菜单，可返回NULL，可不实现此方法
      *
      * @return 返回的 {@link MenuItem} 将被添加到主界面的插件菜单
      *
@@ -28,7 +28,7 @@ public interface WePluginSupportable {
     default MenuItem registerBarMenu() {return null;}
 
     /**
-     * 注册插件到系统托盘菜单
+     * 注册插件到系统托盘菜单，可返回NULL，可不实现此方法
      *
      * @return 返回的 {@link MenuItem} 将被添加到系统托盘的插件菜单
      *

@@ -13,7 +13,7 @@ import java.io.Serializable;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = "supportedClass")
+@EqualsAndHashCode(exclude = {"supportedClass", "requireWetoolVersion"})
 public class WePluginInfo implements BaseBean, Serializable {
 
     private static final long serialVersionUID = -8103599072656856290L;
@@ -51,7 +51,7 @@ public class WePluginInfo implements BaseBean, Serializable {
     private String requireWetoolVersion;
 
     /**
-     * 实现了 {@link org.code4everything.wetool.plugin.support.WePluginSupportable} 的类
+     * 实现了 {@link org.code4everything.wetool.plugin.support.WePluginSupportable} 的类全名，例如：org.code4everything.wetool.plugin.sample.WetoolSupporter
      *
      * @since 1.0.0
      */

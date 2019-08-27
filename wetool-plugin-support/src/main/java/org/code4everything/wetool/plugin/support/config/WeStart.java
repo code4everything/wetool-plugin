@@ -29,12 +29,12 @@ public class WeStart implements BaseBean, Serializable {
     private String alias;
 
     /**
-     * 不包含子菜单时：快速打开文件的路径
+     * 文件的路径，不包含子菜单时此选项可生效
      */
     private String location;
 
     /**
-     * 子菜单
+     * 子菜单，如配置了此属性，说明当前的菜单是一个父级菜单
      */
     private List<WeStart> subStarts;
 

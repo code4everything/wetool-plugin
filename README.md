@@ -1,37 +1,36 @@
-# wetool-plugin
+## WeTool插件支持
 
-#### 介绍
-plugin for wetool
+这是一个WeTool插件支持库，开发极简单（前提你会JavaFX），简单几步即可实现插件的开发，当然正是因为简单，也因为本人水平极为有限，
+所以插件库可能还存在诸多不完善的地方，如看到还望告知，能完善那么一星半点的不足也甚好，在此谢过大家
 
-#### 软件架构
-软件架构说明
+### 仓库说明
 
+- 插件基础支持库：[wetool-plugin-support](/wetool-plugin-support)
+- 插件测试支持库：[wetool-plugin-test](/wetool-plugin-test)
+- 插件开发实例：[wetool-plugin-sample](/wetool-plugin-sample)
 
-#### 安装教程
+### 开发须知
 
-1. xxxx
-2. xxxx
-3. xxxx
+- 安装有Java8及以上版本（必须）
+- 了解JavaFX图形化技术（必须）
+- 安装有Lombok工具（必须）
+- 安装有Maven、Git开发环境（必须）
+- 安装了SceneBuilder 2.0以上版本（建议）
 
-#### 使用说明
+### 插件开发
 
-1. xxxx
-2. xxxx
-3. xxxx
+- [快速开始](/quick_start.md)
 
-#### 参与贡献
+- [参考文档](/wetool-plugin-support/readme.md)
 
-1. Fork 本仓库
-2. 新建 Feat_xxx 分支
-3. 提交代码
-4. 新建 Pull Request
+- [插件提交](/wetool-plugin-repository/readme.md)
 
+### 拿来即用
 
-#### 码云特技
+- [插件仓库](/wetool-plugin-repository)
 
-1. 使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2. 码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3. 你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4. [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5. 码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6. 码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+- [简易FTP客户端](/wetool-plugin-ftp)
+
+### 参与贡献
+
+欢迎提Issue、Pull Request，参与开发，如果觉得项目还不错，请Star一下哦~

@@ -31,15 +31,17 @@ public class WeConfig implements BaseBean, Serializable {
 
     private static final long serialVersionUID = 6105929832284264685L;
 
-    /**
-     * 当前读取的配置文件路径
-     */
     private String currentPath;
 
+    // start------------------------------------------------------------------------------------------------------------
+
+    /**
+     * 初始化参数
+     */
     private WeInitialize initialize;
 
     /**
-     * 剪贴板列表长度
+     * 剪贴板历史记录的条数
      */
     private Integer clipboardSize;
 
@@ -49,7 +51,7 @@ public class WeConfig implements BaseBean, Serializable {
     private Boolean autoWrap;
 
     /**
-     * 文件过滤
+     * 文件过滤（正则表达式）
      */
     private String fileFilter;
 
@@ -64,14 +66,16 @@ public class WeConfig implements BaseBean, Serializable {
     private Integer logCompressLen;
 
     /**
-     * 快速打开
+     * 可快捷打开文件的一系列菜单
      */
     private List<WeStart> quickStarts;
 
     /**
-     * 此集合内的插件将不会加载
+     * 禁止加载的插件，禁止的插件只需配置插件的作者、名称、版本即可（这些信息可在程序刚启动时的日志中看到）
      */
     private Set<WePluginInfo> pluginDisables;
+
+    // end--------------------------------------------------------------------------------------------------------------
 
     private transient LinkedList<Pair<Date, String>> clipboardHistory = new LinkedList<>();
 
