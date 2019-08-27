@@ -6,6 +6,7 @@
 /**/target/
 /**/*.iml
 /**/dependency-reduced-pom.xml
+/wetool-plugin-qiniu/qiniu-config.json
 
 # User-specific stuff
 .idea/**/workspace.xml
