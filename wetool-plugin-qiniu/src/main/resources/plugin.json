@@ -1,0 +1,7 @@
+{
+    "author": "ease",
+    "name": "qiniu",
+    "version": "1.0.0",
+    "requireWetoolVersion": "1.0.0",
+    "supportedClass": "org.code4everything.wetool.plugin.qiniu.WetoolSupporter"
+}

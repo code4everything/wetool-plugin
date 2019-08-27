@@ -193,8 +193,8 @@
     ``` json
     {
         "author": "ease",
-        "version": "1.0.0",
         "name": "sample",
+        "version": "1.0.0",
         "requireWetoolVersion": "1.0.0",
         "supportedClass": "org.code4everything.wetool.plugin.sample.WetoolSupporter"
     }
