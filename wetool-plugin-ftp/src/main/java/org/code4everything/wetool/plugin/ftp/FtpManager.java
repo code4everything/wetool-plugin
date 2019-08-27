@@ -1,6 +1,7 @@
 package org.code4everything.wetool.plugin.ftp;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -10,8 +11,8 @@ import javafx.scene.control.ComboBox;
 import javafx.util.Pair;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.boot.base.function.BooleanFunction;
 import org.code4everything.wetool.plugin.ftp.config.FtpInfo;
 import org.code4everything.wetool.plugin.ftp.constant.FtpConsts;
@@ -91,9 +92,21 @@ public class FtpManager {
                         continue;
                     }
                     if (ftp.getDirectory()) {
+                        // 本地保存路径
+                        File newPath;
+                        if (StrUtil.isEmpty(ftp.getFile()) || StringConsts.Sign.SLASH.equals(ftp.getFile())) {
+                            newPath = ftp.getPath();
+                        } else {
+                            // 解析parent的文件名，获取新的保存路径
+                            String parentFolder = ftp.getPath().getAbsolutePath() + File.separator;
+                            newPath = new File(parentFolder + FileUtil.getName(ftp.getFile()));
+                            newPath.mkdirs();
+                        }
                         FTPFile[] ftpFiles = getFtp(ftp.getName()).lsFiles(ftp.getFile());
                         for (int i = 2; i < ftpFiles.length; i++) {
-                            DOWNLOAD_QUEUE.offer(FtpDownload.childDownload(ftp, ftpFiles[i]));
+                            FTPFile ftpFile = ftpFiles[i];
+                            String fn = StrUtil.addSuffixIfNot(ftp.getFile(), "/") + ftpFile.getName();
+                            DOWNLOAD_QUEUE.offer(new FtpDownload(ftp.getName(), fn, ftpFile.isDirectory(), newPath));
                         }
                         continue;
                     }
@@ -234,18 +247,11 @@ public class FtpManager {
             } else {
                 ftp = new Ftp(fo.getHost(), fo.getPort(), fo.getUsername(), fo.getPassword(), fo.getCharset());
             }
-            if (fo.getReconnect()) {
-                ftp.reconnectIfTimeout();
-            }
             BeanFactory.register(generateFtpKey(name), ftp);
             log.info("ftp[{}] connected", name);
         }
-        FTPClient client = ftp.getClient();
-        if (!client.isConnected() || !client.isAvailable()) {
-            ftp.init();
-        }
         USED_INFO.setFtpName(name);
-        return ftp;
+        return ftp.reconnectIfTimeout();
     }
 
     private String generateFtpKey(String name) {

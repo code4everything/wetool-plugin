@@ -58,11 +58,6 @@ public class FtpInfo implements BaseBean, Serializable {
     private String charset;
 
     /**
-     * 是否自动重连，默认：false
-     */
-    private Boolean reconnect;
-
-    /**
      * 是否默认为默认的FTP，默认：false
      */
     private Boolean select;
@@ -94,11 +89,6 @@ public class FtpInfo implements BaseBean, Serializable {
     @Generated
     public Charset getCharset() {
         return CharsetUtil.charset(charset);
-    }
-
-    @Generated
-    public boolean getReconnect() {
-        return Boolean.TRUE.equals(reconnect);
     }
 
     @Generated

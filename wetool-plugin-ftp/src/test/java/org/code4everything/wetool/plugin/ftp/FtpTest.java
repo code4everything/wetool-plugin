@@ -27,7 +27,6 @@ public class FtpTest {
         ftpInfo.setPort(21);
         ftpInfo.setUsername("root");
         ftpInfo.setPassword("root");
-        ftpInfo.setReconnect(false);
         ftpInfo.setSelect(true);
         ftpInfo.setLazyConnect(false);
 

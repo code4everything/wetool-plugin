@@ -120,8 +120,12 @@ public class FxUtils {
     }
 
     public static void openFile(String file) {
+        openFile(FileUtil.file(file));
+    }
+
+    public static void openFile(File file) {
         try {
-            Desktop.getDesktop().open(FileUtil.file(file));
+            Desktop.getDesktop().open(file);
         } catch (Exception e) {
             FxDialogs.showException(AppConsts.Tip.OPEN_FILE_ERROR, e);
         }

@@ -41,8 +41,9 @@
                     <ContextMenu>
                         <items>
                             <MenuItem mnemonicParsing="false" onAction="#upload" text="上传"/>
-                            <MenuItem mnemonicParsing="false" onAction="#copyLocalFileLink" text="复制文件链接"/>
+                            <MenuItem mnemonicParsing="false" onAction="#openLocalFile" text="打开"/>
                             <MenuItem mnemonicParsing="false" onAction="#deleteLocalFile" text="删除"/>
+                            <MenuItem mnemonicParsing="false" onAction="#copyLocalFileLink" text="复制文件链接"/>
                         </items>
                     </ContextMenu>
                 </contextMenu>
@@ -93,8 +94,9 @@
                     <ContextMenu>
                         <items>
                             <MenuItem mnemonicParsing="false" onAction="#download" text="下载"/>
-                            <MenuItem mnemonicParsing="false" onAction="#copyRemoteFileLink" text="复制文件链接"/>
+                            <MenuItem mnemonicParsing="false" onAction="#openRemoteFile" text="下载并打开"/>
                             <MenuItem mnemonicParsing="false" onAction="#deleteRemoteFile" text="删除"/>
+                            <MenuItem mnemonicParsing="false" onAction="#copyRemoteFileLink" text="复制文件链接"/>
                         </items>
                     </ContextMenu>
                 </contextMenu>

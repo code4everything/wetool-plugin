@@ -24,6 +24,7 @@ import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.File;
 import java.util.*;
@@ -59,6 +60,8 @@ public class FtpController implements BaseViewController {
 
     @FXML
     public Label downloadStatus;
+
+    private List<String> downloadOpenList = null;
 
     @FXML
     private void initialize() {
@@ -108,7 +111,9 @@ public class FtpController implements BaseViewController {
 
     @Override
     public void openFile(File file) {
-        localPath.setText(file.getAbsolutePath());
+        String folder = WeUtils.parseFolder(file);
+        localPath.setText(folder);
+        listLocalFiles(new File(getLocalPath()));
     }
 
     public void makeLocalDir() {
@@ -119,7 +124,7 @@ public class FtpController implements BaseViewController {
     }
 
     public void chooseFolder() {
-        FxUtils.chooseFolder(file -> localPath.setText(file.getAbsolutePath()));
+        FxUtils.chooseFolder(this::openFile);
     }
 
     public void deleteLocalFile() {
@@ -141,8 +146,8 @@ public class FtpController implements BaseViewController {
         files.forEach(file -> {
             boolean isFolder = ftpFileMap.containsKey(file) && ftpFileMap.get(file).isDirectory();
             downloadFiles.add(new Pair<>(file, isFolder));
-
         });
+        downloadOpenList = new ArrayList<>();
         FtpManager.download(ftpName, downloadFiles, new File(getLocalPath()));
     }
 
@@ -206,6 +211,16 @@ public class FtpController implements BaseViewController {
             sep = "\r\n";
         }
         set2Clipboard(builder.toString());
+    }
+
+    public void openLocalFile() {
+        getSelectedLocalFiles(true).forEach(FxUtils::openFile);
+    }
+
+    public void openRemoteFile() {
+        String storePath = new File(getLocalPath()).getAbsolutePath() + File.separator;
+        download();
+        getSelectedRemoteFiles(true).forEach(path -> downloadOpenList.add(storePath + FileUtil.getName(path)));
     }
 
     private void listRemoteFiles(String path) {
@@ -289,6 +304,7 @@ public class FtpController implements BaseViewController {
     private void updateStatus(Label statusLabel, String status, String tip, Object... params) {
         Platform.runLater(() -> {
             if (StrUtil.isEmpty(status)) {
+                downloadOpenList.forEach(FxUtils::openFile);
                 FxDialogs.showInformation(null, tip);
             }
             statusLabel.setText(StrUtil.format(status, params));
