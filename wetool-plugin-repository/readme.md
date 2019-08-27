@@ -11,3 +11,5 @@
 5. 新建Pull Request，等待合并
 
 > 插件的`Jar`最好不要上传到仓库中来，防止仓库变大变肿，建议上传到其他地方，以下载地址的方式提供
+
+> 使用插件前请确保已安装[`wetool.jar`](https://gitee.com/code4everything/wetool)

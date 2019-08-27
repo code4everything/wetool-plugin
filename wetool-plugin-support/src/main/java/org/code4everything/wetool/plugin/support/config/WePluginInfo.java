@@ -2,6 +2,7 @@ package org.code4everything.wetool.plugin.support.config;
 
 import lombok.*;
 import org.code4everything.boot.base.bean.BaseBean;
+import org.code4everything.wetool.plugin.support.WePluginSupportable;
 
 import java.io.Serializable;
 
@@ -51,7 +52,7 @@ public class WePluginInfo implements BaseBean, Serializable {
     private String requireWetoolVersion;
 
     /**
-     * 实现了 {@link org.code4everything.wetool.plugin.support.WePluginSupportable} 的类全名，例如：org.code4everything.wetool.plugin.sample.WetoolSupporter
+     * 实现了 {@link WePluginSupportable} 的类全名，例如：org.code4everything.wetool.plugin.sample.WetoolSupporter
      *
      * @since 1.0.0
      */
