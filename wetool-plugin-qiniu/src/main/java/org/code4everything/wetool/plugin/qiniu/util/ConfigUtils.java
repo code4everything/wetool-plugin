@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import javafx.application.Platform;
+import lombok.experimental.UtilityClass;
 import org.code4everything.wetool.plugin.qiniu.api.SdkConfigurer;
 import org.code4everything.wetool.plugin.qiniu.constant.QiniuConsts;
 import org.code4everything.wetool.plugin.qiniu.controller.MainController;
@@ -21,11 +22,10 @@ import java.util.ArrayList;
  * @author pantao
  * @since 2018/11/12
  **/
+@UtilityClass
 public class ConfigUtils {
 
     private static final String CONFIG_PATH = QiniuConsts.CONFIG_PATH;
-
-    private ConfigUtils() {}
 
     /**
      * 加载配置文件

@@ -1,17 +1,21 @@
 package org.code4everything.wetool.plugin.qiniu.service;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.qiniu.cdn.CdnResult;
 import com.qiniu.common.QiniuException;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.model.BatchStatus;
 import com.qiniu.storage.model.FileInfo;
-import com.zhazhapan.util.Checker;
-import com.zhazhapan.util.Formatter;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.qiniu.api.SdkConfigurer;
 import org.code4everything.wetool.plugin.qiniu.api.SdkManager;
 import org.code4everything.wetool.plugin.qiniu.constant.QiniuConsts;
@@ -22,6 +26,7 @@ import org.code4everything.wetool.plugin.qiniu.util.DialogUtils;
 import org.code4everything.wetool.plugin.qiniu.util.QiniuUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -30,9 +35,8 @@ import java.util.Map;
  * @author pantao
  * @since 2018/11/13
  */
+@Slf4j
 public class QiniuService {
-
-    private static final Logger LOGGER = Logger.getLogger(QiniuService.class);
 
     private final SdkManager sdkManager = new SdkManager();
 
@@ -61,8 +65,8 @@ public class QiniuService {
                 main.setDataLength(main.getDataLength() + 1);
                 main.setDataSize(main.getDataSize() + item.fsize);
                 // 将七牛的时间单位（100纳秒）转换成毫秒，然后转换成时间
-                String time = Formatter.timeStampToString(item.putTime / 10000);
-                String size = Formatter.formatSize(item.fsize);
+                String time = DateUtil.formatDateTime(new Date(item.putTime / 10000));
+                String size = FileUtil.readableFileSize(item.fsize);
                 FileBean file = new FileBean(item.key, item.mimeType, size, time);
                 files.add(file);
             }
@@ -74,7 +78,7 @@ public class QiniuService {
      * 批量删除文件，单次批量请求的文件数量不得超过1000
      */
     public void deleteFile(ObservableList<FileBean> fileBeans, String bucket) {
-        if (Checker.isNotEmpty(fileBeans) && QiniuUtils.checkNet()) {
+        if (CollUtil.isNotEmpty(fileBeans) && QiniuUtils.checkNet()) {
             // 生成待删除的文件列表
             String[] files = new String[fileBeans.size()];
             ArrayList<FileBean> selectedFiles = new ArrayList<>();
@@ -87,7 +91,7 @@ public class QiniuService {
                 BatchStatus[] batchStatusList = sdkManager.batchDelete(bucket, files);
                 MainController main = MainController.getInstance();
                 // 文件列表是否为搜索后结果
-                boolean isInSearch = Checker.isNotEmpty(main.searchTF.getText());
+                boolean isInSearch = StrUtil.isNotEmpty(main.searchTF.getText());
                 ObservableList<FileBean> currentRes = main.resTV.getItems();
                 // 更新界面数据
                 for (i = 0; i < files.length; i++) {
@@ -96,12 +100,12 @@ public class QiniuService {
                     if (status.code == 200) {
                         main.getResData().remove(selectedFiles.get(i));
                         main.setDataLength(main.getDataLength() - 1);
-                        main.setDataSize(main.getDataSize() - Formatter.sizeToLong(selectedFiles.get(i).getSize()));
+                        main.setDataSize(main.getDataSize() - QiniuUtils.sizeToLong(selectedFiles.get(i).getSize()));
                         if (isInSearch) {
                             currentRes.remove(selectedFiles.get(i));
                         }
                     } else {
-                        LOGGER.error("delete " + file + " failed, message -> " + status.data.error);
+                        log.error("delete " + file + " failed, message -> " + status.data.error);
                         DialogUtils.showError("删除文件：" + file + " 失败");
                     }
                 }
@@ -149,7 +153,7 @@ public class QiniuService {
         try {
             sdkManager.moveOrCopyFile(srcBucket, srcKey, destBucket, destKey, fileAction);
         } catch (QiniuException e) {
-            LOGGER.error("move file failed, message -> " + e.getMessage());
+            log.error("move file failed, message -> " + e.getMessage());
             DialogUtils.showException(QiniuConsts.MOVE_OR_RENAME_ERROR, e);
             result = false;
         }
@@ -162,9 +166,9 @@ public class QiniuService {
     public void setFileLife(String bucket, String key, int days) {
         try {
             sdkManager.deleteAfterDays(bucket, key, days);
-            LOGGER.info("set file life success");
+            log.info("set file life success");
         } catch (QiniuException e) {
-            LOGGER.error("set file life error, message -> " + e.getMessage());
+            log.error("set file life error, message -> " + e.getMessage());
             DialogUtils.showException(QiniuConsts.MOVE_OR_RENAME_ERROR, e);
         }
     }
@@ -175,9 +179,9 @@ public class QiniuService {
     public void updateFile(String bucket, String key) {
         try {
             sdkManager.prefetch(bucket, key);
-            LOGGER.info("prefetch files success");
+            log.info("prefetch files success");
         } catch (QiniuException e) {
-            LOGGER.error("prefetch files error, message -> " + e.getMessage());
+            log.error("prefetch files error, message -> " + e.getMessage());
             DialogUtils.showException(QiniuConsts.UPDATE_ERROR, e);
         }
     }
@@ -200,7 +204,7 @@ public class QiniuService {
      * 刷新文件
      */
     public void refreshFile(ObservableList<FileBean> fileBeans, String domain) {
-        if (Checker.isNotEmpty(fileBeans)) {
+        if (CollUtil.isNotEmpty(fileBeans)) {
             String[] files = new String[fileBeans.size()];
             int i = 0;
             // 获取公有链接
@@ -211,7 +215,7 @@ public class QiniuService {
                 // 刷新文件
                 sdkManager.refreshFile(files);
             } catch (QiniuException e) {
-                LOGGER.error("refresh files error, message -> " + e.getMessage());
+                log.error("refresh files error, message -> " + e.getMessage());
                 DialogUtils.showException(e);
             }
         }
@@ -221,7 +225,7 @@ public class QiniuService {
      * 日志下载
      */
     public void downloadCdnLog(String logDate) {
-        if (Checker.isNotEmpty(ConfigBean.getConfig().getBuckets()) && Checker.isDate(logDate)) {
+        if (CollUtil.isNotEmpty(ConfigBean.getConfig().getBuckets()) && QiniuUtils.isDate(logDate)) {
             // 转换域名成数组格式
             String[] domains = new String[ConfigBean.getConfig().getBuckets().size()];
             for (int i = 0; i < ConfigBean.getConfig().getBuckets().size(); i++) {
@@ -233,7 +237,7 @@ public class QiniuService {
             } catch (QiniuException e) {
                 DialogUtils.showException(e);
             }
-            if (Checker.isNotEmpty(cdnLog)) {
+            if (CollUtil.isNotEmpty(cdnLog)) {
                 // 下载日志
                 for (Map.Entry<String, CdnResult.LogData[]> logs : cdnLog.entrySet()) {
                     for (CdnResult.LogData log : logs.getValue()) {
@@ -261,11 +265,11 @@ public class QiniuService {
         XYChart.Series<String, Long> series = new XYChart.Series<>();
         series.setName(QiniuConsts.BUCKET_BANDWIDTH_COUNT.replaceAll("[A-Z]+", unit));
         // 格式化数据
-        if (Checker.isNotNull(bandwidthResult) && Checker.isNotEmpty(bandwidthResult.data)) {
-            long unitSize = Formatter.sizeToLong("1 " + unit);
+        if (ObjectUtil.isNotNull(bandwidthResult) && CollUtil.isNotEmpty(bandwidthResult.data)) {
+            long unitSize = QiniuUtils.sizeToLong("1 " + unit);
             for (Map.Entry<String, CdnResult.BandwidthData> bandwidth : bandwidthResult.data.entrySet()) {
                 CdnResult.BandwidthData bandwidthData = bandwidth.getValue();
-                if (Checker.isNotNull(bandwidthData)) {
+                if (ObjectUtil.isNotNull(bandwidthData)) {
                     setSeries(bandwidthResult.time, bandwidthData.china, bandwidthData.oversea, series, unitSize);
                 }
             }
@@ -288,11 +292,11 @@ public class QiniuService {
         XYChart.Series<String, Long> series = new XYChart.Series<>();
         series.setName(QiniuConsts.BUCKET_FLUX_COUNT.replaceAll("[A-Z]+", unit));
         // 格式化数据
-        if (Checker.isNotNull(fluxResult) && Checker.isNotEmpty(fluxResult.data)) {
-            long unitSize = Formatter.sizeToLong("1 " + unit);
+        if (ObjectUtil.isNotNull(fluxResult) && CollUtil.isNotEmpty(fluxResult.data)) {
+            long unitSize = QiniuUtils.sizeToLong("1 " + unit);
             for (Map.Entry<String, CdnResult.FluxData> flux : fluxResult.data.entrySet()) {
                 CdnResult.FluxData fluxData = flux.getValue();
-                if (Checker.isNotNull(fluxData)) {
+                if (ObjectUtil.isNotNull(fluxData)) {
                     setSeries(fluxResult.time, fluxData.china, fluxData.oversea, series, unitSize);
                 }
             }
@@ -308,10 +312,10 @@ public class QiniuService {
         int i = 0;
         for (String time : times) {
             long size = 0;
-            if (Checker.isNotEmpty(china)) {
+            if (ArrayUtil.isNotEmpty(china)) {
                 size += china[i];
             }
-            if (Checker.isNotEmpty(oversea)) {
+            if (ArrayUtil.isNotEmpty(oversea)) {
                 size += oversea[i];
             }
             series.getData().add(new XYChart.Data<>(time.substring(5, 10), size / unit));

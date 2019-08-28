@@ -1,7 +1,7 @@
 package org.code4everything.wetool.plugin.qiniu.util;
 
-import com.zhazhapan.util.Checker;
-import com.zhazhapan.util.dialog.Dialogs;
+import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.StrUtil;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -14,6 +14,7 @@ import org.code4everything.wetool.plugin.qiniu.constant.QiniuConsts;
 import org.code4everything.wetool.plugin.qiniu.controller.MainController;
 import org.code4everything.wetool.plugin.qiniu.model.BucketBean;
 import org.code4everything.wetool.plugin.qiniu.model.ConfigBean;
+import org.code4everything.wetool.plugin.support.util.FxUtils;
 
 import java.util.Optional;
 
@@ -92,7 +93,7 @@ public class QiniuDialog {
         sk.setPromptText("Secret Key");
         // 设置超链接
         Hyperlink hyperlink = new Hyperlink("查看我的KEY：" + QiniuConsts.QINIU_KEY_URL);
-        hyperlink.setOnAction(event -> QiniuUtils.openLink(QiniuConsts.QINIU_KEY_URL));
+        hyperlink.setOnAction(event -> FxUtils.openLink(QiniuConsts.QINIU_KEY_URL));
         // 设置容器
         GridPane grid = Dialogs.getGridPane();
         grid.add(hyperlink, 0, 0, 2, 1);
@@ -110,7 +111,7 @@ public class QiniuDialog {
         // 等待用户操作
         Optional<String[]> result = dialog.showAndWait();
         // 处理结果
-        if (result.isPresent() && Checker.isNotEmpty(ak.getText()) && Checker.isNotEmpty(sk.getText())) {
+        if (result.isPresent() && StrUtil.isNotEmpty(ak.getText()) && StrUtil.isNotEmpty(sk.getText())) {
             ConfigBean.getConfig().setAccessKey(ak.getText());
             ConfigBean.getConfig().setSecretKey(sk.getText());
             SdkConfigurer.createAuth(ak.getText(), sk.getText());
@@ -154,8 +155,8 @@ public class QiniuDialog {
         // 结果转换器
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ok) {
-                return new String[]{bucket.getText(), zone.getValue(), (Checker.isHyperLink(url.getText()) ?
-                        url.getText() : "example.com")};
+                return new String[]{bucket.getText(), zone.getValue(),
+                        (Validator.URL_HTTP.matcher(url.getText()).matches() ? url.getText() : "example.com")};
             }
             return null;
         });
@@ -175,6 +176,7 @@ public class QiniuDialog {
         dialog.setTitle(QiniuConsts.TAB_NAME);
         dialog.setHeaderText(null);
         dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.setResizable(true);
         // 自定义确认和取消按钮
         ButtonType cancel = new ButtonType(QiniuConsts.CANCEL, ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(ok, cancel);

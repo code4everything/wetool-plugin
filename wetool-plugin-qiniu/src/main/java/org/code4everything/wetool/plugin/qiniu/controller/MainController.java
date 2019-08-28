@@ -1,12 +1,16 @@
 package org.code4everything.wetool.plugin.qiniu.controller;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Validator;
+import cn.hutool.core.swing.clipboard.ClipboardUtil;
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.qiniu.common.QiniuException;
-import com.zhazhapan.util.Checker;
-import com.zhazhapan.util.Formatter;
-import com.zhazhapan.util.ThreadPool;
-import com.zhazhapan.util.Utils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,9 +23,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.TransferMode;
-import javafx.stage.FileChooser;
 import javafx.util.Pair;
+import org.code4everything.boot.base.DateUtils;
 import org.code4everything.wetool.plugin.qiniu.api.SdkConfigurer;
 import org.code4everything.wetool.plugin.qiniu.api.SdkManager;
 import org.code4everything.wetool.plugin.qiniu.constant.QiniuConsts;
@@ -188,7 +191,7 @@ public class MainController extends BaseQiniuController {
             } else {
                 name = value.getOldValue();
             }
-            if (Checker.isNotEmpty(searchTF.getText())) {
+            if (StrUtil.isNotEmpty(searchTF.getText())) {
                 resData.get(resData.indexOf(fileBean)).setName(name);
             }
             fileBean.setName(name);
@@ -205,7 +208,7 @@ public class MainController extends BaseQiniuController {
             } else {
                 type = value.getOldValue();
             }
-            if (Checker.isNotEmpty(searchTF.getText())) {
+            if (StrUtil.isNotEmpty(searchTF.getText())) {
                 resData.get(resData.indexOf(fileBean)).setType(type);
             }
             fileBean.setType(type);
@@ -217,19 +220,19 @@ public class MainController extends BaseQiniuController {
         // 设置默认的开始和结束日期，并事件刷新数据
         endDP.setValue(LocalDate.now());
         long startTime = System.currentTimeMillis() - QiniuConsts.DATE_SPAN_OF_THIRTY_ONE;
-        LocalDate localEndDate = Formatter.dateToLocalDate(new Date(startTime));
+        LocalDate localEndDate = DateUtils.toLocalDate(new Date(startTime));
         startDP.setValue(localEndDate);
         // 设置桶下拉框改变事件，改变后配置新的上传环境
         bucketCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             zoneTF.setText(ConfigBean.getConfig().getZone(newValue));
             searchTF.clear();
             String url = ConfigBean.getConfig().getUrl(newValue);
-            if (Checker.isHyperLink(url)) {
+            if (Validator.URL_HTTP.matcher(url).matches()) {
                 domainTF.setText(url);
             } else {
                 domainTF.setText(QiniuConsts.DOMAIN_CONFIG_ERROR);
             }
-            ThreadPool.executor.submit(() -> {
+            ThreadUtil.execute(() -> {
                 if (SdkConfigurer.configUploadEnv(ConfigBean.getConfig().getZone(newValue), newValue)) {
                     // 加载文件列表
                     mapResourceData();
@@ -252,7 +255,7 @@ public class MainController extends BaseQiniuController {
      */
     @Override
     public void dragFileOver(DragEvent event) {
-        event.acceptTransferModes(TransferMode.ANY);
+        FxUtils.acceptCopyMode(event);
     }
 
     /**
@@ -260,7 +263,7 @@ public class MainController extends BaseQiniuController {
      */
     @Override
     public void dragFileDropped(DragEvent event) {
-        appendFile(event.getDragboard().getFiles());
+        FxUtils.dropFiles(event, this::appendFile);
     }
 
     /**
@@ -274,14 +277,14 @@ public class MainController extends BaseQiniuController {
      * 绘制数据统计图表
      */
     private void drawChart(boolean isFluxUnitChange, boolean isBandwidthUnitChange) {
-        Date localStartDate = Formatter.localDateToDate(startDP.getValue());
-        Date localEndDate = Formatter.localDateToDate(endDP.getValue());
+        Date localStartDate = DateUtils.toDate(startDP.getValue());
+        Date localEndDate = DateUtils.toDate(endDP.getValue());
         // 将本地日期装换成字符串
-        String fromDate = Formatter.dateToString(localStartDate);
-        String toDate = Formatter.dateToString(localEndDate);
+        String fromDate = DateUtil.formatDate(localStartDate);
+        String toDate = DateUtil.formatDate(localEndDate);
         // 获取开始日期和结束日期的时间差
         long timeSpan = localEndDate.getTime() - localStartDate.getTime();
-        if (Checker.isNotEmpty(domainTF.getText()) && timeSpan >= 0 && timeSpan <= QiniuConsts.DATE_SPAN_OF_THIRTY_ONE) {
+        if (StrUtil.isNotEmpty(domainTF.getText()) && timeSpan >= 0 && timeSpan <= QiniuConsts.DATE_SPAN_OF_THIRTY_ONE) {
             Platform.runLater(() -> {
                 String[] domains = {domainTF.getText()};
                 if (isFluxUnitChange) {
@@ -304,7 +307,7 @@ public class MainController extends BaseQiniuController {
      * 下载日志
      */
     public void downloadCdnLog() {
-        String date = DialogUtils.showInputDialog(null, QiniuConsts.INPUT_LOG_DATE, Formatter.dateToString(new Date()));
+        String date = DialogUtils.showInputDialog(null, QiniuConsts.INPUT_LOG_DATE, DateUtil.formatDate(new Date()));
         service.downloadCdnLog(date);
     }
 
@@ -320,9 +323,9 @@ public class MainController extends BaseQiniuController {
      */
     public void openFile() {
         ObservableList<FileBean> selectedItems = resTV.getSelectionModel().getSelectedItems();
-        if (Checker.isNotEmpty(selectedItems)) {
+        if (CollUtil.isNotEmpty(selectedItems)) {
             String filename = selectedItems.get(0).getName();
-            QiniuUtils.openLink(QiniuUtils.buildUrl(filename, domainTF.getText()));
+            FxUtils.openLink(QiniuUtils.buildUrl(filename, domainTF.getText()));
         }
     }
 
@@ -338,7 +341,7 @@ public class MainController extends BaseQiniuController {
      */
     private void download(DownloadWay way) {
         ObservableList<FileBean> selectedItems = resTV.getSelectionModel().getSelectedItems();
-        if (Checker.isNotEmpty(selectedItems)) {
+        if (CollUtil.isNotEmpty(selectedItems)) {
             if (way == DownloadWay.PUBLIC) {
                 selectedItems.forEach(bean -> service.publicDownload(bean.getName(), domainTF.getText()));
             } else {
@@ -359,7 +362,7 @@ public class MainController extends BaseQiniuController {
      */
     public void updateFile() {
         ObservableList<FileBean> selectedItems = resTV.getSelectionModel().getSelectedItems();
-        if (Checker.isNotEmpty(selectedItems)) {
+        if (CollUtil.isNotEmpty(selectedItems)) {
             selectedItems.forEach(bean -> service.updateFile(bucketCB.getValue(), bean.getName()));
         }
     }
@@ -369,11 +372,11 @@ public class MainController extends BaseQiniuController {
      */
     public void setLife() {
         ObservableList<FileBean> selectedItems = resTV.getSelectionModel().getSelectedItems();
-        if (Checker.isNotEmpty(selectedItems)) {
+        if (CollUtil.isNotEmpty(selectedItems)) {
             // 弹出输入框
             String fileLife = DialogUtils.showInputDialog(null, QiniuConsts.FILE_LIFE, QiniuConsts.DEFAULT_FILE_LIFE);
-            if (Checker.isNumber(fileLife)) {
-                int life = Formatter.stringToInt(fileLife);
+            if (NumberUtil.isInteger(fileLife)) {
+                int life = Integer.parseInt(fileLife);
                 selectedItems.forEach(bean -> service.setFileLife(bucketCB.getValue(), bean.getName(), life));
             }
         }
@@ -384,7 +387,7 @@ public class MainController extends BaseQiniuController {
      */
     public void showFileMovableDialog() {
         ObservableList<FileBean> selectedItems = resTV.getSelectionModel().getSelectedItems();
-        if (Checker.isEmpty(selectedItems)) {
+        if (CollUtil.isEmpty(selectedItems)) {
             // 没有选择文件，结束方法
             return;
         }
@@ -395,8 +398,8 @@ public class MainController extends BaseQiniuController {
         } else {
             resultPair = dialog.showFileDialog(bucket, selectedItems.get(0).getName(), true);
         }
-        if (Checker.isNotNull(resultPair)) {
-            boolean useNewKey = Checker.isNotEmpty(resultPair.getValue()[1]);
+        if (ObjectUtil.isNotNull(resultPair)) {
+            boolean useNewKey = ArrayUtil.isNotEmpty(resultPair.getValue()[1]);
             ObservableList<FileBean> fileBeans = resTV.getItems();
             for (FileBean fileBean : selectedItems) {
                 String fromBucket = bucketCB.getValue();
@@ -405,7 +408,7 @@ public class MainController extends BaseQiniuController {
                 boolean isSuccess = service.moveOrCopyFile(fromBucket, fileBean.getName(), toBucket, name,
                         resultPair.getKey());
                 if (resultPair.getKey() == SdkManager.FileAction.MOVE && isSuccess) {
-                    boolean isInSearch = Checker.isNotEmpty(searchTF.getText());
+                    boolean isInSearch = StrUtil.isNotEmpty(searchTF.getText());
                     if (fromBucket.equals(toBucket)) {
                         // 更新文件名
                         fileBean.setName(name);
@@ -416,7 +419,7 @@ public class MainController extends BaseQiniuController {
                         // 删除数据源
                         fileBeans.remove(fileBean);
                         dataLength--;
-                        dataSize -= Formatter.sizeToLong(fileBean.getSize());
+                        dataSize -= QiniuUtils.sizeToLong(fileBean.getSize());
                         if (isInSearch) {
                             fileBeans.remove(fileBean);
                         }
@@ -439,9 +442,9 @@ public class MainController extends BaseQiniuController {
      */
     public void copyLink() {
         ObservableList<FileBean> fileBeans = resTV.getSelectionModel().getSelectedItems();
-        if (Checker.isNotEmpty(fileBeans)) {
+        if (CollUtil.isNotEmpty(fileBeans)) {
             // 只复制选中的第一个文件的链接
-            Utils.copyToClipboard(QiniuUtils.buildUrl(fileBeans.get(0).getName(), domainTF.getText()));
+            ClipboardUtil.setStr(QiniuUtils.buildUrl(fileBeans.get(0).getName(), domainTF.getText()));
         }
     }
 
@@ -450,7 +453,7 @@ public class MainController extends BaseQiniuController {
      */
     public void searchFile() {
         ArrayList<FileBean> files = new ArrayList<>();
-        String search = Checker.checkNull(searchTF.getText());
+        String search = StrUtil.nullToEmpty(searchTF.getText());
         dataLength = 0;
         dataSize = 0;
         // 正则匹配查询
@@ -459,7 +462,7 @@ public class MainController extends BaseQiniuController {
             if (pattern.matcher(file.getName()).find()) {
                 files.add(file);
                 dataLength++;
-                dataSize += Formatter.sizeToLong(file.getSize());
+                dataSize += QiniuUtils.sizeToLong(file.getSize());
             }
         }
         countBucket();
@@ -470,8 +473,8 @@ public class MainController extends BaseQiniuController {
      * 统计空间文件的数量以及大小
      */
     public void countBucket() {
-        lengthLabel.setText(Formatter.customFormatDecimal(dataLength, ",###") + " 个文件");
-        sizeLabel.setText(Formatter.formatSize(dataSize));
+        lengthLabel.setText(NumberUtil.decimalFormat(",###", dataLength) + " 个文件");
+        sizeLabel.setText(FileUtil.readableFileSize(dataSize));
     }
 
     /**
@@ -486,7 +489,7 @@ public class MainController extends BaseQiniuController {
      * 将从存储空间获取的文件列表映射到表中
      */
     private void mapResourceData() {
-        ThreadPool.executor.submit(() -> {
+        ThreadUtil.execute(() -> {
             // 列出资源文件
             service.listFile();
             Platform.runLater(() -> {
@@ -510,18 +513,14 @@ public class MainController extends BaseQiniuController {
      * 保存文件的上传状态
      */
     public void saveUploadStatus() {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle(QiniuConsts.FILE_CHOOSER_TITLE);
-        chooser.setInitialDirectory(new File(Utils.getCurrentWorkDir()));
-        File file = chooser.showSaveDialog(FxUtils.getStage());
-        QiniuUtils.saveFile(file, uploadStatusTA.getText());
+        FxUtils.saveFile(file -> QiniuUtils.saveFile(file, uploadStatusTA.getText()));
     }
 
     /**
      * 复制文件上传状态至剪贴板
      */
     public void copyUploadStatus() {
-        Utils.copyToClipboard(uploadStatusTA.getText());
+        ClipboardUtil.setStr(uploadStatusTA.getText());
     }
 
     /**
@@ -535,27 +534,22 @@ public class MainController extends BaseQiniuController {
      * 显示选择文件的弹窗
      */
     public void showOpenFileDialog() {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle(QiniuConsts.FILE_CHOOSER_TITLE);
-        chooser.setInitialDirectory(new File(Utils.getCurrentWorkDir()));
-        appendFile(chooser.showOpenMultipleDialog(FxUtils.getStage()));
+        FxUtils.chooseFiles(this::appendFile);
     }
 
     /**
      * 添加上传的文件，支持拖曳文件夹
      */
     private void appendFile(List<File> files) {
-        if (Checker.isNotEmpty(files)) {
-            File[] fileArray = new File[files.size()];
-            appendFile(files.toArray(fileArray), false);
-        }
+        File[] fileArray = new File[files.size()];
+        appendFile(files.toArray(fileArray), false);
     }
 
     /**
      * 添加上传的文件，支持拖曳文件夹
      */
     private void appendFile(File[] files, boolean isRecursive) {
-        if (Checker.isNotNull(files)) {
+        if (ArrayUtil.isNotEmpty(files)) {
             for (File file : files) {
                 if (file.isDirectory()) {
                     if (isRecursive) {
@@ -578,24 +572,24 @@ public class MainController extends BaseQiniuController {
      * 上传选择的文件
      */
     public void uploadFile() {
-        if (Checker.isEmpty(zoneTF.getText()) || Checker.isEmpty(selectedFileTA.getText())) {
+        if (StrUtil.isEmpty(zoneTF.getText()) || StrUtil.isEmpty(selectedFileTA.getText())) {
             // 没有选择存储空间或文件，不能上传文件
             DialogUtils.showWarning(QiniuConsts.NEED_CHOOSE_BUCKET_OR_FILE);
             return;
         }
         // 新建一个线程上传文件的线程
-        ThreadPool.executor.submit(() -> {
+        ThreadUtil.execute(() -> {
             Platform.runLater(() -> uploadStatusTA.insertText(0, QiniuConsts.CONFIG_UPLOAD_ENVIRONMENT));
             String bucket = bucketCB.getValue();
             // 默认不指定KEY的情况下，以文件内容的哈希值作为文件名
-            String key = Checker.checkNull(prefixCB.getValue());
+            String key = StrUtil.nullToEmpty(prefixCB.getValue());
             String[] paths = selectedFileTA.getText().split("\n");
             // 去掉\r\n的长度
             int endIndex = QiniuConsts.UPLOADING.length() - 2;
             Platform.runLater(() -> uploadStatusTA.deleteText(0, QiniuConsts.CONFIG_UPLOAD_ENVIRONMENT.length() - 1));
             // 总文件数
             for (String path : paths) {
-                if (Checker.isNotEmpty(path)) {
+                if (StrUtil.isNotEmpty(path)) {
                     Platform.runLater(() -> uploadStatusTA.insertText(0, QiniuConsts.UPLOADING));
                     String filename = "";
                     String url = "http://" + ConfigBean.getConfig().getUrl(bucket) + "/";
@@ -604,7 +598,7 @@ public class MainController extends BaseQiniuController {
                         // 判断文件是否存在
                         if (file.exists()) {
                             // 保持文件相对父文件夹的路径
-                            if (keepPathCB.isSelected() && Checker.isNotEmpty(rootPath)) {
+                            if (keepPathCB.isSelected() && CollUtil.isNotEmpty(rootPath)) {
                                 for (String root : rootPath) {
                                     if (file.getAbsolutePath().startsWith(root)) {
                                         String postKey = root.substring(root.lastIndexOf(File.separator) + 1);
@@ -613,15 +607,15 @@ public class MainController extends BaseQiniuController {
                                     }
                                 }
                             }
-                            if (Checker.isEmpty(filename)) {
+                            if (StrUtil.isEmpty(filename)) {
                                 filename = key + file.getName();
                             }
                             service.uploadFile(bucket, path, filename);
                             String now = DateUtil.formatDate(new Date());
                             status = StrUtil.format(UPLOAD_STATUS_TEMPLATE, now, url, filename, path);
-                        } else if (Checker.isHyperLink(path)) {
+                        } else if (Validator.URL_HTTP.matcher(path).matches()) {
                             // 抓取网络文件到空间中
-                            filename = key + QiniuUtils.getFileName(path);
+                            filename = key + FileUtil.getName(path);
                             SdkConfigurer.getBucketManager().fetch(path, bucket, filename);
                             String now = DateUtil.formatDate(new Date());
                             status = StrUtil.format(UPLOAD_STATUS_TEMPLATE, now, url, filename, path);
@@ -657,7 +651,7 @@ public class MainController extends BaseQiniuController {
      * 保存前缀
      */
     private void savePrefix(String key) {
-        if (Checker.isNotEmpty(key) && !ConfigBean.getConfig().getPrefixes().contains(key)) {
+        if (StrUtil.isNotEmpty(key) && !ConfigBean.getConfig().getPrefixes().contains(key)) {
             Platform.runLater(() -> prefixCB.getItems().add(key));
             ConfigBean.getConfig().getPrefixes().add(key);
             ConfigUtils.writeConfig();
@@ -688,7 +682,7 @@ public class MainController extends BaseQiniuController {
      */
     public void showKeyDialog() {
         boolean ok = dialog.showKeyDialog();
-        if (ok && Checker.isNotEmpty(zoneTF.getText())) {
+        if (ok && StrUtil.isNotEmpty(zoneTF.getText())) {
             // 配置新的环境
             SdkConfigurer.configUploadEnv(zoneTF.getText(), bucketCB.getValue());
         }

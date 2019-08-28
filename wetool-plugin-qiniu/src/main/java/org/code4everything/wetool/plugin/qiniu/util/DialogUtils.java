@@ -10,6 +10,7 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import lombok.experimental.UtilityClass;
 import org.code4everything.wetool.plugin.qiniu.constant.QiniuConsts;
 
 import java.io.PrintWriter;
@@ -21,9 +22,8 @@ import java.util.Optional;
  *
  * @author pantao 对JavaFX对话框进行封装
  */
+@UtilityClass
 public class DialogUtils {
-
-    private DialogUtils() {}
 
     public static String showInputDialog(String header, String content, String defaultValue) {
         TextInputDialog dialog = new TextInputDialog(defaultValue);

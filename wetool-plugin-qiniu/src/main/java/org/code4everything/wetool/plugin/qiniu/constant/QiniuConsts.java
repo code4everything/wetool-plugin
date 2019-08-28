@@ -1,5 +1,6 @@
 package org.code4everything.wetool.plugin.qiniu.constant;
 
+import lombok.experimental.UtilityClass;
 import org.code4everything.boot.base.FileUtils;
 
 /**
@@ -7,6 +8,7 @@ import org.code4everything.boot.base.FileUtils;
  *
  * @author pantao
  */
+@UtilityClass
 public class QiniuConsts {
 
     public static final String TAB_NAME = "七牛云对象存储";
@@ -22,8 +24,6 @@ public class QiniuConsts {
     public static final String QINIU_VIEW_URL = "/Main.fxml";
 
     public static final String QINIU_KEY_URL = "https://portal.qiniu.com/user/key";
-
-    public static final String INIT_APP_ERROR_HEADER = "初始化错误，无法继续运行";
 
     public static final String OK = "确定";
 
@@ -86,6 +86,4 @@ public class QiniuConsts {
     public static final long DATE_SPAN_OF_THIRTY_ONE = 31 * 24 * 60 * 60 * 1000L;
 
     public static final String CONFIRM_EXIT = "确定退出？";
-
-    private QiniuConsts() {}
 }
