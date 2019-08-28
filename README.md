@@ -62,8 +62,10 @@
 
 - [简易FTP客户端](wetool-plugin-repository/ease-ftp/readme.md)
 
+- [七牛云对象存储管理工具](wetool-plugin-repository/ease-qiniu/readme.md)
+
 ### 参与贡献
 
-欢迎提Issue、Pull Request，参与开发，如果觉得项目还不错，请Star一下哦~
+欢迎提Issue、Pull Request，参与开发，如果觉得项目还不错，可以Star一下哦~
 
 > 使用插件前请确保已安装[`wetool.jar`](https://gitee.com/code4everything/wetool)
