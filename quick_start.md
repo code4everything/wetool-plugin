@@ -97,6 +97,8 @@
 
 4. 新建视图中绑定的控制器，例如：`org.code4everything.wetool.plugin.sample.controller.SampleController`
 
+    实现`BaseViewController`并将其注册至`BeanFactory`，可以获取`WeTool`的一些能力，比如：用户点击了打开文件、保存文件等
+    
     ``` java
     public class SampleController implements BaseViewController {
     
@@ -190,6 +192,7 @@
 6. 在`resources`目录下新建`plugin.json`文件，并根据[`WePluginInfo`](wetool-plugin-support/src/main/java/org/code4everything/wetool/plugin/support/config/WePluginInfo.java)类中的属性进行配置，
 例如：
 
+    `requireWetoolVersion`指依赖`wetool-plugin-support`的版本，`supportedClass`表示实现了接口`WePluginSupportable`的类全名
     ``` json
     {
         "author": "ease",

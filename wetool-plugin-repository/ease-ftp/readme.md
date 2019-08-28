@@ -2,7 +2,7 @@
 
 一个小而简、功能全的WeTool FTP插件
 
-最新版本下载地址：[wetool-plugin-ftp-1.0.0.jar]()
+最新版下载地址：[wetool-plugin-ftp-1.0.0.jar](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-ftp-1.0.0.jar)
 
 ### 配置说明
 
@@ -31,7 +31,7 @@
 
 ### 历史更新
 
-#### [v1.0.0]()
+#### [v1.0.0](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-ftp-1.0.0.jar)
 
 - 多FTP配置
 - 创建目录，上传下载，删除文件
