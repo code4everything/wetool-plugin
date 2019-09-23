@@ -1,0 +1,14 @@
+{
+    "startOnStartup": false,
+    "port": 21,
+    "users": [
+        {
+            "name": "test",
+            "password": "test",
+            "homeDirectory": "C:\\Project",
+            "enabled": true,
+            "maxIdleTime": 0,
+            "auth": "rw"
+        }
+    ]
+}
