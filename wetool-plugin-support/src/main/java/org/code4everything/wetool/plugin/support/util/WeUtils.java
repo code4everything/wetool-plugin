@@ -2,11 +2,16 @@ package org.code4everything.wetool.plugin.support.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.system.OsInfo;
+import cn.hutool.system.SystemUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.code4everything.boot.base.FileUtils;
 import org.code4everything.boot.base.constant.IntegerConsts;
+import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.wetool.plugin.support.config.WeConfig;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
@@ -28,6 +33,70 @@ public class WeUtils {
     private static final String DATE_VARIABLE = "%(DATE|date)%";
 
     private static int compressLen = 0;
+
+    /**
+     * 解析文件路径
+     *
+     * @param file 默认文件
+     *
+     * @return 文件路径
+     */
+    public static String parsePathByOs(String file) {
+        return parsePathByOs(FileUtils.currentWorkDir(), file);
+    }
+
+    /**
+     * 解析文件路径
+     *
+     * @param parentDir 父文件夹
+     * @param file 默认文件
+     *
+     * @return 文件路径
+     */
+    public static String parsePathByOs(String parentDir, String file) {
+        int idx = file.lastIndexOf(StringConsts.Sign.DOT);
+        String name = file.substring(0, idx);
+        String ext = file.substring(idx);
+        return parsePathByOs(parentDir, name + "-win" + ext, name + "-mac" + ext, name + "-lin" + ext, file);
+    }
+
+    /**
+     * 解析文件路径
+     *
+     * @param parentDir 父文件夹
+     * @param winFile Windows文件
+     * @param macFile Mac文件
+     * @param linFile Linux文件
+     * @param defaultFile 默认文件
+     *
+     * @return 文件路径
+     */
+    public static String parsePathByOs(String parentDir, String winFile, String macFile, String linFile,
+                                       String defaultFile) {
+        OsInfo osInfo = SystemUtil.getOsInfo();
+        parentDir = StrUtil.addSuffixIfNot(parentDir, File.separator);
+        // Windows配置文件
+        String winPath = parentDir + winFile;
+        // Mac配置文件
+        String macPath = parentDir + macFile;
+        // Linux配置文件
+        String linPath = parentDir + linFile;
+        // 默认配置文件
+        String defPath = parentDir + defaultFile;
+
+        // 解析正确的配置文件路径
+        String path = null;
+        if (osInfo.isWindows() && FileUtil.exist(winPath)) {
+            path = winPath;
+        } else if (osInfo.isMac() && FileUtil.exist(macPath)) {
+            path = macPath;
+        } else if (osInfo.isLinux() && FileUtil.exist(linPath)) {
+            path = linPath;
+        } else if (FileUtil.exist(defPath)) {
+            path = defPath;
+        }
+        return path;
+    }
 
     /**
      * 获取用户的配置

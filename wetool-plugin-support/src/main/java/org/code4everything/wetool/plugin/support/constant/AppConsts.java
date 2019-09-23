@@ -11,7 +11,15 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class AppConsts {
 
-    public static final String CURRENT_VERSION = "1.0.0";
+    /**
+     * 当前版本号
+     */
+    public static final String CURRENT_VERSION = "1.0.1";
+
+    /**
+     * 兼容的最低版本号
+     */
+    public static final String LOWER_VERSION = "1.0.0";
 
     @UtilityClass
     public static class Tip {
