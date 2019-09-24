@@ -16,6 +16,15 @@ import java.util.List;
 public interface BaseViewController {
 
     /**
+     * 用户点击了打开文件夹
+     *
+     * @param folder 文件夹
+     *
+     * @since 1.0.1
+     */
+    default void openFolder(File folder) {}
+
+    /**
      * 用户点击了批量打开文件
      *
      * @param files 文件列表

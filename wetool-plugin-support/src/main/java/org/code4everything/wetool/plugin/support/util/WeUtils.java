@@ -40,6 +40,8 @@ public class WeUtils {
      * @param file 默认文件
      *
      * @return 文件路径
+     *
+     * @since 1.0.1
      */
     public static String parsePathByOs(String file) {
         return parsePathByOs(FileUtils.currentWorkDir(), file);
@@ -52,6 +54,8 @@ public class WeUtils {
      * @param file 默认文件
      *
      * @return 文件路径
+     *
+     * @since 1.0.1
      */
     public static String parsePathByOs(String parentDir, String file) {
         int idx = file.lastIndexOf(StringConsts.Sign.DOT);
@@ -70,6 +74,8 @@ public class WeUtils {
      * @param defaultFile 默认文件
      *
      * @return 文件路径
+     *
+     * @since 1.0.1
      */
     public static String parsePathByOs(String parentDir, String winFile, String macFile, String linFile,
                                        String defaultFile) {
