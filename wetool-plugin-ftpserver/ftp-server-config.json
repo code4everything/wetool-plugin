@@ -1,11 +1,11 @@
 {
-    "startOnStartup": false,
+    "startOnStartup": true,
     "port": 21,
     "users": [
         {
             "name": "test",
             "password": "test",
-            "homeDirectory": "C:\\Project",
+            "homeDirectory": "",
             "enabled": true,
             "maxIdleTime": 0,
             "auth": "rw"

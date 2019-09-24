@@ -27,7 +27,6 @@
             <groupId>org.apache.ftpserver</groupId>
             <artifactId>ftpserver-core</artifactId>
             <version>1.1.1</version>
-            <type>bundle</type>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-api</artifactId>
@@ -39,7 +38,6 @@
             <groupId>org.apache.ftpserver</groupId>
             <artifactId>ftplet-api</artifactId>
             <version>1.1.1</version>
-            <type>bundle</type>
         </dependency>
         <!--WeTool-->
         <dependency>

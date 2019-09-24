@@ -1,6 +1,8 @@
 package org.code4everything.wetool.plugin.ftp.server.config;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission;
@@ -26,6 +28,16 @@ public class FtpServerUser extends BaseUser implements BaseBean, Serializable {
     private String auth;
 
     private transient List<Authority> authorities;
+
+    @Override
+    public String getHomeDirectory() {
+        return StrUtil.emptyToDefault(super.getHomeDirectory(), FileUtil.getUserHomePath());
+    }
+
+    @Override
+    public void setHomeDirectory(String home) {
+        super.setHomeDirectory(StrUtil.emptyToDefault(home, FileUtil.getUserHomePath()));
+    }
 
     @Override
     public List<Authority> getAuthorities() {

@@ -1,7 +1,9 @@
 package org.code4everything.wetool.plugin.ftp.server;
 
+import cn.hutool.core.util.ObjectUtil;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import org.code4everything.wetool.plugin.ftp.server.config.FtpServerConfig;
 import org.code4everything.wetool.plugin.support.WePluginSupportable;
 
 /**
@@ -15,6 +17,15 @@ public class WetoolSupporter implements WePluginSupportable {
     private static final String START = "启动";
 
     private static final String STOP = "停止";
+
+    @Override
+    public boolean initialize() {
+        FtpServerConfig config = FtpServerManager.loadConfig();
+        if (ObjectUtil.isNotNull(config) && config.getStartOnStartup()) {
+            FtpServerManager.start();
+        }
+        return true;
+    }
 
     @Override
     public MenuItem registerBarMenu() {

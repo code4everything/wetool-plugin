@@ -68,7 +68,7 @@ class FtpServerManager {
         }
     }
 
-    private static FtpServerConfig loadConfig() {
+    static FtpServerConfig loadConfig() {
         String path = WeUtils.parsePathByOs("ftp-server-config.json");
         if (StrUtil.isEmpty(path)) {
             FxDialogs.showError("配置文件：ftp-server-config.json 不存在！");
