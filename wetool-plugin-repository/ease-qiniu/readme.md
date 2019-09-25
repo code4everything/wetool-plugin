@@ -6,6 +6,20 @@
 
 > 第一次运行时，先重置密钥，然后添加存储空间（Bucket）即可。
 
+### 运行截图
+
+文件上载
+
+![qiniu_1](images/qiniu_1.png)
+
+资源管理
+
+![qiniu_1](images/qiniu_2.png)
+
+数据统计
+
+![qiniu_1](images/qiniu_3.png)
+
 ### 历史更新
 
 #### [v1.0.0](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-qiniu-1.0.0.jar)

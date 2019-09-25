@@ -29,6 +29,10 @@
 }
 ```
 
+### 运行截图
+
+![ftp](images/ftp.png)
+
 ### 历史更新
 
 #### [v1.0.0](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-ftp-1.0.0.jar)

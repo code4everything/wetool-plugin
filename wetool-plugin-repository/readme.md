@@ -1,4 +1,6 @@
-## 插件提交须知
+## 插件提交
+
+> 插件的`Jar`最好不要上传到仓库中来，防止仓库变大变肿，建议上传到其他地方，以下载链接的方式提供
 
 1. Fork 本仓库
 
@@ -10,6 +12,10 @@
 
 5. 新建Pull Request，等待合并
 
-> 插件的`Jar`最好不要上传到仓库中来，防止仓库变大变肿，建议上传到其他地方，以下载地址的方式提供
+## 运行插件
 
-> 使用插件前请确保已安装[`wetool.jar`](https://gitee.com/code4everything/wetool)
+1. [安装WeTool](https://gitee.com/code4everything/wetool)
+
+2. 将插件`Jar`放置到WeTool工作目录的`plugins`目录下（没有的可以新建）
+
+3. 启动WeTool（或重启）

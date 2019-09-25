@@ -12,11 +12,11 @@ import org.code4everything.wetool.plugin.support.WePluginSupportable;
  */
 public class WetoolSupporter implements WePluginSupportable {
 
-    private static final String TITLE = "简易FTP服务器";
+    private final String TITLE = "简易FTP服务器";
 
-    private static final String START = "启动";
+    private final String START = "启动";
 
-    private static final String STOP = "停止";
+    private final String STOP = "停止";
 
     @Override
     public boolean initialize() {
