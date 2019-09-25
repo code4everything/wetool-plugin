@@ -2,14 +2,11 @@ package org.code4everything.wetool.plugin.support.config;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.code4everything.boot.base.bean.BaseBean;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author pantao
@@ -19,6 +16,7 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = {"location", "subStarts"})
 public class WeStart implements BaseBean, Serializable {
 
     private static final long serialVersionUID = 762565001230119596L;
@@ -36,7 +34,7 @@ public class WeStart implements BaseBean, Serializable {
     /**
      * 子菜单，如配置了此属性，说明当前的菜单是一个父级菜单
      */
-    private List<WeStart> subStarts;
+    private Set<WeStart> subStarts;
 
     @Override
     public void requireNonNullProperty() {

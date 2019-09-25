@@ -68,12 +68,17 @@ public class WeConfig implements BaseBean, Serializable {
     /**
      * 可快捷打开文件的一系列菜单
      */
-    private List<WeStart> quickStarts;
+    private Set<WeStart> quickStarts = new HashSet<>();
 
     /**
      * 禁止加载的插件，禁止的插件只需配置插件的作者、名称、版本即可（这些信息可在程序刚启动时的日志中看到）
      */
-    private Set<WePluginInfo> pluginDisables;
+    private Set<WePluginInfo> pluginDisables = new HashSet<>();
+
+    /**
+     * 插件路径
+     */
+    private Set<String> pluginPaths = new HashSet<>();
 
     // end--------------------------------------------------------------------------------------------------------------
 

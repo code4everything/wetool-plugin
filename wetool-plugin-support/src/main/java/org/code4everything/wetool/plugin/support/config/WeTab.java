@@ -4,9 +4,9 @@ import lombok.*;
 import org.code4everything.boot.base.bean.BaseBean;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author pantao
@@ -23,18 +23,18 @@ public class WeTab implements BaseBean, Serializable {
     /**
      * 初始化加载的选项卡
      */
-    private List<String> loads;
+    private Set<String> loads;
 
     /**
      * 支持加载的选项卡，可不配置此属性，展示的配置文件只是为了说明目前支持的选项卡
      */
-    private List<String> supports;
+    private Set<String> supports;
 
     @Override
     public void requireNonNullProperty() {}
 
     @Generated
-    public List<String> getLoads() {
-        return Objects.isNull(loads) ? new ArrayList<>() : loads;
+    public Set<String> getLoads() {
+        return Objects.isNull(loads) ? new HashSet<>() : loads;
     }
 }
