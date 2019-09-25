@@ -25,46 +25,51 @@ class FtpServerManager {
     private static FtpServer server;
 
     static void start() {
-        if (ObjectUtil.isNull(server) || server.isStopped()) {
-            // 读取配置
-            FtpServerConfig config = loadConfig();
-            if (ObjectUtil.isNull(config) || CollUtil.isEmpty(config.getUsers())) {
-                FxDialogs.showError("FTP启动失败：请完善配置文件！");
-                return;
-            }
-
-            // 创建FTP
-            FtpServerFactory serverFactory = new FtpServerFactory();
-            ListenerFactory factory = new ListenerFactory();
-            // 监听端口
-            factory.setPort(2221);
-
-            // 添加用户
-            UserManager um = serverFactory.getUserManager();
-            config.getUsers().forEach(user -> {
-                try {
-                    um.save(user);
-                } catch (FtpException e) {
-                    FxDialogs.showException("新增用户失败：" + user, e);
+        try {
+            if (ObjectUtil.isNull(server) || server.isStopped()) {
+                // 读取配置
+                FtpServerConfig config = loadConfig();
+                if (ObjectUtil.isNull(config) || CollUtil.isEmpty(config.getUsers())) {
+                    FxDialogs.showError("FTP启动失败：请完善配置文件！");
+                    return;
                 }
-            });
 
-            // 启动服务
-            server = serverFactory.createServer();
-            try {
+                // 创建FTP
+                FtpServerFactory serverFactory = new FtpServerFactory();
+                ListenerFactory factory = new ListenerFactory();
+                // 监听端口
+                factory.setPort(config.getPort());
+                serverFactory.addListener("default", factory.createListener());
+
+                // 添加用户
+                UserManager um = serverFactory.getUserManager();
+                config.getUsers().forEach(user -> {
+                    try {
+                        um.save(user);
+                    } catch (FtpException e) {
+                        FxDialogs.showException("新增用户失败：" + user, e);
+                    }
+                });
+
+                // 启动服务
+                server = serverFactory.createServer();
                 server.start();
-            } catch (FtpException e) {
-                FxDialogs.showException("FTP服务启动失败！", e);
+            } else if (server.isSuspended()) {
+                server.resume();
             }
-        } else if (server.isSuspended()) {
-            server.resume();
+        } catch (Exception e) {
+            FxDialogs.showException("FTP服务启动失败！", e);
         }
     }
 
     static void stop() {
         if (ObjectUtil.isNotNull(server)) {
-            server.stop();
-            server = null;
+            try {
+                server.stop();
+                server = null;
+            } catch (Exception e) {
+                FxDialogs.showException("停止FTP服务失败！", e);
+            }
         }
     }
 
