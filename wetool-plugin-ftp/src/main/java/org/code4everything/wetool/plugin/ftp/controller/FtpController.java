@@ -110,6 +110,11 @@ public class FtpController implements BaseViewController {
     }
 
     @Override
+    public void openFolder(File folder) {
+        openFile(folder);
+    }
+
+    @Override
     public void openFile(File file) {
         String folder = WeUtils.parseFolder(file);
         localPath.setText(folder);
