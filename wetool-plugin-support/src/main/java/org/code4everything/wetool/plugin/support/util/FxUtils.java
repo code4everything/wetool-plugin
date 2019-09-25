@@ -7,8 +7,11 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.base.Preconditions;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextInputControl;
@@ -26,6 +29,7 @@ import org.code4everything.wetool.plugin.support.constant.AppConsts;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -44,6 +48,38 @@ import java.util.Objects;
 public class FxUtils {
 
     private static final int DOUBLE_CLICK = 2;
+
+    /**
+     * 创建菜单
+     *
+     * @param label 菜单名
+     * @param handler 事件处理器
+     *
+     * @return 菜单
+     *
+     * @since 1.0.1
+     */
+    public static MenuItem createMenuItem(String label, EventHandler<ActionEvent> handler) {
+        MenuItem item = new MenuItem(label);
+        item.setOnAction(handler);
+        return item;
+    }
+
+    /**
+     * 创建菜单
+     *
+     * @param label 菜单名
+     * @param listener 监听器
+     *
+     * @return 菜单
+     *
+     * @since 1.0.1
+     */
+    public static java.awt.MenuItem createMenuItem(String label, ActionListener listener) {
+        java.awt.MenuItem item = new java.awt.MenuItem(label);
+        item.addActionListener(listener);
+        return item;
+    }
 
     /**
      * 获取选中的选项卡的视图控制器

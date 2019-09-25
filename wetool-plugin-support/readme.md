@@ -46,6 +46,10 @@ FxUtils.openFile(File);
 
 // 加载视图，参数说明：实现了WePluginSupportable的类，视图在classpath中路径
 FxUtils.loadFxml(WePluginSupportable, String);
+
+// 创建菜单
+FxUtils.createMenuItem(String, EventHandler<ActionEvent>);
+FxUtils.createMenuItem(String, ActionListener);
 ```
   
 [FxDialogs](src/main/java/org/code4everything/wetool/plugin/support/util/FxDialogs.java)
