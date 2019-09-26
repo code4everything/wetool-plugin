@@ -209,7 +209,7 @@
     public class SampleTest {
     
         public static void main(String[] args) {
-            WetoolTest.runTest(new WetoolSupporter(), args);
+            WetoolTester.runTest(new WetoolSupporter(), args);
         }
     }
     ```

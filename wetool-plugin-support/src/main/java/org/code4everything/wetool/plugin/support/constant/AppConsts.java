@@ -37,6 +37,8 @@ public class AppConsts {
     public static class Title {
 
         public static final String APP_TITLE = "WeTool";
+
+        public static final String DEV_TOOL = "开发工具";
     }
 
     @UtilityClass

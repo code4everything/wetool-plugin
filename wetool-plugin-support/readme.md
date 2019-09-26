@@ -50,6 +50,9 @@ FxUtils.loadFxml(WePluginSupportable, String);
 // 创建菜单
 FxUtils.createMenuItem(String, EventHandler<ActionEvent>);
 FxUtils.createMenuItem(String, ActionListener);
+
+// 名称唯一的菜单，并添加至插件菜单
+FxUtils.makePluginMenu(String)
 ```
   
 [FxDialogs](src/main/java/org/code4everything/wetool/plugin/support/util/FxDialogs.java)

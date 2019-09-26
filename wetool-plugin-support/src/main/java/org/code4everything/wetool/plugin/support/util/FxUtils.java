@@ -37,6 +37,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author pantao
@@ -47,6 +48,27 @@ import java.util.Objects;
 public class FxUtils {
 
     private static final int DOUBLE_CLICK = 2;
+
+    private static final Map<String, Menu> MENU_MAP = new ConcurrentHashMap<>(4);
+
+    /**
+     * 生成一个名称唯一的菜单，并添加至插件菜单，菜单存在时直接返回
+     *
+     * @param label 菜单名称
+     *
+     * @return 菜单
+     *
+     * @since 1.0.1
+     */
+    public static Menu makePluginMenu(String label) {
+        Menu menu = MENU_MAP.get(label);
+        if (Objects.isNull(menu)) {
+            menu = new Menu(label);
+            getPluginMenu().getItems().add(menu);
+            MENU_MAP.put(label, menu);
+        }
+        return menu;
+    }
 
     /**
      * 获取插件菜单
