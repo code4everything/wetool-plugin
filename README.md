@@ -60,7 +60,7 @@
 
 - [插件仓库](wetool-plugin-repository)
 
-- [简易FTP客户端](wetool-plugin-repository/ease-ftp/readme.md)
+- [简易FTP客户端](wetool-plugin-repository/ease-ftp-client/readme.md)
 
 - [七牛云对象存储管理工具](wetool-plugin-repository/ease-qiniu/readme.md)
 

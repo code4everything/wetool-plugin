@@ -67,7 +67,7 @@ public class WetoolSupporter implements WePluginSupportable {
 
     @Override
     public java.awt.MenuItem registerTrayMenu() {
-        java.awt.Menu menu = new java.awt.Menu(FtpConsts.FTP);
+        java.awt.Menu menu = new java.awt.Menu(FtpConsts.TAB_NAME);
         // 上传文件
         java.awt.MenuItem item = new java.awt.MenuItem(FtpConsts.UPLOAD_FILE);
         item.addActionListener(e -> {

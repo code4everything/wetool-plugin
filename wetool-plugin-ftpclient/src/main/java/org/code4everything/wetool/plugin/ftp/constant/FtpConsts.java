@@ -13,11 +13,9 @@ public class FtpConsts {
 
     public static final String AUTHOR = "ease";
 
-    public static final String NAME = "ftp";
+    public static final String NAME = "ftp-client";
 
     public static final String TAB_ID = FtpConsts.AUTHOR + FtpConsts.NAME;
-
-    public static final String FTP = "FTP";
 
     public static final String UPLOAD_FILE = "上传文件";
 

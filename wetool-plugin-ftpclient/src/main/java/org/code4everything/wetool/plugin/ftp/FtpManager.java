@@ -213,7 +213,7 @@ public class FtpManager {
     }
 
     public static String generateConfigKey(String ftpName) {
-        return FtpConsts.AUTHOR + FtpConsts.NAME + ftpName;
+        return "config:" + FtpConsts.AUTHOR + FtpConsts.NAME + ftpName;
     }
 
     private static void retry(BooleanFunction func) {
@@ -255,6 +255,6 @@ public class FtpManager {
     }
 
     private String generateFtpKey(String name) {
-        return FtpConsts.AUTHOR + FtpConsts.NAME + name + FtpConsts.FTP;
+        return "ftp:" + FtpConsts.AUTHOR + FtpConsts.NAME + name;
     }
 }

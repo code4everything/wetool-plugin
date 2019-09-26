@@ -10,7 +10,7 @@ import org.code4everything.wetool.plugin.test.WetoolTester;
  * @author pantao
  * @since 2019/8/24
  */
-public class FtpTest {
+public class FtpClientTest {
 
     public static void main(String[] args) {
         // 模拟配置文件
