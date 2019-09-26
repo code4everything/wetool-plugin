@@ -11,10 +11,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextInputControl;
+import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
@@ -48,6 +47,15 @@ import java.util.Objects;
 public class FxUtils {
 
     private static final int DOUBLE_CLICK = 2;
+
+    /**
+     * 获取插件菜单
+     *
+     * @since 1.0.1
+     */
+    public static Menu getPluginMenu() {
+        return BeanFactory.get(AppConsts.BeanKey.PLUGIN_MENU);
+    }
 
     /**
      * 创建菜单

@@ -1,6 +1,6 @@
 package org.code4everything.wetool.plugin.sample;
 
-import org.code4everything.wetool.plugin.test.WetoolTest;
+import org.code4everything.wetool.plugin.test.WetoolTester;
 
 /**
  * 测试插件
@@ -11,6 +11,6 @@ import org.code4everything.wetool.plugin.test.WetoolTest;
 public class SampleTest {
 
     public static void main(String[] args) {
-        WetoolTest.runTest(new WetoolSupporter(), args);
+        WetoolTester.runTest(new WetoolSupporter(), args);
     }
 }

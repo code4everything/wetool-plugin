@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.code4everything.wetool.plugin.ftp.config.FtpConfig;
 import org.code4everything.wetool.plugin.ftp.config.FtpInfo;
 import org.code4everything.wetool.plugin.support.config.WeConfig;
-import org.code4everything.wetool.plugin.test.WetoolTest;
+import org.code4everything.wetool.plugin.test.WetoolTester;
 
 /**
  * @author pantao
@@ -14,7 +14,7 @@ public class FtpTest {
 
     public static void main(String[] args) {
         // 模拟配置文件
-        WeConfig config = WetoolTest.getConfig();
+        WeConfig config = WetoolTester.getConfig();
         JSONObject json = new JSONObject();
         FtpConfig ftpConfig = new FtpConfig();
         ftpConfig.setShowOnStartup(true);
@@ -34,6 +34,6 @@ public class FtpTest {
         json.put("easeFtp", ftpConfig);
         config.setConfigJson(json);
 
-        WetoolTest.runTest(new WetoolSupporter(), config, args);
+        WetoolTester.runTest(new WetoolSupporter(), config, args);
     }
 }

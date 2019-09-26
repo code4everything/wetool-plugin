@@ -24,14 +24,14 @@
         <dependency>
             <groupId>org.code4everything</groupId>
             <artifactId>wetool-plugin-support</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
             <optional>true</optional>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.code4everything</groupId>
             <artifactId>wetool-plugin-test</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -197,8 +197,8 @@
     {
         "author": "ease",
         "name": "sample",
-        "version": "1.0.0",
-        "requireWetoolVersion": "1.0.0",
+        "version": "1.0.1",
+        "requireWetoolVersion": "1.0.1",
         "supportedClass": "org.code4everything.wetool.plugin.sample.WetoolSupporter"
     }
     ```

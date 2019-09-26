@@ -38,4 +38,10 @@ public class AppConsts {
 
         public static final String APP_TITLE = "WeTool";
     }
+
+    @UtilityClass
+    public static class BeanKey {
+
+        public static final String PLUGIN_MENU = "pluginMenu";
+    }
 }

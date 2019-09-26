@@ -6,10 +6,10 @@ import org.code4everything.wetool.plugin.support.config.WePluginInfo;
 import org.code4everything.wetool.plugin.support.constant.AppConsts;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 
-class WetoolTestTester {
+class WetoolTesterTest {
 
     public static void main(String[] args) {
-        WePluginInfo info = new WePluginInfo("ease", "test", "1.0.0");
+        WePluginInfo info = new WePluginInfo("ease", "test", "1.0.1", "1.0.1", "");
         WePluginSupportable supportable = new WePluginSupportable() {
             @Override
             public MenuItem registerBarMenu() {
@@ -17,6 +17,6 @@ class WetoolTestTester {
                 return null;
             }
         };
-        WetoolTest.runTest(info, supportable, args);
+        WetoolTester.runTest(info, supportable, args);
     }
 }

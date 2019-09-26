@@ -1,6 +1,6 @@
 package org.code4everything.wetool.plugin.ftp.server;
 
-import org.code4everything.wetool.plugin.test.WetoolTest;
+import org.code4everything.wetool.plugin.test.WetoolTester;
 
 /**
  * @author pantao
@@ -9,6 +9,6 @@ import org.code4everything.wetool.plugin.test.WetoolTest;
 public class FtpServerTest {
 
     public static void main(String[] args) {
-        WetoolTest.runTest(new WetoolSupporter(), args);
+        WetoolTester.runTest(new WetoolSupporter(), args);
     }
 }

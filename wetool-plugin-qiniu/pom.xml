@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.code4everything</groupId>
     <artifactId>wetool-plugin-qiniu</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <properties>
         <java.veresion>1.8</java.veresion>
@@ -37,14 +37,14 @@
         <dependency>
             <groupId>org.code4everything</groupId>
             <artifactId>wetool-plugin-support</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
             <optional>true</optional>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.code4everything</groupId>
             <artifactId>wetool-plugin-test</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

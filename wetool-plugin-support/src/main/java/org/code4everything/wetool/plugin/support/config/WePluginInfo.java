@@ -1,5 +1,6 @@
 package org.code4everything.wetool.plugin.support.config;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.*;
 import org.code4everything.boot.base.bean.BaseBean;
 import org.code4everything.wetool.plugin.support.WePluginSupportable;
@@ -18,6 +19,8 @@ import java.io.Serializable;
 public class WePluginInfo implements BaseBean, Serializable {
 
     private static final long serialVersionUID = -8103599072656856290L;
+
+    private static final String DEFAULT_REQUIRE_WETOOL_VERSION = "1.0.0";
 
     /**
      * 插件作者
@@ -60,8 +63,18 @@ public class WePluginInfo implements BaseBean, Serializable {
     private String supportedClass;
 
     public WePluginInfo(String author, String name, String version) {
+        this(author, name, version, DEFAULT_REQUIRE_WETOOL_VERSION);
+    }
+
+    public WePluginInfo(String author, String name, String version, String requireWetoolVersion) {
         this.author = author;
         this.name = name;
         this.version = version;
+        this.requireWetoolVersion = requireWetoolVersion;
+    }
+
+    @Generated
+    public String getRequireWetoolVersion() {
+        return StrUtil.emptyToDefault(requireWetoolVersion, DEFAULT_REQUIRE_WETOOL_VERSION);
     }
 }

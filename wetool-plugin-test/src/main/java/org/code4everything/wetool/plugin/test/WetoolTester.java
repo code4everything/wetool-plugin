@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.WeApplication;
+import org.code4everything.wetool.plugin.PluginLoader;
 import org.code4everything.wetool.plugin.support.WePluginSupportable;
 import org.code4everything.wetool.plugin.support.config.WeConfig;
 import org.code4everything.wetool.plugin.support.config.WeInitialize;
@@ -13,15 +14,15 @@ import org.code4everything.wetool.plugin.support.config.WePluginInfo;
 import org.code4everything.wetool.plugin.support.config.WeTab;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * @author pantao
  * @since 2019/8/23
  */
 @Slf4j
-public class WetoolTest extends WeApplication {
+public class WetoolTester extends WeApplication {
 
     private static WePluginSupportable supportable;
 
@@ -32,7 +33,7 @@ public class WetoolTest extends WeApplication {
     }
 
     public static void runTest(WePluginSupportable supportable, WeConfig config, String[] args) {
-        String json = IoUtil.read(WetoolTest.class.getResourceAsStream("/plugin.json"), "utf-8");
+        String json = IoUtil.read(WetoolTester.class.getResourceAsStream("/plugin.json"), "utf-8");
         runTest(JSON.parseObject(json, WePluginInfo.class), supportable, config, args);
     }
 
@@ -42,8 +43,8 @@ public class WetoolTest extends WeApplication {
 
     public static void runTest(WePluginInfo info, WePluginSupportable supportable, WeConfig config, String[] args) {
         log.info("start wetool on os: {}", SystemUtil.getOsInfo().getName());
-        WetoolTest.info = info;
-        WetoolTest.supportable = supportable;
+        WetoolTester.info = info;
+        WetoolTester.supportable = supportable;
         BeanFactory.register(config);
         launch(args);
     }
@@ -53,7 +54,7 @@ public class WetoolTest extends WeApplication {
         config.setAutoWrap(true);
         config.setClipboardSize(20);
         config.setFileFilter("^[^.].*$");
-        config.setQuickStarts(new ArrayList<>());
+        config.setQuickStarts(new HashSet<>());
         config.setPluginDisables(new HashSet<>());
 
         WeInitialize initialize = new WeInitialize();
@@ -63,8 +64,8 @@ public class WetoolTest extends WeApplication {
         initialize.setWidth(1000);
 
         WeTab tab = new WeTab();
-        tab.setLoads(new ArrayList<>());
-        tab.setSupports(new ArrayList<>());
+        tab.setLoads(new HashSet<>());
+        tab.setSupports(new HashSet<>());
 
         initialize.setTabs(tab);
         config.setInitialize(initialize);
@@ -74,6 +75,8 @@ public class WetoolTest extends WeApplication {
     @Override
     public void start(Stage stage) {
         super.start(stage);
-        mainController.registerPlugin(info, supportable);
+        Objects.requireNonNull(info);
+        Objects.requireNonNull(supportable);
+        PluginLoader.registerPlugin(info, supportable);
     }
 }
