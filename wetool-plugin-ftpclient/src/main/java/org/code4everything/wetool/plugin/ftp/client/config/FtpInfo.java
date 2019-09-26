@@ -1,4 +1,4 @@
-package org.code4everything.wetool.plugin.ftp.config;
+package org.code4everything.wetool.plugin.ftp.client.config;
 
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;

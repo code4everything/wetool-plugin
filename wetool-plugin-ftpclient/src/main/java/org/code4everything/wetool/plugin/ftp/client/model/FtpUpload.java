@@ -1,4 +1,4 @@
-package org.code4everything.wetool.plugin.ftp.model;
+package org.code4everything.wetool.plugin.ftp.client.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,15 +17,13 @@ import java.io.Serializable;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class FtpDownload implements BaseBean, Serializable {
+public class FtpUpload implements BaseBean, Serializable {
 
-    private static final long serialVersionUID = 8142935768386723746L;
+    private static final long serialVersionUID = 553115546970154169L;
 
     private String name;
 
-    private String file;
+    private String path;
 
-    private Boolean directory;
-
-    private File path;
+    private File file;
 }

@@ -1,4 +1,4 @@
-package org.code4everything.wetool.plugin.ftp.constant;
+package org.code4everything.wetool.plugin.ftp.client.constant;
 
 import lombok.experimental.UtilityClass;
 

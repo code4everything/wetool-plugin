@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="700.0"
       xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.code4everything.wetool.plugin.ftp.controller.UploadDialogController">
+      fx:controller="org.code4everything.wetool.plugin.ftp.client.controller.UploadDialogController">
     <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="300.0"
           VBox.vgrow="ALWAYS">
         <padding>

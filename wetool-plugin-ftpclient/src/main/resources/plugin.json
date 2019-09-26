@@ -3,5 +3,5 @@
     "name": "ftp-client",
     "version": "1.0.1",
     "requireWetoolVersion": "1.0.1",
-    "supportedClass": "org.code4everything.wetool.plugin.ftp.WetoolSupporter"
+    "supportedClass": "org.code4everything.wetool.plugin.ftp.client.WetoolSupporter"
 }

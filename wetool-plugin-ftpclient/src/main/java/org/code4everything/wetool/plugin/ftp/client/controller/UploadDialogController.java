@@ -1,12 +1,12 @@
-package org.code4everything.wetool.plugin.ftp.controller;
+package org.code4everything.wetool.plugin.ftp.client.controller;
 
 import cn.hutool.core.util.StrUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.DragEvent;
-import org.code4everything.wetool.plugin.ftp.FtpManager;
-import org.code4everything.wetool.plugin.ftp.constant.FtpConsts;
-import org.code4everything.wetool.plugin.ftp.model.LastUsedInfo;
+import org.code4everything.wetool.plugin.ftp.client.FtpManager;
+import org.code4everything.wetool.plugin.ftp.client.constant.FtpConsts;
+import org.code4everything.wetool.plugin.ftp.client.model.LastUsedInfo;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 

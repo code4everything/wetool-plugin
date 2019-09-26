@@ -1,8 +1,8 @@
-## Ease FTP
+## Ease FTP Client
 
 一个小而简、功能全的WeTool FTP插件
 
-最新版下载地址：[wetool-plugin-ftp-1.0.0.jar](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-ftp-1.0.0.jar)
+最新版下载地址：[wetool-plugin-ftpclient-1.0.0.jar](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-ftp-1.0.0.jar)
 
 ### 配置说明
 
@@ -34,6 +34,11 @@
 ![ftp](images/ftp.png)
 
 ### 历史更新
+
+#### [v1.0.1]()
+
+- 优化样式
+- 更新至wetool-1.0.1
 
 #### [v1.0.0](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-ftp-1.0.0.jar)
 

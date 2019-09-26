@@ -1,4 +1,4 @@
-package org.code4everything.wetool.plugin.ftp.controller;
+package org.code4everything.wetool.plugin.ftp.client.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
@@ -16,10 +16,10 @@ import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPFile;
 import org.code4everything.boot.base.constant.StringConsts;
-import org.code4everything.wetool.plugin.ftp.FtpManager;
-import org.code4everything.wetool.plugin.ftp.config.FtpInfo;
-import org.code4everything.wetool.plugin.ftp.constant.FtpConsts;
-import org.code4everything.wetool.plugin.ftp.model.LastUsedInfo;
+import org.code4everything.wetool.plugin.ftp.client.FtpManager;
+import org.code4everything.wetool.plugin.ftp.client.config.FtpInfo;
+import org.code4everything.wetool.plugin.ftp.client.constant.FtpConsts;
+import org.code4everything.wetool.plugin.ftp.client.model.LastUsedInfo;
 import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;

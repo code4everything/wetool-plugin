@@ -1,4 +1,4 @@
-package org.code4everything.wetool.plugin.ftp.model;
+package org.code4everything.wetool.plugin.ftp.client.model;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;

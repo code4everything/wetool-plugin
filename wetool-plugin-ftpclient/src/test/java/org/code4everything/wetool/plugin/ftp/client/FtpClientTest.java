@@ -1,8 +1,8 @@
-package org.code4everything.wetool.plugin.ftp;
+package org.code4everything.wetool.plugin.ftp.client;
 
 import com.alibaba.fastjson.JSONObject;
-import org.code4everything.wetool.plugin.ftp.config.FtpConfig;
-import org.code4everything.wetool.plugin.ftp.config.FtpInfo;
+import org.code4everything.wetool.plugin.ftp.client.config.FtpConfig;
+import org.code4everything.wetool.plugin.ftp.client.config.FtpInfo;
 import org.code4everything.wetool.plugin.support.config.WeConfig;
 import org.code4everything.wetool.plugin.test.WetoolTester;
 
