@@ -24,7 +24,7 @@ public class MainController implements BaseViewController {
 
     @FXML
     private void initialize() {
-        BeanFactory.registerView(CommonConsts.TAB_ID, CommonConsts.TAB_NAME, this);
+        BeanFactory.registerView(CommonConsts.APP_ID, CommonConsts.APP_NAME, this);
         classFile.setOnMouseClicked(e -> FxUtils.chooseFile(file -> classFile.setText(file.getAbsolutePath())));
     }
 
@@ -36,7 +36,9 @@ public class MainController implements BaseViewController {
         if (StrUtil.isEmpty(targetFile.getText())) {
             chooseTargetFile();
         }
-        FileUtil.writeUtf8String(RuntimeUtil.execForStr("javap", "-c", classFile.getText()), targetFile.getText());
-        FxUtils.openFile(targetFile.getText());
+        if (StrUtil.isNotEmpty(targetFile.getText())) {
+            FileUtil.writeUtf8String(RuntimeUtil.execForStr("javap", "-c", classFile.getText()), targetFile.getText());
+            FxUtils.openFile(targetFile.getText());
+        }
     }
 }

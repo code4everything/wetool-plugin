@@ -19,9 +19,9 @@ public class WetoolSupporter implements WePluginSupportable {
     public boolean initialize() {
         Menu menu = FxUtils.makePluginMenu(AppConsts.Title.DEV_TOOL);
         final WePluginSupportable that = this;
-        menu.getItems().add(FxUtils.createMenuItem(CommonConsts.TAB_NAME, (EventHandler<ActionEvent>) event -> {
+        menu.getItems().add(FxUtils.createMenuItem(CommonConsts.APP_NAME, (EventHandler<ActionEvent>) event -> {
             Node node = FxUtils.loadFxml(that, "/view/Main.fxml");
-            FxUtils.openTab(node, CommonConsts.TAB_ID, CommonConsts.TAB_NAME);
+            FxUtils.openTab(node, CommonConsts.APP_ID, CommonConsts.APP_NAME);
         }));
         return true;
     }

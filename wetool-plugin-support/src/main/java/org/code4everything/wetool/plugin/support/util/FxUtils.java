@@ -6,6 +6,7 @@ import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.system.SystemUtil;
 import com.google.common.base.Preconditions;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -267,24 +268,6 @@ public class FxUtils {
     }
 
     /**
-     * 重启本工具库
-     */
-    public static void restart() {
-        String batchFile = WeUtils.getConfig().getRestartBatch();
-        if (StrUtil.isEmpty(batchFile)) {
-            // 获取当前程序运行路径
-            final String jarPath = System.getProperty("java.class.path");
-            // 文件名的截取索引
-            final int idx = Math.max(jarPath.lastIndexOf('/'), jarPath.lastIndexOf('\\')) + 1;
-            ThreadUtil.execute(() -> RuntimeUtil.execForStr("java -jar ./" + jarPath.substring(idx)));
-        } else {
-            log.info("wetool will restart using batch file: " + FileUtils.currentWorkDir(batchFile));
-            ThreadUtil.execute(() -> RuntimeUtil.execForStr(FileUtils.currentWorkDir(batchFile)));
-        }
-        WeUtils.exitSystem();
-    }
-
-    /**
      * 将用户拖曳的文件的内容赋值给文本输入框
      *
      * @param control 文本输入框
@@ -357,6 +340,32 @@ public class FxUtils {
     public static Pane loadFxml(WePluginSupportable supportable, String url) {
         Class clazz = supportable.getClass();
         return loadFxml(clazz.getResource(url), clazz.getClassLoader());
+    }
+
+    /**
+     * 重启本工具库
+     */
+    public static void restart() {
+        String batchFile = WeUtils.getConfig().getRestartBatch();
+        if (StrUtil.isEmpty(batchFile)) {
+            // 获取当前程序运行路径
+            final String jarPath = System.getProperty("java.class.path");
+            // 文件名的截取索引
+            final int idx = Math.max(jarPath.lastIndexOf('/'), jarPath.lastIndexOf('\\')) + 1;
+            restartHelper("java -jar ./" + jarPath.substring(idx));
+        } else {
+            restartHelper(FileUtils.currentWorkDir(batchFile));
+        }
+        WeUtils.exitSystem();
+    }
+
+    private static void restartHelper(String cmd) {
+        log.info("restart use cmd: " + cmd);
+        if (SystemUtil.getOsInfo().isWindows()) {
+            ThreadUtil.execute(() -> RuntimeUtil.execForStr(cmd));
+        } else {
+            RuntimeUtil.execForStr(cmd);
+        }
     }
 
     private static Pane loadFxml(URL url, ClassLoader loader) {
