@@ -21,6 +21,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.code4everything.boot.base.FileUtils;
 import org.code4everything.boot.base.function.VoidFunction;
 import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.WePluginSupportable;
@@ -269,11 +270,17 @@ public class FxUtils {
      * 重启本工具库
      */
     public static void restart() {
-        // 获取当前程序运行路径
-        final String jarPath = System.getProperty("java.class.path");
-        // 文件名的截取索引
-        final int idx = Math.max(jarPath.lastIndexOf('/'), jarPath.lastIndexOf('\\')) + 1;
-        ThreadUtil.execute(() -> RuntimeUtil.execForStr("java -jar ./" + jarPath.substring(idx)));
+        String batchFile = WeUtils.getConfig().getRestartBatch();
+        if (StrUtil.isEmpty(batchFile)) {
+            // 获取当前程序运行路径
+            final String jarPath = System.getProperty("java.class.path");
+            // 文件名的截取索引
+            final int idx = Math.max(jarPath.lastIndexOf('/'), jarPath.lastIndexOf('\\')) + 1;
+            ThreadUtil.execute(() -> RuntimeUtil.execForStr("java -jar ./" + jarPath.substring(idx)));
+        } else {
+            log.info("wetool will restart using batch file: " + FileUtils.currentWorkDir(batchFile));
+            ThreadUtil.execute(() -> RuntimeUtil.execForStr(FileUtils.currentWorkDir(batchFile)));
+        }
         WeUtils.exitSystem();
     }
 

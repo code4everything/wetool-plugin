@@ -80,6 +80,11 @@ public class WeConfig implements BaseBean, Serializable {
      */
     private Set<String> pluginPaths = new HashSet<>();
 
+    /**
+     * 自定义重启脚本文件名，只能位于WeTool工作目录
+     */
+    private String restartBatch = "";
+
     // end--------------------------------------------------------------------------------------------------------------
 
     private transient LinkedList<Pair<Date, String>> clipboardHistory = new LinkedList<>();
