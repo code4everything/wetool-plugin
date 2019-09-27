@@ -56,7 +56,7 @@
 
 - [插件提交](wetool-plugin-repository/readme.md)
 
-### 拿来即用
+### 插件仓库
 
 - [插件仓库](wetool-plugin-repository)
 
@@ -64,8 +64,10 @@
 
 - [七牛云对象存储管理工具](wetool-plugin-repository/ease-qiniu/readme.md)
 
+- [简易FTP服务器](wetool-plugin-repository/ease-ftp-server/readme.md)
+
 ### 参与贡献
 
-欢迎提Issue、Pull Request，参与开发，如果觉得项目还不错，可以Star一下哦~
+欢迎提Issue、Pull Request，参与开发，如果觉得项目还不错，欢迎Star哦~
 
 > 使用插件前请确保已安装[`wetool.jar`](https://gitee.com/code4everything/wetool)

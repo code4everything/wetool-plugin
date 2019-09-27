@@ -2,7 +2,7 @@
 
 一个可以管理七牛云对象存储的WeTool插件
 
-最新版下载地址：[wetool-plugin-qiniu-1.0.0.jar](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-qiniu-1.0.0.jar)
+最新版下载地址：[wetool-plugin-qiniu-1.0.1.jar](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-qiniu-1.0.1.jar)
 
 > 第一次运行时，先重置密钥，然后添加存储空间（Bucket）即可。
 
@@ -21,6 +21,11 @@
 ![qiniu_1](images/qiniu_3.png)
 
 ### 历史更新
+
+#### [v1.0.1](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-qiniu-1.0.1.jar)
+
+- 更新WeTool版本
+- 支持WeToo菜单打开文件
 
 #### [v1.0.0](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-qiniu-1.0.0.jar)
 

@@ -6,7 +6,7 @@
 
 ### 配置说明
 
-在WeTool工作目录下新增`ftp-server-config.json`文件，并完善配置，参考内容如下：
+在WeTool工作目录下新增`ftp-server-config.json`文件，并完善配置，配置参考如下：
 
 ``` json
 {

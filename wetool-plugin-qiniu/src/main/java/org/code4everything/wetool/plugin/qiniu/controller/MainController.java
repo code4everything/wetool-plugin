@@ -10,6 +10,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.google.common.collect.Lists;
 import com.qiniu.common.QiniuException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -38,6 +39,7 @@ import org.code4everything.wetool.plugin.qiniu.util.QiniuUtils;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
 import java.time.LocalDate;
@@ -537,6 +539,21 @@ public class MainController extends BaseQiniuController {
         FxUtils.chooseFiles(this::appendFile);
     }
 
+    @Override
+    public void openFolder(File folder) {
+        appendFile(folder.listFiles(), false);
+    }
+
+    @Override
+    public void openMultiFiles(List<File> files) {
+        appendFile(files);
+    }
+
+    @Override
+    public void openFile(File file) {
+        openMultiFiles(Lists.newArrayList(file));
+    }
+
     /**
      * 添加上传的文件，支持拖曳文件夹
      */
@@ -548,7 +565,7 @@ public class MainController extends BaseQiniuController {
     /**
      * 添加上传的文件，支持拖曳文件夹
      */
-    private void appendFile(File[] files, boolean isRecursive) {
+    private void appendFile(@Nullable File[] files, boolean isRecursive) {
         if (ArrayUtil.isNotEmpty(files)) {
             for (File file : files) {
                 if (file.isDirectory()) {
