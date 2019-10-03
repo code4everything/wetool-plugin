@@ -5,9 +5,10 @@ import cn.hutool.system.SystemUtil;
 import com.alibaba.fastjson.JSON;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import org.code4everything.boot.config.BootConfig;
 import org.code4everything.wetool.WeApplication;
 import org.code4everything.wetool.plugin.PluginLoader;
-import org.code4everything.wetool.plugin.support.WePluginSupportable;
+import org.code4everything.wetool.plugin.support.WePluginSupporter;
 import org.code4everything.wetool.plugin.support.config.WeConfig;
 import org.code4everything.wetool.plugin.support.config.WeInitialize;
 import org.code4everything.wetool.plugin.support.config.WePluginInfo;
@@ -24,27 +25,28 @@ import java.util.Objects;
 @Slf4j
 public class WetoolTester extends WeApplication {
 
-    private static WePluginSupportable supportable;
+    private static WePluginSupporter supporter;
 
     private static WePluginInfo info;
 
-    public static void runTest(WePluginSupportable supportable, String[] args) {
-        runTest(supportable, getConfig(), args);
+    public static void runTest(WePluginSupporter supporter, String[] args) {
+        runTest(supporter, getConfig(), args);
     }
 
-    public static void runTest(WePluginSupportable supportable, WeConfig config, String[] args) {
+    public static void runTest(WePluginSupporter supporter, WeConfig config, String[] args) {
         String json = IoUtil.read(WetoolTester.class.getResourceAsStream("/plugin.json"), "utf-8");
-        runTest(JSON.parseObject(json, WePluginInfo.class), supportable, config, args);
+        runTest(JSON.parseObject(json, WePluginInfo.class), supporter, config, args);
     }
 
-    public static void runTest(WePluginInfo info, WePluginSupportable supportable, String[] args) {
-        runTest(info, supportable, getConfig(), args);
+    public static void runTest(WePluginInfo info, WePluginSupporter supporter, String[] args) {
+        runTest(info, supporter, getConfig(), args);
     }
 
-    public static void runTest(WePluginInfo info, WePluginSupportable supportable, WeConfig config, String[] args) {
-        log.info("start wetool on os: {}", SystemUtil.getOsInfo().getName());
+    public static void runTest(WePluginInfo info, WePluginSupporter supporter, WeConfig config, String[] args) {
+        log.info("starting wetool on os: {}", SystemUtil.getOsInfo().getName());
+        BootConfig.setDebug(true);
         WetoolTester.info = info;
-        WetoolTester.supportable = supportable;
+        WetoolTester.supporter = supporter;
         BeanFactory.register(config);
         launch(args);
     }
@@ -76,7 +78,7 @@ public class WetoolTester extends WeApplication {
     public void start(Stage stage) {
         super.start(stage);
         Objects.requireNonNull(info);
-        Objects.requireNonNull(supportable);
-        PluginLoader.registerPlugin(info, supportable);
+        Objects.requireNonNull(supporter);
+        PluginLoader.registerPlugin(info, supporter);
     }
 }

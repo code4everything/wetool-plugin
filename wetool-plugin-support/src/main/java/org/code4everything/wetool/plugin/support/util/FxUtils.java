@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.FileUtils;
 import org.code4everything.boot.base.function.VoidFunction;
 import org.code4everything.wetool.plugin.support.BaseViewController;
-import org.code4everything.wetool.plugin.support.WePluginSupportable;
+import org.code4everything.wetool.plugin.support.WePluginSupporter;
 import org.code4everything.wetool.plugin.support.constant.AppConsts;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
@@ -323,7 +323,7 @@ public class FxUtils {
     }
 
     /**
-     * 插件请调用下面的 {@link #loadFxml(WePluginSupportable, String)} 方法，而不是此方法
+     * 插件请调用下面的 {@link #loadFxml(WePluginSupporter, String)} 方法，而不是此方法
      */
     public static Pane loadFxml(String url) {
         return loadFxml(FxUtils.class.getResource(url), FxUtils.class.getClassLoader());
@@ -332,13 +332,13 @@ public class FxUtils {
     /**
      * 加载视图
      *
-     * @param supportable 实现了 {@link WePluginSupportable} 的类
+     * @param supporter 实现了 {@link WePluginSupporter} 的类
      * @param url 视图在classpath中路径
      *
      * @since 1.0.0
      */
-    public static Pane loadFxml(WePluginSupportable supportable, String url) {
-        Class clazz = supportable.getClass();
+    public static Pane loadFxml(WePluginSupporter supporter, String url) {
+        Class clazz = supporter.getClass();
         return loadFxml(clazz.getResource(url), clazz.getClassLoader());
     }
 

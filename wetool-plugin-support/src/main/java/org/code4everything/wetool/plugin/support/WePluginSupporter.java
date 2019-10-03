@@ -9,7 +9,7 @@ import org.code4everything.wetool.plugin.support.config.WePluginInfo;
  * @author pantao
  * @since 2019/8/22
  */
-public interface WePluginSupportable {
+public interface WePluginSupporter {
 
     /**
      * 初始化操作

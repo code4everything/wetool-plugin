@@ -14,12 +14,12 @@ public class AppConsts {
     /**
      * 当前版本号
      */
-    public static final String CURRENT_VERSION = "1.0.1";
+    public static final String CURRENT_VERSION = "1.0.2";
 
     /**
      * 兼容的最低版本号
      */
-    public static final String LOWER_VERSION = "1.0.0";
+    public static final String COMPATIBLE_LOWER_VERSION = "1.0.2";
 
     @UtilityClass
     public static class Tip {
