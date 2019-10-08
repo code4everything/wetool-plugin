@@ -3,6 +3,7 @@ package org.code4everything.wetool.plugin.support.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
@@ -52,6 +53,19 @@ public class FxUtils {
     private static final int DOUBLE_CLICK = 2;
 
     private static final Map<String, Menu> MENU_MAP = new ConcurrentHashMap<>(4);
+
+    /**
+     * 清空文本输入框
+     *
+     * @since 1.0.2
+     */
+    public static void clearText(TextInputControl... tics) {
+        if (ArrayUtil.isNotEmpty(tics)) {
+            for (TextInputControl tic : tics) {
+                tic.clear();
+            }
+        }
+    }
 
     /**
      * 生成一个名称唯一的菜单，并添加至插件菜单，菜单存在时直接返回
@@ -376,7 +390,9 @@ public class FxUtils {
         }
         FXMLLoader.setDefaultClassLoader(loader);
         try {
-            return FXMLLoader.load(url);
+            Pane pane = FXMLLoader.load(url);
+            BeanFactory.register(nodeKey, pane);
+            return pane;
         } catch (Exception e) {
             FxDialogs.showException(AppConsts.Tip.FXML_ERROR, e);
             return null;

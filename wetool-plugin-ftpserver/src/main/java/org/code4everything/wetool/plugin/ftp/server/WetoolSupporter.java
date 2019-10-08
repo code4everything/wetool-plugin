@@ -4,13 +4,13 @@ import cn.hutool.core.util.ObjectUtil;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import org.code4everything.wetool.plugin.ftp.server.config.FtpServerConfig;
-import org.code4everything.wetool.plugin.support.WePluginSupportable;
+import org.code4everything.wetool.plugin.support.WePluginSupporter;
 
 /**
  * @author pantao
  * @since 2019/9/23
  */
-public class WetoolSupporter implements WePluginSupportable {
+public class WetoolSupporter implements WePluginSupporter {
 
     private final String TITLE = "简易FTP服务器";
 

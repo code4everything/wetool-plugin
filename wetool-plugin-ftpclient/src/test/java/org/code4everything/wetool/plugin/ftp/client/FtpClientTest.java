@@ -34,6 +34,6 @@ public class FtpClientTest {
         json.put("easeFtp", ftpConfig);
         config.setConfigJson(json);
 
-        WetoolTester.runTest(new WetoolSupporter(), config, args);
+        WetoolTester.runTest(config, args);
     }
 }

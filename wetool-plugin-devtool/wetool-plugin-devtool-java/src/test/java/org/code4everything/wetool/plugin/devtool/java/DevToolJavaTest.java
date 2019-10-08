@@ -13,6 +13,6 @@ public class DevToolJavaTest {
     public static void main(String[] args) {
         WeConfig config = WetoolTester.getConfig();
         config.setFileChooserInitDir(FileUtils.currentWorkDir());
-        WetoolTester.runTest(new WetoolSupporter(), config, args);
+        WetoolTester.runTest(config, args);
     }
 }

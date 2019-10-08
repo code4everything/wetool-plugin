@@ -7,6 +7,7 @@ import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.constant.AppConsts;
 
 import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,7 +22,7 @@ public class BeanFactory {
 
     private static final Map<Class<?>, Object> SINGLETON_MAPPING = new ConcurrentHashMap<>(16);
 
-    private static final Map<String, BaseViewController> VIEW_MAPPING = new ConcurrentHashMap<>(16);
+    private static final Map<String, WeakReference<BaseViewController>> VIEW_MAPPING = new ConcurrentHashMap<>(16);
 
     private static final Map<String, SoftReference<Object>> PROTOTYPE_MAPPING = new ConcurrentHashMap<>(16);
 
@@ -59,7 +60,7 @@ public class BeanFactory {
      */
     public static void registerView(String tabId, String tabName, BaseViewController viewController) {
         register(viewController);
-        VIEW_MAPPING.put(tabId + tabName, viewController);
+        VIEW_MAPPING.put(tabId + tabName, new WeakReference<>(viewController));
     }
 
     /**
@@ -76,7 +77,7 @@ public class BeanFactory {
      * @param viewName 由tabId和tabName拼接而成
      */
     public static BaseViewController getView(String viewName) {
-        return VIEW_MAPPING.get(viewName);
+        return ReferenceUtils.unwrap(VIEW_MAPPING.get(viewName));
     }
 
     /**

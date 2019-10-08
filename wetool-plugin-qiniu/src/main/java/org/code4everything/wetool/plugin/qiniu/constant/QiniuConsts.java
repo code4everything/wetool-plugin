@@ -21,7 +21,7 @@ public class QiniuConsts {
 
     public static final String CONFIG_PATH = FileUtils.currentWorkDir("qiniu-config.json");
 
-    public static final String QINIU_VIEW_URL = "/Main.fxml";
+    public static final String QINIU_VIEW_URL = "/ease/qiniu/Main.fxml";
 
     public static final String QINIU_KEY_URL = "https://portal.qiniu.com/user/key";
 

@@ -4,7 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.sample.controller.SampleController;
-import org.code4everything.wetool.plugin.support.WePluginSupportable;
+import org.code4everything.wetool.plugin.support.WePluginSupporter;
 import org.code4everything.wetool.plugin.support.config.WePluginInfo;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
@@ -14,7 +14,7 @@ import org.code4everything.wetool.plugin.support.util.FxUtils;
  * @since 2019/8/23
  */
 @Slf4j
-public class WetoolSupporter implements WePluginSupportable {
+public class WetoolSupporter implements WePluginSupporter {
 
     /**
      * 初始化操作
@@ -37,7 +37,8 @@ public class WetoolSupporter implements WePluginSupportable {
         final MenuItem item = new MenuItem("插件示例");
         // 自定义事件监听
         item.setOnAction(e -> {
-            Node node = FxUtils.loadFxml(this, "/Sample.fxml");
+            // 注意保证fxml文件的url路径唯一性
+            Node node = FxUtils.loadFxml(this, "/ease/sample/Sample.fxml");
             FxDialogs.showInformation(SampleController.TAB_NAME, "welcome to wetool plugin");
             FxUtils.openTab(node, SampleController.TAB_ID, SampleController.TAB_NAME);
         });

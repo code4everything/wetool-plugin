@@ -7,7 +7,7 @@ import javafx.scene.control.Tab;
 import org.code4everything.wetool.plugin.qiniu.constant.QiniuConsts;
 import org.code4everything.wetool.plugin.qiniu.util.ConfigUtils;
 import org.code4everything.wetool.plugin.qiniu.util.DialogUtils;
-import org.code4everything.wetool.plugin.support.WePluginSupportable;
+import org.code4everything.wetool.plugin.support.WePluginSupporter;
 import org.code4everything.wetool.plugin.support.util.Callable;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
@@ -17,7 +17,7 @@ import java.util.Optional;
  * @author pantao
  * @since 2019/8/27
  */
-public class WetoolSupporter implements WePluginSupportable, Callable<Tab> {
+public class WetoolSupporter implements WePluginSupporter, Callable<Tab> {
 
     @Override
     public MenuItem registerBarMenu() {

@@ -11,7 +11,7 @@ import org.code4everything.wetool.plugin.ftp.client.config.FtpConfig;
 import org.code4everything.wetool.plugin.ftp.client.config.FtpInfo;
 import org.code4everything.wetool.plugin.ftp.client.constant.FtpConsts;
 import org.code4everything.wetool.plugin.ftp.client.model.LastUsedInfo;
-import org.code4everything.wetool.plugin.support.WePluginSupportable;
+import org.code4everything.wetool.plugin.support.WePluginSupporter;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
@@ -23,7 +23,7 @@ import java.util.List;
  * @since 2019/8/23
  */
 @Slf4j
-public class WetoolSupporter implements WePluginSupportable {
+public class WetoolSupporter implements WePluginSupporter {
 
     private FtpConfig ftpConfig;
 
@@ -71,14 +71,14 @@ public class WetoolSupporter implements WePluginSupportable {
         // 上传文件
         java.awt.MenuItem item = new java.awt.MenuItem(FtpConsts.UPLOAD_FILE);
         item.addActionListener(e -> {
-            Node dialogPane = FxUtils.loadFxml(this, "/FtpUploadDialog.fxml");
+            Node dialogPane = FxUtils.loadFxml(this, "/ease/ftpclient/FtpUploadDialog.fxml");
             FxDialogs.showDialog(null, dialogPane);
         });
         menu.add(item);
         // 下载文件
         item = new java.awt.MenuItem(FtpConsts.DOWNLOAD_FILE);
         item.addActionListener(e -> {
-            Node dialogPane = FxUtils.loadFxml(this, "/FtpDownloadDialog.fxml");
+            Node dialogPane = FxUtils.loadFxml(this, "/ease/ftpclient/FtpDownloadDialog.fxml");
             FxDialogs.showDialog(null, dialogPane);
         });
         menu.add(item);
@@ -87,7 +87,7 @@ public class WetoolSupporter implements WePluginSupportable {
 
     private void openTab() {
         Platform.runLater(() -> {
-            Node node = FxUtils.loadFxml(this, "/FtpTabView.fxml");
+            Node node = FxUtils.loadFxml(this, "/ease/ftpclient/FtpTabView.fxml");
             FxUtils.openTab(node, FtpConsts.TAB_ID, FtpConsts.TAB_NAME);
         });
     }

@@ -24,14 +24,14 @@
         <dependency>
             <groupId>org.code4everything</groupId>
             <artifactId>wetool-plugin-support</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
             <optional>true</optional>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.code4everything</groupId>
             <artifactId>wetool-plugin-test</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -64,7 +64,7 @@
     </build>
     ```
 
-3. 在`resources`目录下新建一个`Hello Word`视图，例如：`Sample.fxml`
+3. 在`resources`目录下新建一个`Hello Word`视图，例如：`/ease/sample/Sample.fxml`，这里我们需要保证路径的唯一性，至少应该增加两个父级目录，第一级文件夹用`AuthorName`命名，第二级文件夹用`AppName`命名
 
     ``` xml
     <?xml version="1.0" encoding="UTF-8"?>
@@ -132,11 +132,11 @@
     }
     ```
 
-5. 新建一个实现了`org.code4everything.wetool.plugin.support.WePluginSupportable`接口的类，例如：`org.code4everything.wetool.plugin.sample.WetoolSupporter`
+5. 新建一个实现了`org.code4everything.wetool.plugin.support.WePluginSupporter`接口的类，例如：`org.code4everything.wetool.plugin.sample.WetoolSupporter`
 
     ``` java
     @Slf4j
-    public class WetoolSupporter implements WePluginSupportable {
+    public class WetoolSupporter implements WePluginSupporter {
     
         /**
          * 初始化操作
@@ -159,7 +159,8 @@
             final MenuItem item = new MenuItem("插件示例");
             // 自定义事件监听
             item.setOnAction(e -> {
-                Node node = FxUtils.loadFxml(this, "/Sample.fxml");
+                // 注意保证fxml文件的url路径唯一性
+                Node node = FxUtils.loadFxml(this, "/ease/sample/Sample.fxml");
                 FxDialogs.showInformation(SampleController.TAB_NAME, "welcome to wetool plugin");
                 FxUtils.openTab(node, SampleController.TAB_ID, SampleController.TAB_NAME);
             });
@@ -192,13 +193,13 @@
 6. 在`resources`目录下新建`plugin.json`文件，并根据[`WePluginInfo`](wetool-plugin-support/src/main/java/org/code4everything/wetool/plugin/support/config/WePluginInfo.java)类中的属性进行配置，
 例如：
 
-    `requireWetoolVersion`指依赖`wetool-plugin-support`的版本，`supportedClass`表示实现了接口`WePluginSupportable`的类全名
+    `requireWetoolVersion`指依赖`wetool-plugin-support`的版本，`supportedClass`表示实现了接口`WePluginSupporter`的类全名
     ``` json
     {
         "author": "ease",
         "name": "sample",
-        "version": "1.0.1",
-        "requireWetoolVersion": "1.0.1",
+        "version": "1.0.2",
+        "requireWetoolVersion": "1.0.2",
         "supportedClass": "org.code4everything.wetool.plugin.sample.WetoolSupporter"
     }
     ```
@@ -209,7 +210,7 @@
     public class SampleTest {
     
         public static void main(String[] args) {
-            WetoolTester.runTest(new WetoolSupporter(), args);
+            WetoolTester.runTest(args);
         }
     }
     ```
