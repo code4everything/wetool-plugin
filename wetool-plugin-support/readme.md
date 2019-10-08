@@ -44,8 +44,8 @@ FxUtils.getStage();
 // 用系统默认软件打开文件
 FxUtils.openFile(File);
 
-// 加载视图，参数说明：实现了WePluginSupporter的类，视图在classpath中路径
-FxUtils.loadFxml(WePluginSupporter, String);
+// 加载视图，参数说明：视图在classpath中路径
+FxUtils.loadFxml(String);
 
 // 创建菜单
 FxUtils.createMenuItem(String, EventHandler<ActionEvent>);

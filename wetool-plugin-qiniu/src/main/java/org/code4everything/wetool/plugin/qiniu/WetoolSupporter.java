@@ -1,5 +1,7 @@
 package org.code4everything.wetool.plugin.qiniu;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
@@ -21,13 +23,12 @@ public class WetoolSupporter implements WePluginSupporter, Callable<Tab> {
 
     @Override
     public MenuItem registerBarMenu() {
-        MenuItem item = new MenuItem(QiniuConsts.TAB_NAME);
-        item.setOnAction(event -> {
-            Node node = FxUtils.loadFxml(this, QiniuConsts.QINIU_VIEW_URL);
-            FxUtils.openTab(node, QiniuConsts.TAB_ID, QiniuConsts.TAB_NAME, this);
+        final Callable<Tab> callable = this;
+        return FxUtils.createMenuItem(QiniuConsts.TAB_NAME, (EventHandler<ActionEvent>) event -> {
+            Node node = FxUtils.loadFxml(QiniuConsts.QINIU_VIEW_URL);
+            FxUtils.openTab(node, QiniuConsts.TAB_ID, QiniuConsts.TAB_NAME, callable);
             ConfigUtils.loadConfig();
         });
-        return item;
     }
 
     @Override

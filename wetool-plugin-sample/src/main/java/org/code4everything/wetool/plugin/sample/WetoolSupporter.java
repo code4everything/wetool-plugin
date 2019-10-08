@@ -1,5 +1,7 @@
 package org.code4everything.wetool.plugin.sample;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import lombok.extern.slf4j.Slf4j;
@@ -34,15 +36,12 @@ public class WetoolSupporter implements WePluginSupporter {
      */
     @Override
     public MenuItem registerBarMenu() {
-        final MenuItem item = new MenuItem("插件示例");
-        // 自定义事件监听
-        item.setOnAction(e -> {
+        return FxUtils.createMenuItem("插件示例", (EventHandler<ActionEvent>) event -> {
             // 注意保证fxml文件的url路径唯一性
-            Node node = FxUtils.loadFxml(this, "/ease/sample/Sample.fxml");
+            Node node = FxUtils.loadFxml("/ease/sample/Sample.fxml");
             FxDialogs.showInformation(SampleController.TAB_NAME, "welcome to wetool plugin");
             FxUtils.openTab(node, SampleController.TAB_ID, SampleController.TAB_NAME);
         });
-        return item;
     }
 
     /**

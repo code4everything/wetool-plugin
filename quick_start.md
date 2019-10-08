@@ -160,7 +160,7 @@
             // 自定义事件监听
             item.setOnAction(e -> {
                 // 注意保证fxml文件的url路径唯一性
-                Node node = FxUtils.loadFxml(this, "/ease/sample/Sample.fxml");
+                Node node = FxUtils.loadFxml("/ease/sample/Sample.fxml");
                 FxDialogs.showInformation(SampleController.TAB_NAME, "welcome to wetool plugin");
                 FxUtils.openTab(node, SampleController.TAB_ID, SampleController.TAB_NAME);
             });

@@ -4,6 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
+import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -57,37 +60,31 @@ public class WetoolSupporter implements WePluginSupporter {
 
     @Override
     public MenuItem registerBarMenu() {
-        MenuItem item = new MenuItem(FtpConsts.TAB_NAME);
         if (ftpConfig.getShowOnStartup()) {
             openTab();
         }
-        item.setOnAction(e -> openTab());
-        return item;
+        return FxUtils.createMenuItem(FtpConsts.TAB_NAME, (EventHandler<ActionEvent>) e -> openTab());
     }
 
     @Override
     public java.awt.MenuItem registerTrayMenu() {
         java.awt.Menu menu = new java.awt.Menu(FtpConsts.TAB_NAME);
         // 上传文件
-        java.awt.MenuItem item = new java.awt.MenuItem(FtpConsts.UPLOAD_FILE);
-        item.addActionListener(e -> {
-            Node dialogPane = FxUtils.loadFxml(this, "/ease/ftpclient/FtpUploadDialog.fxml");
+        menu.add(FxUtils.createMenuItem(FtpConsts.UPLOAD_FILE, (ActionListener) e -> {
+            Node dialogPane = FxUtils.loadFxml("/ease/ftpclient/FtpUploadDialog.fxml");
             FxDialogs.showDialog(null, dialogPane);
-        });
-        menu.add(item);
+        }));
         // 下载文件
-        item = new java.awt.MenuItem(FtpConsts.DOWNLOAD_FILE);
-        item.addActionListener(e -> {
-            Node dialogPane = FxUtils.loadFxml(this, "/ease/ftpclient/FtpDownloadDialog.fxml");
+        menu.add(FxUtils.createMenuItem(FtpConsts.DOWNLOAD_FILE, (ActionListener) e -> {
+            Node dialogPane = FxUtils.loadFxml("/ease/ftpclient/FtpDownloadDialog.fxml");
             FxDialogs.showDialog(null, dialogPane);
-        });
-        menu.add(item);
+        }));
         return menu;
     }
 
     private void openTab() {
         Platform.runLater(() -> {
-            Node node = FxUtils.loadFxml(this, "/ease/ftpclient/FtpTabView.fxml");
+            Node node = FxUtils.loadFxml("/ease/ftpclient/FtpTabView.fxml");
             FxUtils.openTab(node, FtpConsts.TAB_ID, FtpConsts.TAB_NAME);
         });
     }
