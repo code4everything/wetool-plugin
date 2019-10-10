@@ -459,7 +459,13 @@ public class MainController extends BaseQiniuController {
         dataLength = 0;
         dataSize = 0;
         // 正则匹配查询
-        Pattern pattern = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
+        Pattern pattern;
+        try {
+            pattern = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
+        } catch (Exception e) {
+            // 忽略不正确的正则表达式
+            return;
+        }
         for (FileBean file : resData) {
             if (pattern.matcher(file.getName()).find()) {
                 files.add(file);

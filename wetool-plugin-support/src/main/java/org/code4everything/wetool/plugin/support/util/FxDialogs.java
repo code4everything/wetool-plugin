@@ -144,7 +144,7 @@ public class FxDialogs {
         showAlert(null, content, Alert.AlertType.ERROR);
     }
 
-    public static void showException(String header, Exception e) {
+    public static void showException(String header, Throwable e) {
         Platform.runLater(() -> {
             Alert alert = makeAlert(header, "错误信息追踪：", Alert.AlertType.ERROR, Modality.APPLICATION_MODAL);
 
