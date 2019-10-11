@@ -148,7 +148,7 @@ public class MainController extends BaseQiniuController {
     private List<String> rootPath = new ArrayList<>();
 
     public static MainController getInstance() {
-        return BeanFactory.get(MainController.class);
+        return BeanFactory.getViewObject(QiniuConsts.TAB_ID + QiniuConsts.TAB_NAME);
     }
 
     public ObservableList<FileBean> getResData() {
@@ -686,7 +686,8 @@ public class MainController extends BaseQiniuController {
      */
     public void openConfigFile() {
         try {
-            Desktop.getDesktop().open(new File(QiniuConsts.CONFIG_PATH));
+            String path = StrUtil.emptyToDefault(QiniuConsts.CONFIG_PATH, QiniuConsts.DEFAULT_PATH);
+            Desktop.getDesktop().open(new File(path));
             // 用户触发是否重载配置文件
             Optional<ButtonType> result = DialogUtils.showConfirmation(QiniuConsts.RELOAD_CONFIG);
             if (result.isPresent() && result.get() == ButtonType.OK) {

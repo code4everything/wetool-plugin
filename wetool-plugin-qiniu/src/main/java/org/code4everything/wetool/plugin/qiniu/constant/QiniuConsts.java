@@ -2,6 +2,9 @@ package org.code4everything.wetool.plugin.qiniu.constant;
 
 import lombok.experimental.UtilityClass;
 import org.code4everything.boot.base.FileUtils;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
+
+import java.io.File;
 
 /**
  * 常量类
@@ -19,7 +22,9 @@ public class QiniuConsts {
 
     public static final String TAB_ID = AUTHOR + NAME;
 
-    public static final String CONFIG_PATH = FileUtils.currentWorkDir("qiniu-config.json");
+    public static final String DEFAULT_PATH = FileUtils.currentWorkDir("conf", "qiniu-config.json");
+
+    public static final String CONFIG_PATH = WeUtils.parsePathByOs("conf" + File.separator + "qiniu-config.json");
 
     public static final String QINIU_VIEW_URL = "/ease/qiniu/Main.fxml";
 

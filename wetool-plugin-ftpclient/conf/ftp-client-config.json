@@ -1,0 +1,16 @@
+{
+    "showOnStartup": false,
+    "ftps": [
+        {
+            "name": "EaseFtp",
+            "host": "127.0.0.1",
+            "port": 21,
+            "anonymous": false,
+            "username": "root",
+            "password": "root",
+            "charset": "utf-8",
+            "select": true,
+            "lazyConnect": true
+        }
+    ]
+}

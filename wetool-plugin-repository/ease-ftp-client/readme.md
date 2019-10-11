@@ -6,26 +6,24 @@
 
 ### 配置说明
 
-在你的`WeTool`配置文件中，加入`easeFtp`配置属性，并配置至少一个`ftp`服务器，插件即可正常加载
+在WeTool工作目录的`conf`目录下新增`ftp-client-config.json`文件，并配置至少一个`ftp`服务器，插件即可正常加载
 
 ``` json
 {
-    "easeFtp": {
-        "showOnStartup": false,
-        "ftps": [
-            {
-                "name": "EaseFtp",
-                "host": "127.0.0.1",
-                "port": 21,
-                "anonymous": false,
-                "username": "root",
-                "password": "root",
-                "charset": "utf-8",
-                "select": true,
-                "lazyConnect": true
-            }
-        ]
-    }
+    "showOnStartup": false,
+    "ftps": [
+        {
+            "name": "EaseFtp",
+            "host": "127.0.0.1",
+            "port": 21,
+            "anonymous": false,
+            "username": "root",
+            "password": "root",
+            "charset": "utf-8",
+            "select": true,
+            "lazyConnect": true
+        }
+    ]
 }
 ```
 

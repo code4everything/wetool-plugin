@@ -1,11 +1,14 @@
 package org.code4everything.wetool.plugin.ftp.client.config;
 
-import cn.hutool.core.collection.CollUtil;
-import com.google.common.collect.Lists;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import lombok.*;
+import org.code4everything.boot.base.FileUtils;
 import org.code4everything.boot.base.bean.BaseBean;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +24,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class FtpConfig implements BaseBean, Serializable {
 
-    private static final List<String> KEYS = Lists.newArrayList("easeFtp", "EaseFtp", "ease_ftp", "ftp", "FTP");
+    private static final String PATH = "conf" + File.separator + "ftp-client-config.json";
 
     private static final long serialVersionUID = 6979297033248219537L;
 
@@ -33,15 +36,11 @@ public class FtpConfig implements BaseBean, Serializable {
     private List<FtpInfo> ftps;
 
     public static FtpConfig getConfig() {
-        FtpConfig config = null;
-        for (String key : KEYS) {
-            if (Objects.isNull(config) || CollUtil.isEmpty(config.getFtps())) {
-                config = WeUtils.getConfig().getConfig(key, FtpConfig.class);
-            } else {
-                break;
-            }
+        String path = StrUtil.emptyToDefault(WeUtils.parsePathByOs(PATH), FileUtils.currentWorkDir(PATH));
+        if (FileUtil.exist(path)) {
+            return JSON.parseObject(FileUtil.readUtf8String(path), FtpConfig.class);
         }
-        return config;
+        return null;
     }
 
     public static List<FtpInfo> getFtps(FtpConfig ftpConfig) {

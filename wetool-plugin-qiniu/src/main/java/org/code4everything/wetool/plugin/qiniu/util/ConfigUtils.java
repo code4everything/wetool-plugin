@@ -25,7 +25,7 @@ import java.util.ArrayList;
 @UtilityClass
 public class ConfigUtils {
 
-    private static final String CONFIG_PATH = QiniuConsts.CONFIG_PATH;
+    private static final String CONFIG_PATH = StrUtil.emptyToDefault(QiniuConsts.CONFIG_PATH, QiniuConsts.DEFAULT_PATH);
 
     /**
      * 加载配置文件

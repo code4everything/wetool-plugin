@@ -15,12 +15,16 @@ import org.code4everything.wetool.plugin.ftp.server.config.FtpServerConfig;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 
+import java.io.File;
+
 /**
  * @author pantao
  * @since 2019/9/23
  */
 @UtilityClass
 class FtpServerManager {
+
+    private static final String PATH = "conf" + File.separator + "ftp-server-config.json";
 
     private static FtpServer server;
 
@@ -74,9 +78,9 @@ class FtpServerManager {
     }
 
     static FtpServerConfig loadConfig() {
-        String path = WeUtils.parsePathByOs("ftp-server-config.json");
+        String path = WeUtils.parsePathByOs(PATH);
         if (StrUtil.isEmpty(path)) {
-            FxDialogs.showError("配置文件：ftp-server-config.json 不存在！");
+            FxDialogs.showError("配置文件：" + path + " 不存在！");
             return null;
         }
         return JSON.parseObject(FileUtil.readUtf8String(path), FtpServerConfig.class);
