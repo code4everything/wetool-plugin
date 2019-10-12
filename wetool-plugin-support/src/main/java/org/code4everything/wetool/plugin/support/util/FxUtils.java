@@ -135,20 +135,6 @@ public class FxUtils {
     }
 
     /**
-     * 插件请调用下面的 {@link #openTab(Node, String, String)} 方法，而不是调用此方法
-     */
-    public static void openTab(Node tabContent, String tabName) {
-        openTab(tabContent, AppConsts.Title.APP_TITLE, tabName, null);
-    }
-
-    /**
-     * 插件请调用下面的 {@link #openTab(Node, String, String, Callable)} 方法，而不是调用此方法
-     */
-    public static void openTab(Node tabContent, String tabName, Callable<Tab> callable) {
-        openTab(tabContent, AppConsts.Title.APP_TITLE, tabName, callable);
-    }
-
-    /**
      * 打开选项卡
      *
      * @param tabContent 视图内容

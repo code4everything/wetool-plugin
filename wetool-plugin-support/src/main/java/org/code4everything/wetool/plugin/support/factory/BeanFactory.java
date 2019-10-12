@@ -4,11 +4,10 @@ import cn.hutool.core.util.ObjectUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.ReferenceUtils;
+import org.code4everything.boot.base.function.TypeFunction;
 import org.code4everything.wetool.plugin.support.BaseViewController;
-import org.code4everything.wetool.plugin.support.constant.AppConsts;
 
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,7 +23,7 @@ public class BeanFactory {
 
     private static final Map<Class<?>, Object> SINGLETON_MAPPING = new ConcurrentHashMap<>(16);
 
-    private static final Map<String, WeakReference<BaseViewController>> VIEW_MAPPING = new ConcurrentHashMap<>(16);
+    private static final Map<String, SoftReference<BaseViewController>> VIEW_MAPPING = new ConcurrentHashMap<>(16);
 
     private static final Map<String, SoftReference<Object>> PROTOTYPE_MAPPING = new ConcurrentHashMap<>(16);
 
@@ -44,9 +43,23 @@ public class BeanFactory {
     /**
      * 获取多例的Bean
      */
-    @SuppressWarnings("unchecked")
     public static <T> T get(String name) {
-        return (T) ReferenceUtils.unwrap(PROTOTYPE_MAPPING.get(name));
+        return get(name, null);
+    }
+
+    /**
+     * 获取多例的Bean，并自动注册
+     *
+     * @since 1.0.2
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T get(String name, TypeFunction<T> defaultCallback) {
+        T value = (T) ReferenceUtils.unwrap(PROTOTYPE_MAPPING.get(name));
+        if (ObjectUtil.isNull(value) && ObjectUtil.isNotNull(defaultCallback)) {
+            value = defaultCallback.call();
+            register(name, value);
+        }
+        return value;
     }
 
     /**
@@ -62,14 +75,7 @@ public class BeanFactory {
     }
 
     /**
-     * 注册视图Bean，插件请调用下面的 {@link #registerView(String, String, BaseViewController)}方法
-     */
-    public static void registerView(String tabName, BaseViewController viewController) {
-        registerView(AppConsts.Title.APP_TITLE, tabName, viewController);
-    }
-
-    /**
-     * 注册视图Bean，插件注册视图请调用此方法，以免冲突
+     * 注册视图Bean
      */
     public static void registerView(String tabId, String tabName, BaseViewController viewController) {
         String viewName = tabId + tabName;
@@ -79,7 +85,7 @@ public class BeanFactory {
             log.warn(msg, viewName, getView(viewName).getClass().getName(), viewController.getClass().getName());
             return;
         }
-        VIEW_MAPPING.put(tabId + tabName, new WeakReference<>(viewController));
+        VIEW_MAPPING.put(viewName, new SoftReference<>(viewController));
     }
 
     /**
@@ -88,6 +94,21 @@ public class BeanFactory {
     @SuppressWarnings("unchecked")
     public static <T> T get(Class<T> clazz) {
         return (T) SINGLETON_MAPPING.get(clazz);
+    }
+
+    /**
+     * 获取单例Bean，并自动注册
+     *
+     * @since 1.0.2
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T get(Class<T> clazz, TypeFunction<T> defaultCallback) {
+        T value = (T) SINGLETON_MAPPING.get(clazz);
+        if (ObjectUtil.isNull(value) && ObjectUtil.isNotNull(defaultCallback)) {
+            value = defaultCallback.call();
+            register(value);
+        }
+        return value;
     }
 
     /**

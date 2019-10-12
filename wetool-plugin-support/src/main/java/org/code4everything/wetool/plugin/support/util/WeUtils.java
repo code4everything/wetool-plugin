@@ -37,31 +37,31 @@ public class WeUtils {
     /**
      * 解析文件路径
      *
-     * @param file 默认文件
+     * @param filename 默认文件名
      *
      * @return 文件路径
      *
      * @since 1.0.1
      */
-    public static String parsePathByOs(String file) {
-        return parsePathByOs(FileUtils.currentWorkDir(), file);
+    public static String parsePathByOs(String filename) {
+        return parsePathByOs(FileUtils.currentWorkDir(), filename);
     }
 
     /**
      * 解析文件路径
      *
      * @param parentDir 父文件夹
-     * @param file 默认文件
+     * @param filename 默认文件名
      *
      * @return 文件路径
      *
      * @since 1.0.1
      */
-    public static String parsePathByOs(String parentDir, String file) {
-        int idx = file.lastIndexOf(StringConsts.Sign.DOT);
-        String name = file.substring(0, idx);
-        String ext = file.substring(idx);
-        return parsePathByOs(parentDir, name + "-win" + ext, name + "-mac" + ext, name + "-lin" + ext, file);
+    public static String parsePathByOs(String parentDir, String filename) {
+        int idx = filename.lastIndexOf(StringConsts.Sign.DOT);
+        String name = filename.substring(0, idx);
+        String ext = filename.substring(idx);
+        return parsePathByOs(parentDir, name + "-win" + ext, name + "-mac" + ext, name + "-lin" + ext, filename);
     }
 
     /**
