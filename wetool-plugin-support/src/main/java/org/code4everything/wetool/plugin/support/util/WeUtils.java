@@ -3,6 +3,7 @@ package org.code4everything.wetool.plugin.support.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.OsInfo;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.FileUtils;
 import org.code4everything.boot.base.constant.IntegerConsts;
 import org.code4everything.boot.base.constant.StringConsts;
+import org.code4everything.boot.config.BootConfig;
 import org.code4everything.wetool.plugin.support.config.WeConfig;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
@@ -212,6 +214,17 @@ public class WeUtils {
     public static void exitSystem() {
         log.info("wetool exited");
         System.exit(IntegerConsts.ZERO);
+    }
+
+    /**
+     * 打印调试
+     */
+    public static void printDebug(String msg, Object... objects) {
+        if (BootConfig.isDebug()) {
+            String message = StrUtil.format(msg, objects);
+            Console.log(message);
+            log.warn(message);
+        }
     }
 
     private static int getCompressLen() {

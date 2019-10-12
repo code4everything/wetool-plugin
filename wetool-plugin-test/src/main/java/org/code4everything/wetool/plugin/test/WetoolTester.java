@@ -54,9 +54,9 @@ public class WetoolTester extends WeApplication {
         }
         // 启动WeTool
         log.info("starting wetool on os: {}", SystemUtil.getOsInfo().getName());
-        BootConfig.setDebug(true);
         WetoolTester.info = info;
         BeanFactory.register(config);
+        BootConfig.setDebug(true);
         launch(args);
     }
 

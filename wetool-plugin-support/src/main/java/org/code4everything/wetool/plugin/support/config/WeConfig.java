@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONPath;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.bean.BaseBean;
+import org.code4everything.boot.config.BootConfig;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.Serializable;
@@ -32,6 +33,8 @@ public class WeConfig implements BaseBean, Serializable {
     private static final long serialVersionUID = 6105929832284264685L;
 
     private String currentPath;
+
+    private boolean debug = false;
 
     // start------------------------------------------------------------------------------------------------------------
 
@@ -107,6 +110,7 @@ public class WeConfig implements BaseBean, Serializable {
             WeUtils.exitSystem();
         }
         filterPattern = null;
+        BootConfig.setDebug(debug);
     }
 
     /**
