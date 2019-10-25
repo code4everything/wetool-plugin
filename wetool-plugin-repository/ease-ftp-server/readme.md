@@ -10,15 +10,20 @@
 
 ``` json
 {
+    /*初始化时是否启动FTP服务*/
     "startOnStartup": true,
+    /*监听的端口*/
     "port": 21,
     "users": [
         {
             "name": "test",
             "password": "test",
+            /*监听的目录*/
             "homeDirectory": "",
+            /*是否启动*/
             "enabled": true,
             "maxIdleTime": 0,
+            /*用户权限：r, w, rw*/
             "auth": "rw"
         }
     ]

@@ -10,9 +10,11 @@
 
 ``` json
 {
+    /*初始化时是否打开选项卡*/
     "showOnStartup": false,
     "ftps": [
         {
+            /*FTP连接名称*/
             "name": "EaseFtp",
             "host": "127.0.0.1",
             "port": 21,
@@ -20,7 +22,9 @@
             "username": "root",
             "password": "root",
             "charset": "utf-8",
+            /*是否为默认FTP*/
             "select": true,
+            /*是否懒连接*/
             "lazyConnect": true
         }
     ]
