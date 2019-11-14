@@ -18,10 +18,18 @@ public class WetoolSupporter implements WePluginSupporter {
     @Override
     public boolean initialize() {
         Menu menu = FxUtils.makePluginMenu(AppConsts.Title.DEV_TOOL);
-        menu.getItems().add(FxUtils.createMenuItem(CommonConsts.APP_NAME, (EventHandler<ActionEvent>) event -> {
-            Node node = FxUtils.loadFxml("/ease/devtool/redis/Main.fxml");
-            FxUtils.openTab(node, CommonConsts.APP_ID, CommonConsts.APP_NAME);
-        }));
+        menu.getItems().add(FxUtils.createMenuItem(CommonConsts.APP_NAME,
+                (EventHandler<ActionEvent>) event -> openTab()));
         return true;
+    }
+
+    @Override
+    public void debugCall() {
+        openTab();
+    }
+
+    private void openTab() {
+        Node node = FxUtils.loadFxml("/ease/devtool/redis/Main.fxml");
+        FxUtils.openTab(node, CommonConsts.APP_ID, CommonConsts.APP_NAME);
     }
 }

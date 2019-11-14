@@ -44,4 +44,11 @@ public interface WePluginSupporter {
      * @param trayMenu 注册的托盘菜单
      */
     default void registered(WePluginInfo info, MenuItem barMenu, java.awt.MenuItem trayMenu) {}
+
+    /**
+     * 开发调试时调用（最后调用）
+     *
+     * @since 1.0.2
+     */
+    default void debugCall() {}
 }

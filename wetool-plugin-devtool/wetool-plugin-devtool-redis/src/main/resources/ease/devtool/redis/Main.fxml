@@ -29,13 +29,13 @@
                 </HBox.margin>
             </TextField>
         </HBox>
-        <TreeView fx:id="redisExplorer" editable="true" prefHeight="480.0" prefWidth="300.0" VBox.vgrow="ALWAYS"/>
+        <TreeView fx:id="redisExplorer" prefHeight="480.0" prefWidth="300.0" VBox.vgrow="ALWAYS"
+                  onMouseClicked="#openRedis"/>
     </VBox>
     <VBox prefHeight="480.0" HBox.hgrow="ALWAYS">
         <HBox.margin>
             <Insets left="10.0"/>
         </HBox.margin>
-        <TabPane fx:id="redisExplorerTab" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
-                 VBox.vgrow="ALWAYS"/>
+        <TabPane fx:id="redisExplorerTab" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS"/>
     </VBox>
 </HBox>

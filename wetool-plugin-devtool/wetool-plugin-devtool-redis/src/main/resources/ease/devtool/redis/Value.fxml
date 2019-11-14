@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
-<?import java.lang.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.AnchorPane?>
-
-
+<?import javafx.scene.text.*?>
 <VBox prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.code4everything.wetool.plugin.devtool.redis.controller.ValueController">
     <padding>
@@ -15,7 +11,7 @@
     </padding>
     <Label text="服务器：{}，数据库：{}" VBox.vgrow="NEVER">
         <font>
-          <Font size="14.0"/>
+            <Font size="14.0"/>
         </font>
     </Label>
     <HBox VBox.vgrow="NEVER">
@@ -51,11 +47,52 @@
         </Label>
         <TextField fx:id="expire" HBox.hgrow="ALWAYS"/>
     </HBox>
+    <HBox VBox.vgrow="NEVER">
+        <VBox.margin>
+            <Insets top="10.0"/>
+        </VBox.margin>
+        <Label prefWidth="150.0" text="类型">
+            <font>
+                <Font size="14.0"/>
+            </font>
+        </Label>
+        <RadioButton mnemonicParsing="false" text="String" HBox.hgrow="NEVER"/>
+        <RadioButton mnemonicParsing="false" text="List" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </RadioButton>
+        <RadioButton mnemonicParsing="false" text="Set" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </RadioButton>
+        <RadioButton mnemonicParsing="false" text="Sorted Set" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </RadioButton>
+        <RadioButton mnemonicParsing="false" text="Hash" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </RadioButton>
+    </HBox>
+    <Separator prefWidth="200.0" VBox.vgrow="NEVER">
+        <VBox.margin>
+            <Insets top="5.0"/>
+        </VBox.margin>
+    </Separator>
     <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
         <VBox.margin>
             <Insets top="10.0"/>
         </VBox.margin>
-        <Button mnemonicParsing="false" onAction="#refresh" text="刷新" HBox.hgrow="NEVER"/>
+        <Button mnemonicParsing="false" onAction="#delete" text="删除" HBox.hgrow="NEVER"/>
+        <Button mnemonicParsing="false" onAction="#refresh" text="刷新" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </Button>
         <Button mnemonicParsing="false" onAction="#update" text="更新" HBox.hgrow="NEVER">
             <HBox.margin>
                 <Insets left="10.0"/>

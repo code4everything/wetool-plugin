@@ -31,4 +31,8 @@ public class ValueController {
     public void update() {
 
     }
+
+    public void delete() {
+
+    }
 }
