@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <VBox prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
@@ -9,12 +8,25 @@
     <padding>
         <Insets top="10.0"/>
     </padding>
-    <TextField promptText="redis key" VBox.vgrow="ALWAYS"/>
-    <TableView prefHeight="250.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+    <HBox>
+        <ComboBox fx:id="searchWay" prefWidth="150.0"/>
+        <TextField fx:id="searchText" promptText="redis key" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS"
+                   onKeyReleased="#search">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </TextField>
+        <Button mnemonicParsing="false" onAction="#doSearch" text="搜索" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </Button>
+    </HBox>
+    <TableView prefHeight="250.0" prefWidth="200.0" VBox.vgrow="ALWAYS" fx:id="keyTable">
         <columns>
-            <TableColumn editable="false" minWidth="300.0" prefWidth="75.0" text="名称"/>
-            <TableColumn editable="false" minWidth="200.0" prefWidth="75.0" text="类型"/>
-            <TableColumn editable="false" minWidth="100.0" prefWidth="75.0" text="大小"/>
+            <TableColumn editable="false" minWidth="300.0" prefWidth="75.0" text="名称" fx:id="keyColumn"/>
+            <TableColumn editable="false" minWidth="200.0" prefWidth="75.0" text="类型" fx:id="typeColumn"/>
+            <TableColumn editable="false" minWidth="100.0" prefWidth="75.0" text="大小" fx:id="sizeColumn"/>
         </columns>
         <VBox.margin>
             <Insets top="10.0"/>

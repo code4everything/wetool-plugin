@@ -1,0 +1,12 @@
+{
+    "servers": [
+        {
+            "alias": "",
+            "host": "localserver",
+            "port": 6379,
+            "password": "",
+            "initialConnect": true,
+            "dbs": []
+        }
+    ]
+}

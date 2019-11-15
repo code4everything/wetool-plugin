@@ -23,7 +23,8 @@
                 </HBox.margin>
             </Button>
             <Button mnemonicParsing="false" onAction="#reloadConfig" text="重载" HBox.hgrow="NEVER"/>
-            <TextField fx:id="currentServerDb" promptText="server:db" HBox.hgrow="ALWAYS">
+            <TextField fx:id="currentServerDb" promptText="server:db" HBox.hgrow="ALWAYS"
+                       onKeyReleased="#changeServerDb">
                 <HBox.margin>
                     <Insets left="10.0"/>
                 </HBox.margin>

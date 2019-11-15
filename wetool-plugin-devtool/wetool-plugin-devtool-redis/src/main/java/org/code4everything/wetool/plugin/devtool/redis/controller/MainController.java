@@ -2,25 +2,27 @@ package org.code4everything.wetool.plugin.devtool.redis.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import org.code4everything.wetool.plugin.devtool.redis.config.ConnectionConfiguration;
 import org.code4everything.wetool.plugin.devtool.redis.config.RedisConfiguration;
 import org.code4everything.wetool.plugin.devtool.redis.constant.CommonConsts;
+import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
 import org.code4everything.wetool.plugin.devtool.redis.util.RedisTabUtils;
 import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
-import redis.clients.jedis.Jedis;
 
-import java.util.*;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 /**
  * @author pantao
@@ -28,9 +30,7 @@ import java.util.*;
  */
 public class MainController implements BaseViewController {
 
-    private final Map<String, ConnectionConfiguration> configurationMap = new HashMap<>(8);
-
-    private final Map<String, Jedis> connectionMap = new HashMap<>(8);
+    private final Pattern serverDbPattern = Pattern.compile(".+:db\\d+$");
 
     @FXML
     public TextField currentServerDb;
@@ -42,8 +42,6 @@ public class MainController implements BaseViewController {
     public TabPane redisExplorerTab;
 
     private TreeItem<String> rootTree = new TreeItem<>("Redis Servers");
-
-    private int currentDb;
 
     @FXML
     private void initialize() {
@@ -61,8 +59,7 @@ public class MainController implements BaseViewController {
     }
 
     public void reloadConfig() {
-        configurationMap.clear();
-        connectionMap.clear();
+        JedisUtils.clearRedis();
         rootTree.getChildren().clear();
         // 加载配置
         RedisConfiguration redisConfiguration = RedisConfiguration.getConfiguration();
@@ -81,7 +78,7 @@ public class MainController implements BaseViewController {
                 });
             }
             rootTree.getChildren().add(serverTree);
-            configurationMap.put(server.getAlias(), server);
+            JedisUtils.putRedisConf(server.getAlias(), server);
         });
     }
 
@@ -106,25 +103,26 @@ public class MainController implements BaseViewController {
 
     private void openTab() throws Exception {
         String url = "/ease/devtool/redis/Explorer.fxml";
-        RedisTabUtils.openTab(redisExplorerTab, url, currentServerDb.getText(), serverDb -> {
-            int idx = serverDb.lastIndexOf(":");
-            openConnection(serverDb.substring(0, idx), serverDb.substring(idx + 1));
-        });
+        RedisTabUtils.openTab(redisExplorerTab, url, currentServerDb.getText());
     }
 
-    private void openConnection(String alias, String db) {
-        //        Jedis jedis = connectionMap.get(alias);
-        //        if (Objects.isNull(jedis)) {
-        //            ConnectionConfiguration conf = configurationMap.get(alias);
-        //            jedis = new Jedis(conf.getHost(), conf.getPort());
-        //            if (StrUtil.isNotEmpty(conf.getPassword())) {
-        //                jedis.auth(conf.getPassword());
-        //            }
-        //            connectionMap.put(alias, jedis);
-        //        }
-        //        if (!jedis.isConnected()) {
-        //            jedis.connect();
-        //        }
-        currentDb = StrUtil.isEmpty(db) ? 0 : NumberUtil.parseInt(StrUtil.removePrefix(db, "db"));
+    public void changeServerDb(KeyEvent keyEvent) {
+        FxUtils.enterDo(keyEvent, () -> {
+            String curr = currentServerDb.getText();
+            if (!serverDbPattern.matcher(curr).matches()) {
+                FxDialogs.showError("输入格式不正确！");
+                return;
+            }
+            int idx = curr.lastIndexOf(":");
+            if (!JedisUtils.containsServer(curr.substring(0, idx))) {
+                FxDialogs.showError("找不到对应的连接信息，请前往配置文件添加！");
+                return;
+            }
+            try {
+                openTab();
+            } catch (Exception e) {
+                FxDialogs.showException(CommonConsts.APP_NAME, e);
+            }
+        });
     }
 }
