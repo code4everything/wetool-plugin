@@ -9,7 +9,7 @@
     <padding>
         <Insets top="10.0"/>
     </padding>
-    <Label text="服务器：{}，数据库：{}" VBox.vgrow="NEVER">
+    <Label text="服务器：{}，数据库：{}" VBox.vgrow="NEVER" fx:id="serverLabel">
         <font>
             <Font size="14.0"/>
         </font>
@@ -23,7 +23,7 @@
                 <Font size="14.0"/>
             </font>
         </Label>
-        <TextField fx:id="key" HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="keyText" HBox.hgrow="ALWAYS"/>
     </HBox>
     <HBox VBox.vgrow="ALWAYS">
         <VBox.margin>
@@ -34,7 +34,8 @@
                 <Font size="14.0"/>
             </font>
         </Label>
-        <TextArea fx:id="value" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
+        <TextArea fx:id="valueText" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"
+                  promptText="使用换行分隔列表，SortedSeT和Hash的MemberScore和KeyValue使用英文冒号分隔！"/>
     </HBox>
     <HBox VBox.vgrow="NEVER">
         <VBox.margin>
@@ -45,7 +46,7 @@
                 <Font size="14.0"/>
             </font>
         </Label>
-        <TextField fx:id="expire" HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="expireText" HBox.hgrow="ALWAYS" promptText="-1表示不过期，支持 YYYY-MM-dd HH:mm:ss 日期格式，单位：秒"/>
     </HBox>
     <HBox VBox.vgrow="NEVER">
         <VBox.margin>
@@ -56,23 +57,31 @@
                 <Font size="14.0"/>
             </font>
         </Label>
-        <RadioButton mnemonicParsing="false" text="String" HBox.hgrow="NEVER"/>
-        <RadioButton mnemonicParsing="false" text="List" HBox.hgrow="NEVER">
+        <RadioButton mnemonicParsing="false" text="String" HBox.hgrow="NEVER" selected="true" fx:id="typeStringRadio">
+            <toggleGroup>
+                <ToggleGroup fx:id="typeGroup"/>
+            </toggleGroup>
+        </RadioButton>
+        <RadioButton mnemonicParsing="false" text="List" toggleGroup="$typeGroup" HBox.hgrow="NEVER"
+                     fx:id="typeListRadio">
             <HBox.margin>
                 <Insets left="10.0"/>
             </HBox.margin>
         </RadioButton>
-        <RadioButton mnemonicParsing="false" text="Set" HBox.hgrow="NEVER">
+        <RadioButton mnemonicParsing="false" text="Set" toggleGroup="$typeGroup" HBox.hgrow="NEVER"
+                     fx:id="typeSetRadio">
             <HBox.margin>
                 <Insets left="10.0"/>
             </HBox.margin>
         </RadioButton>
-        <RadioButton mnemonicParsing="false" text="Sorted Set" HBox.hgrow="NEVER">
+        <RadioButton mnemonicParsing="false" text="Sorted Set" toggleGroup="$typeGroup" HBox.hgrow="NEVER"
+                     fx:id="typeSortedSetRadio">
             <HBox.margin>
                 <Insets left="10.0"/>
             </HBox.margin>
         </RadioButton>
-        <RadioButton mnemonicParsing="false" text="Hash" HBox.hgrow="NEVER">
+        <RadioButton mnemonicParsing="false" text="Hash" toggleGroup="$typeGroup" HBox.hgrow="NEVER"
+                     fx:id="typeHashRadio">
             <HBox.margin>
                 <Insets left="10.0"/>
             </HBox.margin>
@@ -93,7 +102,7 @@
                 <Insets left="10.0"/>
             </HBox.margin>
         </Button>
-        <Button mnemonicParsing="false" onAction="#update" text="更新" HBox.hgrow="NEVER">
+        <Button mnemonicParsing="false" onAction="#update" text="保存" HBox.hgrow="NEVER">
             <HBox.margin>
                 <Insets left="10.0"/>
             </HBox.margin>

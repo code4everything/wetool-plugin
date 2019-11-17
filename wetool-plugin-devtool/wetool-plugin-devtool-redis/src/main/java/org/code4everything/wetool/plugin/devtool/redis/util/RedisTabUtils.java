@@ -1,13 +1,12 @@
 package org.code4everything.wetool.plugin.devtool.redis.util;
 
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.ObjectUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import lombok.experimental.UtilityClass;
-import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
+import org.code4everything.boot.base.function.VoidFunction;
 
 import java.util.Objects;
 
@@ -18,29 +17,26 @@ import java.util.Objects;
 @UtilityClass
 public class RedisTabUtils {
 
-    public static void openTab(TabPane tabPane, String url, String label) throws Exception {
+    public static void openTab(TabPane tabPane, String url, String id, String label, VoidFunction beforeOpen) throws Exception {
         // 是否已经打开
         for (int i = 0; i < tabPane.getTabs().size(); i++) {
             Tab t = tabPane.getTabs().get(i);
-            if (Objects.equals(t.getId(), label)) {
+            if (Objects.equals(t.getId(), id)) {
                 // 选项卡已打开
                 tabPane.getSelectionModel().select(i);
                 return;
             }
         }
 
-        // 连接Redis
-        int idx = label.lastIndexOf(":");
-        String alias = label.substring(0, idx);
-        String db = label.substring(idx + 1);
-        int currentDb = StrUtil.isEmpty(db) ? 0 : NumberUtil.parseInt(StrUtil.removePrefix(db, "db"));
-        JedisUtils.offerRedisServer(alias, currentDb);
+        if (ObjectUtil.isNotNull(beforeOpen)) {
+            beforeOpen.call();
+        }
 
         // 打开视图
         Node node = FXMLLoader.load(RedisTabUtils.class.getResource(url));
         Tab tab = new Tab(label);
         tab.setContent(node);
-        tab.setId(label);
+        tab.setId(id);
         tab.setClosable(true);
 
         // 选中TAB

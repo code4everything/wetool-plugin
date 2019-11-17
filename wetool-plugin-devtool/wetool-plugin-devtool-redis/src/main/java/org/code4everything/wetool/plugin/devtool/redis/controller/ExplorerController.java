@@ -1,14 +1,18 @@
 package org.code4everything.wetool.plugin.devtool.redis.controller;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import org.code4everything.boot.base.StringUtils;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisVO;
-import org.code4everything.wetool.plugin.support.util.FxUtils;
+import org.code4everything.wetool.plugin.devtool.redis.util.RedisTabUtils;
 import redis.clients.jedis.Jedis;
 
 import java.util.*;
@@ -67,41 +71,76 @@ public class ExplorerController implements Comparator<JedisVO> {
         keyColumn.setCellValueFactory(new PropertyValueFactory<>("key"));
     }
 
-    public void doSearch() {
+    public void doSearch() throws Exception {
         keyTable.getItems().clear();
-        List<JedisVO> list;
+        List<JedisVO> list = null;
         if ("Container".equals(searchWay.getValue())) {
             list = searchForContainer();
         } else if ("Pattern".equals(searchWay.getValue())) {
             list = searchForPattern();
-        } else {
-            list = searchForPrecise();
         }
-        list.sort(this);
-        keyTable.getItems().addAll(list);
+        if (CollUtil.isEmpty(list)) {
+            openKeyDetail(searchText.getText(), null);
+        } else {
+            list.sort(this);
+            keyTable.getItems().addAll(list);
+        }
     }
 
-    private List<JedisVO> searchForPrecise() {
-        return searchFor(searchText.getText());
+    public void addKey() throws Exception {
+        openKeyDetail(null, null);
     }
 
-    private List<JedisVO> searchFor(String pattern) {
+    public void search(KeyEvent keyEvent) throws Exception {
+        if (keyEvent.getCode() != KeyCode.ENTER) {
+            return;
+        }
+        doSearch();
+    }
+
+    @Override
+    public int compare(JedisVO j1, JedisVO j2) {
+        Integer o1 = keyOrder.getOrDefault(j1.getType(), 99);
+        Integer o2 = keyOrder.getOrDefault(j2.getType(), 99);
+        int diff = o1.compareTo(o2);
+        return diff == 0 ? j1.getKey().compareTo(j2.getKey()) : diff;
+    }
+
+    public void tableClicked(MouseEvent mouseEvent) throws Exception {
+        if (mouseEvent.getClickCount() != 2) {
+            return;
+        }
+        JedisVO jedisVO = keyTable.getSelectionModel().getSelectedItem();
+        if ("container".equals(jedisVO.getType())) {
+            searchWay.setValue("Container");
+            searchText.setText(jedisVO.getKey());
+            doSearch();
+        } else {
+            openKeyDetail(jedisVO.getKey(), jedisVO.getType());
+        }
+    }
+
+    private void openKeyDetail(String key, String type) throws Exception {
+        String url = "/ease/devtool/redis/Value.fxml";
+        String id = StrUtil.join(":", redisServer.getAlias(), redisServer.getDb(), key);
+        RedisTabUtils.openTab(keyTab, url, id, key, () -> JedisUtils.offerKeyExplorer(redisServer, key, type));
+    }
+
+    private List<JedisVO> searchForPattern() {
+        String pattern = StrUtil.addPrefixIfNot(searchText.getText(), "*");
+        pattern = StrUtil.addSuffixIfNot(pattern, "*");
+        pattern = StrUtil.emptyToDefault(pattern, "*");
+
         Jedis jedis = JedisUtils.getJedis(redisServer);
         Set<String> keys = jedis.keys(pattern);
         List<JedisVO> list = new ArrayList<>(keys.size());
         keys.forEach(key -> {
             JedisVO jedisVO = new JedisVO().setKey(key);
             jedisVO.setType(jedis.type(key));
-            //jedisVO.setSize(FileUtil.readableFileSize(jedis.bitcount(key)));
+            jedisVO.setSize(getSize(jedis, key, jedisVO.getType()));
             list.add(jedisVO);
         });
         return list;
-    }
-
-    private List<JedisVO> searchForPattern() {
-        String pattern = StrUtil.addPrefixIfNot(searchText.getText(), "*");
-        pattern = StrUtil.addSuffixIfNot(pattern, "*");
-        return searchFor(StrUtil.emptyToDefault(pattern, "*"));
     }
 
     private List<JedisVO> searchForContainer() {
@@ -127,7 +166,7 @@ public class ExplorerController implements Comparator<JedisVO> {
                     // 添加KEY
                     jedisVO.setKey(key);
                     jedisVO.setType(jedis.type(key));
-                    //jedisVO.setSize(FileUtil.readableFileSize(jedis.bitcount(key)));
+                    jedisVO.setSize(getSize(jedis, key, jedisVO.getType()));
                 }
                 list.add(jedisVO);
             }
@@ -135,15 +174,20 @@ public class ExplorerController implements Comparator<JedisVO> {
         return new ArrayList<>(list);
     }
 
-    public void search(KeyEvent keyEvent) {
-        FxUtils.enterDo(keyEvent, this::doSearch);
-    }
-
-    @Override
-    public int compare(JedisVO j1, JedisVO j2) {
-        Integer o1 = keyOrder.getOrDefault(j1.getType(), 99);
-        Integer o2 = keyOrder.getOrDefault(j2.getType(), 99);
-        int diff = o1.compareTo(o2);
-        return diff == 0 ? j1.getKey().compareTo(j2.getKey()) : diff;
+    private String getSize(Jedis jedis, String key, String type) {
+        switch (type) {
+            case "string":
+                return FileUtil.readableFileSize(jedis.strlen(key));
+            case "list":
+                return String.valueOf(jedis.llen(key));
+            case "set":
+                return String.valueOf(jedis.smembers(key).size());
+            case "zset":
+                return String.valueOf(jedis.zcount(key, Double.MIN_VALUE, Double.MAX_VALUE));
+            case "hash":
+                return String.valueOf(jedis.hlen(key));
+            default:
+                return "-";
+        }
     }
 }

@@ -2,6 +2,7 @@ package org.code4everything.wetool.plugin.devtool.redis.jedis;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.ReferenceUtils;
@@ -32,6 +33,8 @@ public class JedisUtils {
 
     private static RedisServer redisServer;
 
+    private static KeyExplorer keyExplorer;
+
     public static void clearRedis() {
         CONF_MAP.clear();
         JEDIS_MAP.clear();
@@ -53,8 +56,16 @@ public class JedisUtils {
         getJedis(alias, db);
     }
 
+    public static void offerKeyExplorer(RedisServer redisServer, String key, String type) {
+        keyExplorer = new KeyExplorer(redisServer, key, type);
+    }
+
     public static RedisServer getRedisServer() {
         return redisServer;
+    }
+
+    public static KeyExplorer getKeyExplorer() {
+        return keyExplorer;
     }
 
     public static Jedis getJedis(RedisServer redisServer) {
@@ -93,9 +104,24 @@ public class JedisUtils {
 
         private int db;
 
-        private RedisServer(String server, int db) {
-            this.alias = server;
+        private RedisServer(String alias, int db) {
+            this.alias = alias;
             this.db = db;
+        }
+    }
+
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    public static class KeyExplorer extends RedisServer {
+
+        private String key;
+
+        private String type;
+
+        private KeyExplorer(RedisServer redisServer, String key, String type) {
+            super(redisServer.getAlias(), redisServer.getDb());
+            this.key = key;
+            this.type = type;
         }
     }
 }

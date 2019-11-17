@@ -2,11 +2,14 @@ package org.code4everything.wetool.plugin.devtool.redis.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import org.code4everything.wetool.plugin.devtool.redis.config.ConnectionConfiguration;
@@ -82,47 +85,48 @@ public class MainController implements BaseViewController {
         });
     }
 
-    public void openRedis(MouseEvent event) {
+    public void openRedis(MouseEvent event) throws Exception {
         TreeItem<String> source = redisExplorer.getSelectionModel().getSelectedItem();
         if (source == rootTree) {
             return;
         }
-        FxUtils.doubleClicked(event, () -> {
-            if (source.getParent() == rootTree) {
-                currentServerDb.setText(source.getValue() + ":db0");
-            } else {
-                currentServerDb.setText(source.getParent().getValue() + ":" + source.getValue());
-            }
-            try {
-                openTab();
-            } catch (Exception e) {
-                FxDialogs.showException(CommonConsts.APP_NAME, e);
-            }
-        });
+        if (event.getClickCount() != 2) {
+            return;
+        }
+        if (source.getParent() == rootTree) {
+            currentServerDb.setText(source.getValue() + ":db0");
+        } else {
+            currentServerDb.setText(source.getParent().getValue() + ":" + source.getValue());
+        }
+        openTab();
     }
 
     private void openTab() throws Exception {
         String url = "/ease/devtool/redis/Explorer.fxml";
-        RedisTabUtils.openTab(redisExplorerTab, url, currentServerDb.getText());
+        String label = currentServerDb.getText();
+        RedisTabUtils.openTab(redisExplorerTab, url, label, label, () -> {
+            int idx = label.lastIndexOf(":");
+            String alias = label.substring(0, idx);
+            String db = label.substring(idx + 1);
+            int currentDb = StrUtil.isEmpty(db) ? 0 : NumberUtil.parseInt(StrUtil.removePrefix(db, "db"));
+            JedisUtils.offerRedisServer(alias, currentDb);
+        });
     }
 
-    public void changeServerDb(KeyEvent keyEvent) {
-        FxUtils.enterDo(keyEvent, () -> {
-            String curr = currentServerDb.getText();
-            if (!serverDbPattern.matcher(curr).matches()) {
-                FxDialogs.showError("输入格式不正确！");
-                return;
-            }
-            int idx = curr.lastIndexOf(":");
-            if (!JedisUtils.containsServer(curr.substring(0, idx))) {
-                FxDialogs.showError("找不到对应的连接信息，请前往配置文件添加！");
-                return;
-            }
-            try {
-                openTab();
-            } catch (Exception e) {
-                FxDialogs.showException(CommonConsts.APP_NAME, e);
-            }
-        });
+    public void changeServerDb(KeyEvent keyEvent) throws Exception {
+        if (keyEvent.getCode() != KeyCode.ENTER) {
+            return;
+        }
+        String curr = currentServerDb.getText();
+        if (!serverDbPattern.matcher(curr).matches()) {
+            FxDialogs.showError("输入格式不正确！");
+            return;
+        }
+        int idx = curr.lastIndexOf(":");
+        if (!JedisUtils.containsServer(curr.substring(0, idx))) {
+            FxDialogs.showError("找不到对应的连接信息，请前往配置文件添加！");
+            return;
+        }
+        openTab();
     }
 }

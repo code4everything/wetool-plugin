@@ -6,37 +6,42 @@
 <?import javafx.scene.layout.*?>
 <HBox prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.code4everything.wetool.plugin.devtool.redis.controller.MainController">
-    <padding>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-    </padding>
-    <VBox HBox.hgrow="NEVER">
-        <HBox prefWidth="200.0" VBox.vgrow="NEVER">
-            <VBox.margin>
-                <Insets/>
-            </VBox.margin>
-            <padding>
-                <Insets bottom="10.0"/>
-            </padding>
-            <Button mnemonicParsing="false" onAction="#openConfigFile" text="配置文件" HBox.hgrow="NEVER">
-                <HBox.margin>
-                    <Insets right="10.0"/>
-                </HBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#reloadConfig" text="重载" HBox.hgrow="NEVER"/>
-            <TextField fx:id="currentServerDb" promptText="server:db" HBox.hgrow="ALWAYS"
-                       onKeyReleased="#changeServerDb">
-                <HBox.margin>
-                    <Insets left="10.0"/>
-                </HBox.margin>
-            </TextField>
-        </HBox>
-        <TreeView fx:id="redisExplorer" prefHeight="480.0" prefWidth="300.0" VBox.vgrow="ALWAYS"
-                  onMouseClicked="#openRedis"/>
-    </VBox>
-    <VBox prefHeight="480.0" HBox.hgrow="ALWAYS">
+    <SplitPane dividerPositions="0.4" prefHeight="160.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
         <HBox.margin>
-            <Insets left="10.0"/>
+            <Insets/>
         </HBox.margin>
-        <TabPane fx:id="redisExplorerTab" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS"/>
-    </VBox>
+        <VBox>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+            <HBox prefWidth="200.0" VBox.vgrow="NEVER">
+                <VBox.margin>
+                    <Insets/>
+                </VBox.margin>
+                <padding>
+                    <Insets bottom="10.0"/>
+                </padding>
+                <Button mnemonicParsing="false" onAction="#openConfigFile" text="配置文件" HBox.hgrow="NEVER">
+                    <HBox.margin>
+                        <Insets right="10.0"/>
+                    </HBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#reloadConfig" text="重载" HBox.hgrow="NEVER"/>
+                <TextField fx:id="currentServerDb" onKeyReleased="#changeServerDb" promptText="server:db"
+                           HBox.hgrow="ALWAYS">
+                    <HBox.margin>
+                        <Insets left="10.0"/>
+                    </HBox.margin>
+                </TextField>
+            </HBox>
+            <TreeView fx:id="redisExplorer" onMouseClicked="#openRedis" prefHeight="480.0" prefWidth="300.0"
+                      VBox.vgrow="ALWAYS"/>
+        </VBox>
+        <VBox prefHeight="480.0">
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+            <TabPane fx:id="redisExplorerTab" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </SplitPane>
 </HBox>
