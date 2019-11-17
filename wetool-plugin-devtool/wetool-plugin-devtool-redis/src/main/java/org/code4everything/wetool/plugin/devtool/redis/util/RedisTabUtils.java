@@ -29,6 +29,13 @@ public class RedisTabUtils {
             }
         }
 
+        // 连接Redis
+        int idx = label.lastIndexOf(":");
+        String alias = label.substring(0, idx);
+        String db = label.substring(idx + 1);
+        int currentDb = StrUtil.isEmpty(db) ? 0 : NumberUtil.parseInt(StrUtil.removePrefix(db, "db"));
+        JedisUtils.offerRedisServer(alias, currentDb);
+
         // 打开视图
         Node node = FXMLLoader.load(RedisTabUtils.class.getResource(url));
         Tab tab = new Tab(label);
@@ -39,12 +46,5 @@ public class RedisTabUtils {
         // 选中TAB
         tabPane.getTabs().add(tab);
         tabPane.getSelectionModel().select(tabPane.getTabs().size() - 1);
-
-        // 连接Redis
-        int idx = label.lastIndexOf(":");
-        String alias = label.substring(0, idx);
-        String db = label.substring(idx + 1);
-        int currentDb = StrUtil.isEmpty(db) ? 0 : NumberUtil.parseInt(StrUtil.removePrefix(db, "db"));
-        JedisUtils.offerRedisServer(alias, currentDb);
     }
 }
