@@ -3,6 +3,7 @@ package org.code4everything.wetool.plugin.devtool.redis.controller;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -13,6 +14,7 @@ import org.code4everything.boot.base.StringUtils;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisVO;
 import org.code4everything.wetool.plugin.devtool.redis.util.RedisTabUtils;
+import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import redis.clients.jedis.Jedis;
 
 import java.util.*;
@@ -69,6 +71,7 @@ public class ExplorerController implements Comparator<JedisVO> {
         sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         keyColumn.setCellValueFactory(new PropertyValueFactory<>("key"));
+        keyTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     public void doSearch() throws Exception {
@@ -111,7 +114,7 @@ public class ExplorerController implements Comparator<JedisVO> {
             return;
         }
         JedisVO jedisVO = keyTable.getSelectionModel().getSelectedItem();
-        if ("container".equals(jedisVO.getType())) {
+        if (jedisVO.isContainer()) {
             searchWay.setValue("Container");
             searchText.setText(jedisVO.getKey());
             doSearch();
@@ -144,17 +147,14 @@ public class ExplorerController implements Comparator<JedisVO> {
     }
 
     private List<JedisVO> searchForContainer() {
-        // 查找容器下的Key
-        String keyParent = StrUtil.addSuffixIfNot(searchText.getText(), ":");
-        String keyPattern = StrUtil.addSuffixIfNot(keyParent, "*");
+        Set<String> keys = listKeysForContainer(searchText.getText());
         Jedis jedis = JedisUtils.getJedis(redisServer);
-        Set<String> keys = jedis.keys(StrUtil.emptyToDefault(keyPattern, "*"));
 
         Set<JedisVO> list = new HashSet<>(keys.size(), 1);
         keys.forEach(key -> {
             if (!list.contains(key)) {
                 JedisVO jedisVO = new JedisVO();
-                String child = StrUtil.removePrefix(key, keyParent);
+                String child = StrUtil.removePrefix(key, searchText.getText());
                 child = StringUtils.trim(child, ':', 2);
                 int idx = child.indexOf(":");
                 if (idx > 0 && idx < StringUtils.trim(child, ':', 1).length()) {
@@ -189,5 +189,28 @@ public class ExplorerController implements Comparator<JedisVO> {
             default:
                 return "-";
         }
+    }
+
+    public void deleteKeys() {
+        Set<String> keys = new HashSet<>();
+        ObservableList<JedisVO> list = keyTable.getSelectionModel().getSelectedItems();
+        list.forEach(jedisVO -> {
+            if (jedisVO.isContainer()) {
+                keys.addAll(listKeysForContainer(jedisVO.getKey()));
+            } else {
+                keys.add(jedisVO.getKey());
+            }
+        });
+        Jedis jedis = JedisUtils.getJedis(redisServer);
+        jedis.del(keys.toArray(new String[0]));
+        keyTable.getItems().removeAll(list);
+        FxDialogs.showInformation("删除成功！", null);
+    }
+
+    private Set<String> listKeysForContainer(String container) {
+        String keyParent = StrUtil.addSuffixIfNot(container, ":");
+        String keyPattern = StrUtil.addSuffixIfNot(keyParent, "*");
+        Jedis jedis = JedisUtils.getJedis(redisServer);
+        return jedis.keys(StrUtil.emptyToDefault(keyPattern, "*"));
     }
 }

@@ -37,6 +37,13 @@
                 <TableColumn fx:id="typeColumn" editable="false" minWidth="200.0" prefWidth="75.0" text="类型"/>
                 <TableColumn fx:id="sizeColumn" editable="false" minWidth="100.0" prefWidth="75.0" text="大小"/>
             </columns>
+            <contextMenu>
+                <ContextMenu>
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#deleteKeys" text="删除"/>
+                    </items>
+                </ContextMenu>
+            </contextMenu>
         </TableView>
         <TabPane fx:id="keyTab" prefHeight="200.0" prefWidth="200.0">
             <padding>
