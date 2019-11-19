@@ -9,7 +9,7 @@
     <padding>
         <Insets top="10.0"/>
     </padding>
-    <Label text="服务器：{}，数据库：{}" VBox.vgrow="NEVER" fx:id="serverLabel">
+    <Label fx:id="serverLabel" text="服务器：{}，数据库：{}" VBox.vgrow="NEVER">
         <font>
             <Font size="14.0"/>
         </font>
@@ -29,13 +29,29 @@
         <VBox.margin>
             <Insets top="10.0"/>
         </VBox.margin>
-        <Label prefWidth="150.0" text="缓存值" HBox.hgrow="NEVER">
-            <font>
-                <Font size="14.0"/>
-            </font>
-        </Label>
-        <TextArea fx:id="valueText" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"
-                  promptText="使用换行分隔列表，SortedSeT和Hash的MemberScore和KeyValue使用英文冒号分隔！"/>
+        <VBox>
+            <padding>
+                <Insets right="10.0"/>
+            </padding>
+            <Label prefWidth="140.0" text="缓存值" HBox.hgrow="NEVER">
+                <font>
+                    <Font size="14.0"/>
+                </font>
+            </Label>
+            <TextArea fx:id="jsonFormatText" prefWidth="140.0">
+                <VBox.margin>
+                    <Insets top="10.0"/>
+                </VBox.margin>
+            </TextArea>
+            <Button mnemonicParsing="false" onAction="#format2Json" prefWidth="140.0" text="自定义导出"
+                    VBox.vgrow="NEVER">
+                <VBox.margin>
+                    <Insets top="10.0"/>
+                </VBox.margin>
+            </Button>
+        </VBox>
+        <TextArea fx:id="valueText" prefHeight="200.0" prefWidth="200.0"
+                  promptText="使用换行分隔列表，SortedSeT和Hash的MemberScore和KeyValue使用英文冒号分隔！" HBox.hgrow="ALWAYS"/>
     </HBox>
     <HBox VBox.vgrow="NEVER">
         <VBox.margin>
@@ -46,7 +62,7 @@
                 <Font size="14.0"/>
             </font>
         </Label>
-        <TextField fx:id="expireText" HBox.hgrow="ALWAYS" promptText="-1表示不过期，支持 YYYY-MM-dd HH:mm:ss 日期格式，单位：秒"/>
+        <TextField fx:id="expireText" promptText="-1表示不过期，支持 YYYY-MM-dd HH:mm:ss 日期格式，单位：秒" HBox.hgrow="ALWAYS"/>
     </HBox>
     <HBox VBox.vgrow="NEVER">
         <VBox.margin>
@@ -57,31 +73,32 @@
                 <Font size="14.0"/>
             </font>
         </Label>
-        <RadioButton mnemonicParsing="false" text="String" HBox.hgrow="NEVER" selected="true" fx:id="typeStringRadio">
+        <RadioButton fx:id="typeStringRadio" mnemonicParsing="false" selected="true" text="String"
+                     HBox.hgrow="NEVER">
             <toggleGroup>
                 <ToggleGroup fx:id="typeGroup"/>
             </toggleGroup>
         </RadioButton>
-        <RadioButton mnemonicParsing="false" text="List" toggleGroup="$typeGroup" HBox.hgrow="NEVER"
-                     fx:id="typeListRadio">
+        <RadioButton fx:id="typeListRadio" mnemonicParsing="false" text="List" toggleGroup="$typeGroup"
+                     HBox.hgrow="NEVER">
             <HBox.margin>
                 <Insets left="10.0"/>
             </HBox.margin>
         </RadioButton>
-        <RadioButton mnemonicParsing="false" text="Set" toggleGroup="$typeGroup" HBox.hgrow="NEVER"
-                     fx:id="typeSetRadio">
+        <RadioButton fx:id="typeSetRadio" mnemonicParsing="false" text="Set" toggleGroup="$typeGroup"
+                     HBox.hgrow="NEVER">
             <HBox.margin>
                 <Insets left="10.0"/>
             </HBox.margin>
         </RadioButton>
-        <RadioButton mnemonicParsing="false" text="Sorted Set" toggleGroup="$typeGroup" HBox.hgrow="NEVER"
-                     fx:id="typeSortedSetRadio">
+        <RadioButton fx:id="typeSortedSetRadio" mnemonicParsing="false" text="Sorted Set" toggleGroup="$typeGroup"
+                     HBox.hgrow="NEVER">
             <HBox.margin>
                 <Insets left="10.0"/>
             </HBox.margin>
         </RadioButton>
-        <RadioButton mnemonicParsing="false" text="Hash" toggleGroup="$typeGroup" HBox.hgrow="NEVER"
-                     fx:id="typeHashRadio">
+        <RadioButton fx:id="typeHashRadio" mnemonicParsing="false" text="Hash" toggleGroup="$typeGroup"
+                     HBox.hgrow="NEVER">
             <HBox.margin>
                 <Insets left="10.0"/>
             </HBox.margin>

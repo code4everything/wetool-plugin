@@ -2,19 +2,18 @@ package org.code4everything.wetool.plugin.devtool.redis.controller;
 
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
+import org.code4everything.wetool.plugin.support.util.FxUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Tuple;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author pantao
@@ -54,6 +53,9 @@ public class ValueController {
     @FXML
     public RadioButton typeStringRadio;
 
+    @FXML
+    public TextArea jsonFormatText;
+
     private JedisUtils.KeyExplorer keyExplorer;
 
     private String key;
@@ -65,6 +67,7 @@ public class ValueController {
         keyText.setText(keyExplorer.getKey());
         key = keyText.getText();
         refresh();
+        jsonFormatText.setPromptText("prefix=[\r\ndelimiter=,\r\nsuffix=]\r\nwrapper=kv");
     }
 
     public void refresh() {
@@ -102,6 +105,60 @@ public class ValueController {
                 break;
         }
         valueText.setText(sb.toString());
+    }
+
+    public void format2Json() {
+        if (typeStringRadio.isSelected()) {
+            FxDialogs.showInformation("该类型无法转换为JSON！", null);
+            return;
+        }
+        // 分割所有参数
+        List<String> list = StrUtil.splitTrim(jsonFormatText.getText(), '\n');
+        Map<String, String> template = new HashMap<>(4, 1);
+        list.forEach(str -> {
+            // 分割KeyValue
+            List<String> items = StrUtil.splitTrim(str, '=');
+            if (items.size() >= 2) {
+                template.put(items.get(0), items.get(1));
+            }
+        });
+        // 获取并设置默认值
+        String prefix = template.getOrDefault("prefix", "[");
+        String delimiter = template.getOrDefault("delimiter", ",");
+        String suffix = template.getOrDefault("suffix", "]");
+        String wrapper = template.getOrDefault("wrapper", "kv");
+        StringJoiner joiner = new StringJoiner(delimiter, prefix, suffix);
+
+        // 格式化
+        List<String> values = StrUtil.splitTrim(valueText.getText(), '\n');
+        boolean hasKey = typeSortedSetRadio.isSelected() || typeHashRadio.isSelected();
+        values.forEach(value -> {
+            String key = "";
+            if (hasKey) {
+                List<String> items = StrUtil.splitTrim(value, ':');
+                value = "null";
+                if (items.size() > 0) {
+                    key = items.get(0);
+                }
+                if (items.size() > 1) {
+                    value = items.get(1);
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+            for (char c : wrapper.toCharArray()) {
+                if (c == 'k') {
+                    sb.append(key);
+                } else if (c == 'v') {
+                    sb.append(value);
+                } else {
+                    sb.append(c);
+                }
+            }
+            joiner.add(sb.toString());
+        });
+
+        // 保存文件
+        FxUtils.saveFile(file -> FileUtil.writeUtf8String(joiner.toString(), file));
     }
 
     public void update() {
