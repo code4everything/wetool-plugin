@@ -38,6 +38,7 @@ public class JedisUtils {
     public static void clearRedis() {
         CONF_MAP.clear();
         JEDIS_MAP.clear();
+        CURR_DB_MAP.clear();
     }
 
     public static void putRedisConf(String alias, ConnectionConfiguration conf) {

@@ -64,6 +64,7 @@ public class MainController implements BaseViewController {
     public void reloadConfig() {
         JedisUtils.clearRedis();
         rootTree.getChildren().clear();
+        redisExplorerTab.getTabs().clear();
         // 加载配置
         RedisConfiguration redisConfiguration = RedisConfiguration.getConfiguration();
         Set<ConnectionConfiguration> servers = redisConfiguration.getServers();
