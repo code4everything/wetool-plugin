@@ -1,0 +1,7 @@
+{
+    "author": "ease",
+    "name": "wetool-devtool-ssh",
+    "version": "1.0.2",
+    "requireWetoolVersion": "1.0.2",
+    "supportedClass": "org.code4everything.wetool.plugin.devtool.ssh.WetoolSupporter"
+}

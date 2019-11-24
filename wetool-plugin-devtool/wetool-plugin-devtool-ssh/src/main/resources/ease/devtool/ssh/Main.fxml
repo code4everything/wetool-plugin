@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<VBox prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.code4everything.wetool.plugin.devtool.ssh.controller.MainController">
+   <children>
+      <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+        <items>
+            <VBox prefHeight="498.0" prefWidth="260.0">
+               <children>
+                  <HBox VBox.vgrow="NEVER">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#openConfigFile" text="配置文件" HBox.hgrow="NEVER" />
+                        <Button mnemonicParsing="false" onAction="#reloadConfig" text="重载" HBox.hgrow="NEVER">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#openLocalTerminal" text="本地终端" HBox.hgrow="NEVER">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0" VBox.vgrow="NEVER">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Separator>
+                  <HBox VBox.vgrow="NEVER">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                     <children>
+                        <ComboBox fx:id="serverCombo" prefWidth="150.0" promptText="服务器" HBox.hgrow="NEVER" />
+                        <Button mnemonicParsing="false" onAction="#openRemoteTerminal" text="远程终端" HBox.hgrow="NEVER">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <Separator layoutX="20.0" layoutY="55.0" prefWidth="200.0" VBox.vgrow="NEVER">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Separator>
+                  <HBox layoutX="20.0" layoutY="55.0" VBox.vgrow="NEVER">
+                     <children>
+                        <TextField fx:id="currPathText" promptText="当前路径" HBox.hgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#uploadOnBtn" text="上传" HBox.hgrow="NEVER">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <ListView fx:id="fileList" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                     <contextMenu>
+                        <ContextMenu>
+                          <items>
+                            <MenuItem mnemonicParsing="false" onAction="#uploadOnMenu" text="上传至此目录" />
+                              <MenuItem mnemonicParsing="false" onAction="#download" text="下载到" />
+                              <MenuItem mnemonicParsing="false" onAction="#downloadAndOpen" text="下载并打开" />
+                              <MenuItem mnemonicParsing="false" onAction="#delete" text="删除文件" />
+                              <MenuItem mnemonicParsing="false" onAction="#copyPath" text="复制路径" />
+                          </items>
+                        </ContextMenu>
+                     </contextMenu>
+                  </ListView>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </VBox>
+            <TabPane fx:id="terminalTabPane">
+               <tabs>
+                  <Tab text="test">
+                     <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="469.0" prefWidth="417.0" />
+                     </content>
+                  </Tab>
+               </tabs>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </TabPane>
+        </items>
+      </SplitPane>
+   </children>
+</VBox>
