@@ -18,11 +18,16 @@
     <repositories>
         <repository>
             <id>ease-maven</id>
-            <url>http://maven.code4everything.org/repository</url>
+            <url>https://code4everything.gitee.io/repository/maven</url>
         </repository>
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>org.code4everything</groupId>
+            <artifactId>gitee-maven-test</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>

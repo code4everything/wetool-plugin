@@ -1,5 +1,6 @@
 package org.code4everything.wetool.plugin.devtool.ssh.config;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,10 +19,22 @@ public class SftpFile implements BaseBean {
 
     private String path;
 
-    private Boolean isDir;
+    private boolean isDir;
+
+    public static SftpFile of(SftpFile parent, String path, boolean isDir) {
+        return new SftpFile((parent.isDir ? parent.getPath() : "") + path, isDir);
+    }
+
+    public String getPath() {
+        if (!isDir) {
+            return path;
+        }
+        path = StrUtil.emptyToDefault(path, "/");
+        return StrUtil.addSuffixIfNot(path, "/");
+    }
 
     @Override
     public String toString() {
-        return path;
+        return getPath();
     }
 }

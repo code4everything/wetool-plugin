@@ -26,6 +26,7 @@ import org.code4everything.wetool.plugin.support.util.FxUtils;
 
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +39,8 @@ public class MainController implements BaseViewController {
 
     private final Map<String, Integer> terminalCountMap = new HashMap<>();
 
+    private final SftpFile textDir = new SftpFile(null, true);
+
     @FXML
     public ComboBox<String> serverCombo;
 
@@ -49,6 +52,8 @@ public class MainController implements BaseViewController {
 
     @FXML
     public ListView<SftpFile> fileList;
+
+    private Pattern pattern = null;
 
     private String defaultConsolePath;
 
@@ -108,8 +113,11 @@ public class MainController implements BaseViewController {
 
     public void uploadOnMenu() {
         final ObservableList<SftpFile> list = fileList.getSelectionModel().getSelectedItems();
+        if (CollUtil.isEmpty(list)) {
+            return;
+        }
         for (SftpFile file : list) {
-            if (file.getIsDir()) {
+            if (file.isDir()) {
                 FxUtils.chooseFile(f -> upload(f.getAbsolutePath(), file.getPath()));
                 break;
             }
@@ -122,11 +130,14 @@ public class MainController implements BaseViewController {
 
     public void delete() {
         final ObservableList<SftpFile> list = fileList.getSelectionModel().getSelectedItems();
+        if (CollUtil.isEmpty(list)) {
+            return;
+        }
         final Sftp sftp = SftpUtils.getSftp(serverCombo.getValue());
         List<SftpFile> deleted = new ArrayList<>(list.size());
         list.forEach(file -> {
             boolean res;
-            if (file.getIsDir()) {
+            if (file.isDir()) {
                 res = sftp.delDir(file.getPath());
             } else {
                 res = sftp.delFile(file.getPath());
@@ -136,56 +147,90 @@ public class MainController implements BaseViewController {
             }
         });
         fileList.getItems().removeAll(deleted);
+        FxDialogs.showInformation("删除成功！", null);
     }
 
     public void copyPath() {
-        ClipboardUtil.setStr(fileList.getSelectionModel().getSelectedItem().getPath());
+        SftpFile sftpFile = fileList.getSelectionModel().getSelectedItem();
+        if (Objects.isNull(sftpFile)) {
+            return;
+        }
+        ClipboardUtil.setStr(sftpFile.getPath());
     }
 
     public void listFiles(KeyEvent keyEvent) {
-        FxUtils.enterDo(keyEvent, () -> listFiles(currPathText.getText()));
+        FxUtils.enterDo(keyEvent, () -> {
+            List<String> list = StrUtil.splitTrim(StrUtil.emptyToDefault(currPathText.getText(), "/"), ':');
+            pattern = null;
+            if (list.size() > 1) {
+                try {
+                    pattern = Pattern.compile(list.get(1));
+                } catch (Exception e) {
+                    // ignore
+                }
+            }
+            textDir.setPath(list.get(0));
+            listFiles(textDir);
+        });
     }
 
     public void listIfDir(MouseEvent mouseEvent) {
         FxUtils.doubleClicked(mouseEvent, () -> {
             final SftpFile sftpFile = fileList.getSelectionModel().getSelectedItem();
-            if (sftpFile.getIsDir()) {
-                currPathText.setText(currPathText + "/" + sftpFile.getPath());
-                listFiles(sftpFile.getPath());
+            if (ObjectUtil.isNotNull(sftpFile) && sftpFile.isDir()) {
+                currPathText.setText(sftpFile.getPath());
+                listFiles(sftpFile);
             }
         });
     }
 
     private void download(boolean open) {
         final ObservableList<SftpFile> list = fileList.getSelectionModel().getSelectedItems();
+        if (CollUtil.isEmpty(list)) {
+            return;
+        }
         final Sftp sftp = SftpUtils.getSftp(serverCombo.getValue());
         List<String> downloaded = new ArrayList<>(list.size());
         FxUtils.chooseFolder(folder -> list.forEach(f -> {
-            sftp.download(f.getPath(), folder);
+            if (!f.isDir()) {
+                String path = StrUtil.addPrefixIfNot(f.getPath(), "/");
+                sftp.download(f.getPath(), folder);
+                downloaded.add(folder.getAbsolutePath() + path.substring(path.lastIndexOf("/")));
+            }
         }));
-        FxDialogs.showInformation("下载成功！", null);
+        if (open) {
+            downloaded.forEach(FxUtils::openFile);
+        } else {
+            FxDialogs.showInformation("下载成功！", null);
+        }
     }
 
-    private void listFiles(String dir) {
-        dir = StrUtil.emptyToDefault(dir, "/");
+    private void listFiles(SftpFile dir) {
         final Sftp sftp = SftpUtils.getSftp(serverCombo.getValue());
         fileList.getItems().clear();
         // 文件夹
-        final List<String> dirs = ObjectUtil.defaultIfNull(sftp.lsDirs(dir), Collections.emptyList());
-        fileList.getItems().addAll(dirs.stream().map(d -> new SftpFile(d, true)).collect(Collectors.toList()));
+        List<String> dirs = ObjectUtil.defaultIfNull(sftp.lsDirs(dir.getPath()), Collections.emptyList());
+        dirs = filterFile(dirs);
+        fileList.getItems().addAll(dirs.stream().map(d -> SftpFile.of(dir, d, true)).collect(Collectors.toList()));
         // 文件
-        final List<String> files = ObjectUtil.defaultIfNull(sftp.lsFiles(dir), Collections.emptyList());
-        fileList.getItems().addAll(files.stream().map(f -> new SftpFile(f, false)).collect(Collectors.toList()));
+        List<String> files = ObjectUtil.defaultIfNull(sftp.lsFiles(dir.getPath()), Collections.emptyList());
+        files = filterFile(files);
+        fileList.getItems().addAll(files.stream().map(f -> SftpFile.of(dir, f, false)).collect(Collectors.toList()));
+    }
+
+    private List<String> filterFile(List<String> files) {
+        if (CollUtil.isEmpty(files)) {
+            return Collections.emptyList();
+        }
+        return files.stream().filter(s -> Objects.isNull(pattern) || pattern.matcher(s).find()).collect(Collectors.toList());
     }
 
     private void openTerminal(ServerConfiguration server) {
         TerminalBuilder terminalBuilder = new TerminalBuilder(config);
-        if (Objects.isNull(server)) {
-            terminalBuilder.setTerminalPath(Paths.get(defaultConsolePath));
-        }
+        terminalBuilder.setTerminalPath(Paths.get(defaultConsolePath));
         TerminalTab terminal = terminalBuilder.newTerminal();
         if (Objects.isNull(server)) {
-            terminal.setText(fmtTerminalText("Local"));
+            terminal.setText(fmtTerminalText("Terminal"));
         } else {
             terminal.setText(fmtTerminalText(server.getAlias()));
             terminal.onTerminalFxReady(() -> {
@@ -199,7 +244,7 @@ public class MainController implements BaseViewController {
     }
 
     private String fmtTerminalText(String server) {
-        final Integer integer = terminalCountMap.getOrDefault(server, 0);
+        final Integer integer = terminalCountMap.getOrDefault(server, 1);
         terminalCountMap.put(server, integer + 1);
         return StrUtil.format("{} #{}", server, integer);
     }

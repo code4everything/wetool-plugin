@@ -19,7 +19,7 @@
     <repositories>
         <repository>
             <id>ease-maven</id>
-            <url>https://github.com/code4everything/repository/raw/master</url>
+            <url>https://code4everything.gitee.io/repository/maven</url>
         </repository>
     </repositories>
 
