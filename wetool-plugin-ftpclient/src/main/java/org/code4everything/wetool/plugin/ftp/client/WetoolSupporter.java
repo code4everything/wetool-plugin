@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.ftp.client.config.FtpConfig;
 import org.code4everything.wetool.plugin.ftp.client.config.FtpInfo;
