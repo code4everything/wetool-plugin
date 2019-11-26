@@ -105,7 +105,7 @@
         /**
          * 自定义tabId，用来防止与其他插件发生名称冲突
          */
-        public static final String TAB_ID = "sample";
+        public static final String TAB_ID = "ease-sample";
     
         /**
          * 自定义tabName，Tab选项卡的标题
