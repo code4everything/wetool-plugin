@@ -10,6 +10,8 @@ import com.kodedu.terminalfx.TerminalBuilder;
 import com.kodedu.terminalfx.TerminalTab;
 import com.kodedu.terminalfx.config.TerminalConfig;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
@@ -40,6 +42,8 @@ public class MainController implements BaseViewController {
     private final Map<String, Integer> terminalCountMap = new HashMap<>();
 
     private final SftpFile textDir = new SftpFile(null, true);
+
+    private final EventHandler<Event> noAction = e -> {};
 
     @FXML
     public ComboBox<String> serverCombo;
@@ -231,7 +235,7 @@ public class MainController implements BaseViewController {
         terminalBuilder.setTerminalPath(Paths.get(defaultConsolePath));
         TerminalTab terminal = terminalBuilder.newTerminal();
         if (Objects.isNull(server)) {
-            terminal.setText(fmtTerminalText("Terminal"));
+            terminal.setText(fmtTerminalText("Local"));
         } else {
             terminal.setText(fmtTerminalText(server.getAlias()));
             terminal.onTerminalFxReady(() -> {
@@ -240,6 +244,7 @@ public class MainController implements BaseViewController {
                 ClipboardUtil.setStr(server.getPassword());
             });
         }
+        terminal.setOnCloseRequest(noAction);
         terminalTabPane.getTabs().add(terminal);
         terminalTabPane.getSelectionModel().select(terminal);
     }
