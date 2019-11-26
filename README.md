@@ -24,7 +24,7 @@
 ``` xml
 <repository>
     <id>ease-maven</id>
-    <url>http://maven.code4everything.org/repository</url>
+    <url>https://code4everything.gitee.io/repository/maven</url>
 </repository>
 ```
 
