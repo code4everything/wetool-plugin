@@ -1,6 +1,7 @@
 package org.code4everything.wetool.plugin.devtool.ssh.config;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import org.code4everything.boot.base.bean.BaseBean;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Set;
 
@@ -25,12 +27,13 @@ import java.util.Set;
 @Accessors(chain = true)
 public class SshConfiguration implements BaseBean {
 
-    private static final SshConfiguration NOTHING = new SshConfiguration(FileUtil.getUserHomePath(),
-            Collections.emptySet());
+    private static final SshConfiguration NOTHING = new SshConfiguration(null, null, Collections.emptySet());
 
     private static final String CONFIG_FILE = "conf" + File.separator + "devtool-ssh-config.json";
 
     private String defaultConsolePath;
+
+    private String localCharset;
 
     private Set<ServerConfiguration> servers;
 
@@ -49,6 +52,10 @@ public class SshConfiguration implements BaseBean {
 
     public static String getPath() {
         return StrUtil.emptyToDefault(WeUtils.parsePathByOs(CONFIG_FILE), FileUtils.currentWorkDir(CONFIG_FILE));
+    }
+
+    public Charset getLocalCharset() {
+        return CharsetUtil.charset(localCharset);
     }
 
     public String getDefaultConsolePath() {

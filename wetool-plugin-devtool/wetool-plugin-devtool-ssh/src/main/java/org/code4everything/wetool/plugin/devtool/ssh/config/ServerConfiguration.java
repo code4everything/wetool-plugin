@@ -50,7 +50,7 @@ public class ServerConfiguration implements BaseBean {
     private String charset;
 
     public Charset getCharset() {
-        return CharsetUtil.charset(StrUtil.emptyToDefault(charset, "utf-8"));
+        return CharsetUtil.charset(charset);
     }
 
     public String getAlias() {

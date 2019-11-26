@@ -61,6 +61,8 @@ public class MainController implements BaseViewController {
 
     private String defaultConsolePath;
 
+    private String localCharset;
+
     @FXML
     private void initialize() {
         BeanFactory.registerView(CommonConsts.APP_ID, CommonConsts.APP_NAME, this);
@@ -87,6 +89,7 @@ public class MainController implements BaseViewController {
         // 载入配置
         final SshConfiguration configuration = SshConfiguration.getConfiguration();
         defaultConsolePath = configuration.getDefaultConsolePath();
+        localCharset = configuration.getLocalCharset().toString();
         if (CollUtil.isEmpty(configuration.getServers())) {
             return;
         }
@@ -99,11 +102,12 @@ public class MainController implements BaseViewController {
     }
 
     public void openLocalTerminal() {
-        openTerminal(null);
+        openTerminal(null, localCharset);
     }
 
     public void openRemoteTerminal() {
-        openTerminal(SftpUtils.getConf(serverCombo.getValue()));
+        final ServerConfiguration conf = SftpUtils.getConf(serverCombo.getValue());
+        openTerminal(conf, conf.getCharset().toString());
     }
 
     public void uploadOnBtn() {
@@ -230,7 +234,9 @@ public class MainController implements BaseViewController {
         return files.stream().filter(s -> Objects.isNull(pattern) || pattern.matcher(s).find()).collect(Collectors.toList());
     }
 
-    private void openTerminal(ServerConfiguration server) {
+    private void openTerminal(ServerConfiguration server, String charset) {
+        config.setReceiveEncoding(charset);
+        config.setSendEncoding(charset);
         TerminalBuilder terminalBuilder = new TerminalBuilder(config);
         terminalBuilder.setTerminalPath(Paths.get(defaultConsolePath));
         TerminalTab terminal = terminalBuilder.newTerminal();
