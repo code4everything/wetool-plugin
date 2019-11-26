@@ -179,6 +179,7 @@ public class MainController implements BaseViewController {
             final SftpFile sftpFile = fileList.getSelectionModel().getSelectedItem();
             if (ObjectUtil.isNotNull(sftpFile) && sftpFile.isDir()) {
                 currPathText.setText(sftpFile.getPath());
+                pattern = null;
                 listFiles(sftpFile);
             }
         });
