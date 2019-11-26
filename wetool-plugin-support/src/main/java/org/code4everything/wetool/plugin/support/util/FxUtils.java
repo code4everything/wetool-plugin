@@ -329,19 +329,33 @@ public class FxUtils {
      * @since 1.0.2
      */
     public static Pane loadFxml(String url) {
-        URL realUrl = FxUtils.class.getResource(url);
-        if (BeanFactory.isRegistered(url)) {
-            // 从缓存中取出视图
-            return BeanFactory.get(url);
+        return loadFxml(url, true);
+    }
+
+    /**
+     * 加载视图
+     *
+     * @param url 视图在classpath中路径，需要保证url的唯一性
+     * @param cache 是否缓存
+     *
+     * @since 1.0.2
+     */
+    public static Pane loadFxml(String url, boolean cache) {
+        Pane pane = BeanFactory.get(url);
+        if (ObjectUtil.isNull(pane)) {
+            URL realUrl = FxUtils.class.getResource(url);
+            try {
+                pane = FXMLLoader.load(realUrl);
+                if (cache) {
+                    BeanFactory.register(url, pane);
+                }
+                return pane;
+            } catch (Exception e) {
+                FxDialogs.showException(AppConsts.Tip.FXML_ERROR, e);
+                return null;
+            }
         }
-        try {
-            Pane pane = FXMLLoader.load(realUrl);
-            BeanFactory.register(url, pane);
-            return pane;
-        } catch (Exception e) {
-            FxDialogs.showException(AppConsts.Tip.FXML_ERROR, e);
-            return null;
-        }
+        return pane;
     }
 
     /**
