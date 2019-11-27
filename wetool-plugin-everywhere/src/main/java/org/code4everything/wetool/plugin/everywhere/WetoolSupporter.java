@@ -5,7 +5,6 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import org.code4everything.wetool.plugin.everywhere.constant.CommonConsts;
-import org.code4everything.wetool.plugin.everywhere.util.LuceneUtils;
 import org.code4everything.wetool.plugin.support.WePluginSupporter;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
@@ -14,12 +13,6 @@ import org.code4everything.wetool.plugin.support.util.FxUtils;
  * @since 2019/11/26
  */
 public class WetoolSupporter implements WePluginSupporter {
-
-    @Override
-    public boolean initialize() {
-        LuceneUtils.indexAsync();
-        return true;
-    }
 
     @Override
     public void debugCall() {

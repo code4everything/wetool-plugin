@@ -82,7 +82,6 @@ public class MainController implements BaseViewController {
         pathColumn.setCellValueFactory(new PropertyValueFactory<>("path"));
         sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("modified"));
-        reloadConfig(false);
     }
 
     public void openConfigFile() {
@@ -101,7 +100,12 @@ public class MainController implements BaseViewController {
     }
 
     public void reloadConfig() {
-        reloadConfig(true);
+        // 强制重新索引
+        EverywhereConfiguration.loadConfiguration();
+        EverywhereConfiguration.Formatted formatted = EverywhereConfiguration.getFormatted();
+        long time = System.currentTimeMillis() - formatted.getReindexExpireBetweenSearch() * 60 * 1000;
+        LuceneUtils.getLuceneIndexer().updateSearchTime(time);
+        LuceneUtils.indexAsync();
     }
 
     public void findEverywhere() {
@@ -179,15 +183,5 @@ public class MainController implements BaseViewController {
             filterPattern = null;
         }
         keyReleased(keyEvent);
-    }
-
-    private void reloadConfig(boolean forceIndex) {
-        EverywhereConfiguration.loadConfiguration();
-        if (forceIndex) {
-            EverywhereConfiguration.Formatted formatted = EverywhereConfiguration.getFormatted();
-            long time = System.currentTimeMillis() - formatted.getReindexExpireBetweenSearch() * 60 * 1000;
-            LuceneUtils.getLuceneIndexer().updateSearchTime(time);
-        }
-        LuceneUtils.indexAsync();
     }
 }
