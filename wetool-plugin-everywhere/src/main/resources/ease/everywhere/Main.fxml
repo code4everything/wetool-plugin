@@ -35,7 +35,7 @@
                 <Insets left="10.0" top="3.0"/>
             </HBox.margin>
         </CheckBox>
-        <CheckBox fx:id="contentCheck" mnemonicParsing="false" selected="true" text="文件内容" HBox.hgrow="NEVER">
+        <CheckBox fx:id="contentCheck" mnemonicParsing="false" text="文件内容" HBox.hgrow="NEVER">
             <HBox.margin>
                 <Insets left="10.0" top="3.0"/>
             </HBox.margin>
@@ -60,8 +60,8 @@
         <columns>
             <TableColumn fx:id="nameColumn" prefWidth="200.0" text="名称"/>
             <TableColumn fx:id="pathColumn" prefWidth="400.0" text="路径"/>
-            <TableColumn fx:id="sizeColumn" prefWidth="50.0" text="大小"/>
-            <TableColumn fx:id="timeColumn" prefWidth="70.0" text="修改时间"/>
+            <TableColumn fx:id="sizeColumn" prefWidth="70.0" text="大小"/>
+            <TableColumn fx:id="timeColumn" prefWidth="100.0" text="修改时间"/>
         </columns>
         <VBox.margin>
             <Insets top="10.0"/>

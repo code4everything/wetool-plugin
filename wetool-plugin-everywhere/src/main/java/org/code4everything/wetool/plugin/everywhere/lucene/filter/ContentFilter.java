@@ -31,16 +31,20 @@ public class ContentFilter implements IndexFilter {
         if (file.isDirectory()) {
             return false;
         }
-        String filename = file.getName();
-        EverywhereConfiguration.Formatted formatted = EverywhereConfiguration.getFormatted();
 
+        EverywhereConfiguration.Formatted formatted = EverywhereConfiguration.getFormatted();
         if (formatted.isIgnoreHiddenFile() && file.isHidden()) {
             return false;
         }
 
+        if (!formatted.isIndexContent()) {
+            return false;
+        }
+
+        String path = FileUtil.getAbsolutePath(file);
         List<Pattern> excludes = formatted.getExcludePatterns();
         for (Pattern exclude : excludes) {
-            if (exclude.matcher(filename).find()) {
+            if (exclude.matcher(path).find()) {
                 return false;
             }
         }
@@ -52,7 +56,7 @@ public class ContentFilter implements IndexFilter {
 
         List<Pattern> includes = formatted.getIncludePatterns();
         for (Pattern include : includes) {
-            if (include.matcher(filename).find()) {
+            if (include.matcher(path).find()) {
                 return true;
             }
         }

@@ -10,10 +10,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import org.apache.lucene.queryparser.classic.ParseException;
 import org.code4everything.wetool.plugin.everywhere.config.EverywhereConfiguration;
 import org.code4everything.wetool.plugin.everywhere.constant.CommonConsts;
-import org.code4everything.wetool.plugin.everywhere.lucene.LuceneSearcher;
 import org.code4everything.wetool.plugin.everywhere.model.FileInfo;
 import org.code4everything.wetool.plugin.everywhere.util.LuceneUtils;
 import org.code4everything.wetool.plugin.support.BaseViewController;
@@ -22,7 +20,6 @@ import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,8 +30,6 @@ import java.util.regex.Pattern;
  * @since 2019/11/26
  */
 public class MainController implements BaseViewController {
-
-    private final LuceneSearcher searcher = new LuceneSearcher();
 
     @FXML
     public CheckBox folderCheck;
@@ -68,19 +63,26 @@ public class MainController implements BaseViewController {
 
     private Pattern filterPattern;
 
-    public MainController() throws IOException {}
+    public MainController() {}
 
     @FXML
     private void initialize() {
         BeanFactory.registerView(CommonConsts.APP_ID, CommonConsts.APP_NAME, this);
         fileTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        LuceneUtils.setSearchNotification(list -> {
+            if (CollUtil.isEmpty(list)) {
+                FxDialogs.showInformation("糟糕，什么也没找到！", null);
+            } else {
+                fileTable.getItems().addAll(list);
+            }
+        });
 
         // 设置表格列对应的属性
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("filename"));
         pathColumn.setCellValueFactory(new PropertyValueFactory<>("path"));
         sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("modified"));
-        reloadConfig();
+        reloadConfig(false);
     }
 
     public void openConfigFile() {
@@ -91,17 +93,18 @@ public class MainController implements BaseViewController {
             conf.setIgnoreHiddenFile(true);
             conf.setIncludePatterns(Collections.emptySet());
             conf.setSizeLimit("10,000,000");
+            conf.setIndexContent(false);
+            conf.setReindexExpireBetweenSearch(24 * 60L);
             FileUtil.writeUtf8String(conf.toJsonString(true), path);
         }
         FxUtils.openFile(path);
     }
 
     public void reloadConfig() {
-        EverywhereConfiguration.loadConfiguration();
-        LuceneUtils.indexAsync();
+        reloadConfig(true);
     }
 
-    public void findEverywhere() throws IOException, ParseException {
+    public void findEverywhere() {
         final String word = searchText.getText();
         if (StrUtil.isEmpty(word)) {
             return;
@@ -116,15 +119,10 @@ public class MainController implements BaseViewController {
         }
 
         fileTable.getItems().clear();
-        List<FileInfo> list = searcher.search(word, folder, file, content, filterPattern);
-        if (CollUtil.isEmpty(list)) {
-            FxDialogs.showInformation("糟糕，什么也没找到！", null);
-        } else {
-            fileTable.getItems().addAll(list);
-        }
+        LuceneUtils.searchAsync(word, folder, file, content, filterPattern);
     }
 
-    public void keyReleased(KeyEvent keyEvent) throws IOException, ParseException {
+    public void keyReleased(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
             findEverywhere();
         }
@@ -169,7 +167,7 @@ public class MainController implements BaseViewController {
         ClipboardUtil.setStr(list.get(0).getPath());
     }
 
-    public void resetFilterPattern(KeyEvent keyEvent) throws IOException, ParseException {
+    public void resetFilterPattern(KeyEvent keyEvent) {
         if (StrUtil.isEmpty(filterText.getText())) {
             filterPattern = null;
             return;
@@ -181,5 +179,15 @@ public class MainController implements BaseViewController {
             filterPattern = null;
         }
         keyReleased(keyEvent);
+    }
+
+    private void reloadConfig(boolean forceIndex) {
+        EverywhereConfiguration.loadConfiguration();
+        if (forceIndex) {
+            EverywhereConfiguration.Formatted formatted = EverywhereConfiguration.getFormatted();
+            long time = System.currentTimeMillis() - formatted.getReindexExpireBetweenSearch() * 60 * 1000;
+            LuceneUtils.getLuceneIndexer().updateSearchTime(time);
+        }
+        LuceneUtils.indexAsync();
     }
 }

@@ -1,8 +1,10 @@
 package org.code4everything.wetool.plugin.everywhere.lucene;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +38,9 @@ import java.nio.file.Paths;
 @Slf4j
 public class LuceneIndexer {
 
-    private String indexedFile = StrUtil.join(File.separator, CommonConsts.INDEX_PATH, "indexed.txt");
+    private String indexedFile = StrUtil.join(File.separator, CommonConsts.INDEX_PATH, "indexed.file");
+
+    private String dateFile = StrUtil.join(File.separator, CommonConsts.INDEX_PATH, "search.last");
 
     private IndexFilter folderFilter = new FolderFilter();
 
@@ -44,7 +48,15 @@ public class LuceneIndexer {
 
     private IndexFilter contentFilter = new ContentFilter();
 
+    public void updateSearchTime(long timestamp) {
+        FileUtil.writeUtf8String(String.valueOf(timestamp), dateFile);
+    }
+
     public void createIndex() throws IOException {
+        if (isIndexedValid()) {
+            return;
+        }
+        FileUtil.del(indexedFile);
         long start = System.currentTimeMillis();
         // 配置索引方式
         @Cleanup Directory dir = FSDirectory.open(Paths.get(CommonConsts.INDEX_PATH));
@@ -66,7 +78,22 @@ public class LuceneIndexer {
                 }
             }
         }
+        updateSearchTime(System.currentTimeMillis());
         log.info("lucene index expend: {}ms", System.currentTimeMillis() - start);
+    }
+
+    private boolean isIndexedValid() {
+        if (!FileUtil.exist(dateFile)) {
+            return false;
+        }
+        String string = FileUtil.readUtf8String(dateFile);
+        if (!NumberUtil.isNumber(string)) {
+            return false;
+        }
+        // 差值，毫秒转分钟
+        long diff = (System.currentTimeMillis() - NumberUtil.parseLong(string)) / (1000 * 60);
+        EverywhereConfiguration.Formatted formatted = EverywhereConfiguration.getFormatted();
+        return diff < formatted.getReindexExpireBetweenSearch();
     }
 
     private void recursiveIndex(File file, IndexWriter writer) throws IOException {
@@ -101,14 +128,15 @@ public class LuceneIndexer {
         if (contentFilter.shouldIndex(file)) {
             try {
                 document.add(new TextField("content", FileUtil.readUtf8String(file), Field.Store.NO));
+                final String log = StrUtil.format("lucene indexed file: {}\r\n", FileUtil.getAbsolutePath(file));
+                FileUtil.appendString(log, indexedFile, CharsetUtil.CHARSET_UTF_8);
             } catch (Exception e) {
                 // ignore
                 EverywhereConfiguration.getFormatted().addExcludeFilenames(file);
             }
         }
         if (BootConfig.isDebug()) {
-            final String log = StrUtil.format("lucene indexing file: {}\r\n", FileUtil.getAbsolutePath(file));
-            FileUtil.appendString(log, indexedFile, CharsetUtil.CHARSET_UTF_8);
+            Console.log("lucene indexing file: " + FileUtil.getAbsolutePath(file));
         }
         writer.updateDocument(new Term("path", FileUtil.getAbsolutePath(file)), document);
     }
