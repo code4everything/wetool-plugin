@@ -30,7 +30,7 @@
                 <Insets top="3.0"/>
             </HBox.margin>
         </CheckBox>
-        <CheckBox fx:id="fileCheck" mnemonicParsing="false" selected="true" text="文件名" HBox.hgrow="NEVER">
+        <CheckBox fx:id="fileCheck" mnemonicParsing="false" selected="true" text="文件" HBox.hgrow="NEVER">
             <HBox.margin>
                 <Insets left="10.0" top="3.0"/>
             </HBox.margin>
@@ -40,7 +40,7 @@
                 <Insets left="10.0" top="3.0"/>
             </HBox.margin>
         </CheckBox>
-        <TextField fx:id="searchText" promptText="搜索你想搜索的" HBox.hgrow="ALWAYS">
+        <TextField fx:id="searchText" promptText="搜索你想搜索的" HBox.hgrow="ALWAYS" onKeyReleased="#keyReleased">
             <HBox.margin>
                 <Insets left="10.0"/>
             </HBox.margin>
@@ -64,10 +64,10 @@
         <contextMenu>
             <ContextMenu>
                 <items>
-                    <MenuItem mnemonicParsing="false" text="打开文件"/>
-                    <MenuItem mnemonicParsing="false" text="打开所在文件夹"/>
-                    <MenuItem mnemonicParsing="false" text="删除文件"/>
-                    <MenuItem mnemonicParsing="false" text="复制文件路径"/>
+                    <MenuItem mnemonicParsing="false" text="打开文件" onAction="#openFile"/>
+                    <MenuItem mnemonicParsing="false" text="打开所在文件夹" onAction="#openFolder"/>
+                    <MenuItem mnemonicParsing="false" text="删除文件" onAction="#deleteFile"/>
+                    <MenuItem mnemonicParsing="false" text="复制文件路径" onAction="#copyFilePath"/>
                 </items>
             </ContextMenu>
         </contextMenu>

@@ -33,6 +33,11 @@ public class ContentFilter implements IndexFilter {
         }
         String filename = file.getName();
         EverywhereConfiguration.Formatted formatted = EverywhereConfiguration.getFormatted();
+
+        if (formatted.isIgnoreHiddenFile() && file.isHidden()) {
+            return false;
+        }
+
         List<Pattern> excludes = formatted.getExcludeFilenames();
         for (Pattern exclude : excludes) {
             if (exclude.matcher(filename).find()) {

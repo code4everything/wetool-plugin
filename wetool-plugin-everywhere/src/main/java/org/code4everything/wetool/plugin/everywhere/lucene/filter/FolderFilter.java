@@ -1,11 +1,11 @@
 package org.code4everything.wetool.plugin.everywhere.lucene.filter;
 
 import cn.hutool.core.io.FileUtil;
+import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.wetool.plugin.everywhere.config.EverywhereConfiguration;
 import org.code4everything.wetool.plugin.everywhere.constant.CommonConsts;
 
 import java.io.File;
-import java.util.Objects;
 
 /**
  * 文件夹索引过滤器
@@ -21,6 +21,9 @@ public class FolderFilter implements IndexFilter {
             return false;
         }
         if (file.isFile()) {
+            return false;
+        }
+        if (file.getName().startsWith(StringConsts.Sign.DOT)) {
             return false;
         }
         final EverywhereConfiguration.Formatted formatted = EverywhereConfiguration.getFormatted();

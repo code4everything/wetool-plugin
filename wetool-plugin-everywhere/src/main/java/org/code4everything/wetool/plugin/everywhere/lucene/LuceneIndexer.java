@@ -7,7 +7,10 @@ import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
-import org.apache.lucene.document.*;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
@@ -50,10 +53,12 @@ public class LuceneIndexer {
         final File[] roots = File.listRoots();
         if (ArrayUtil.isNotEmpty(roots)) {
             for (File root : roots) {
-                final File[] files = FileUtil.ls(root.getAbsolutePath());
-                if (ArrayUtil.isNotEmpty(files)) {
-                    for (File file : files) {
-                        recursiveIndex(file, writer);
+                if (FileUtil.isDirectory(root)) {
+                    final File[] files = FileUtil.ls(root.getAbsolutePath());
+                    if (ArrayUtil.isNotEmpty(files)) {
+                        for (File file : files) {
+                            recursiveIndex(file, writer);
+                        }
                     }
                 }
             }
@@ -85,17 +90,19 @@ public class LuceneIndexer {
             return;
         }
         Document document = new Document();
-        document.add(new StringField("filename", FileUtil.getName(file), Field.Store.YES));
+        // 索引标识
         document.add(new StringField("path", FileUtil.getAbsolutePath(file), Field.Store.YES));
-        document.add(new LongPoint("modified", FileUtil.lastModifiedTime(file).getTime()));
-        try {
-            document.add(new LongPoint("size", FileUtil.size(file)));
-            if (contentFilter.shouldIndex(file)) {
+
+        // 索引内容
+        document.add(new TextField("filepath", FileUtil.getAbsolutePath(file), Field.Store.YES));
+        document.add(new StringField("filename", FileUtil.getName(file), Field.Store.YES));
+        if (contentFilter.shouldIndex(file)) {
+            try {
                 document.add(new TextField("content", FileUtil.readUtf8String(file), Field.Store.NO));
+            } catch (Exception e) {
+                // ignore
+                EverywhereConfiguration.getFormatted().addExcludeFilenames(file);
             }
-        } catch (Exception e) {
-            // ignore
-            EverywhereConfiguration.getFormatted().addExcludeFilenames(file);
         }
         if (BootConfig.isDebug()) {
             Console.log("lucene indexing file: " + FileUtil.getAbsolutePath(file));

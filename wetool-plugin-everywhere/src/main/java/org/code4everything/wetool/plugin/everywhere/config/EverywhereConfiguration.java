@@ -5,12 +5,12 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.alibaba.fastjson.JSON;
+import lombok.*;
 import lombok.experimental.Accessors;
+import org.code4everything.boot.base.FileUtils;
 import org.code4everything.boot.base.bean.BaseBean;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.File;
 import java.util.*;
@@ -25,6 +25,8 @@ import java.util.regex.Pattern;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class EverywhereConfiguration implements BaseBean {
+
+    private static final String CONFIG_FILE = StrUtil.join(File.separator, "conf", "everywhere-lucene-config.json");
 
     private static Formatted formatted = new Formatted();
 
@@ -47,6 +49,23 @@ public class EverywhereConfiguration implements BaseBean {
 
     public static Formatted getFormatted() {
         return formatted;
+    }
+
+    public static Formatted loadConfiguration() {
+        String path = WeUtils.parsePathByOs(CONFIG_FILE);
+        if (StrUtil.isNotBlank(path)) {
+            String json = FileUtil.readUtf8String(path);
+            try {
+                JSON.parseObject(json, EverywhereConfiguration.class);
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+        return formatted;
+    }
+
+    public static String getPath() {
+        return StrUtil.emptyToDefault(WeUtils.parsePathByOs(CONFIG_FILE), FileUtils.currentWorkDir(CONFIG_FILE));
     }
 
     public void setIncludeFilenames(Set<String> includeFilenames) {
@@ -88,6 +107,7 @@ public class EverywhereConfiguration implements BaseBean {
         return patternList;
     }
 
+    @ToString
     public static class Formatted {
 
         private Set<String> excluded = new HashSet<>();

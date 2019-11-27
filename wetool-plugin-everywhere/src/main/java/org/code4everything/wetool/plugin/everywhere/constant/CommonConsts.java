@@ -15,7 +15,7 @@ public class CommonConsts {
 
     public static final String APP_ID = "ease-everywhere";
 
-    public static final String APP_NAME = "Find In Everywhere";
+    public static final String APP_NAME = "Everywhere";
 
     public static final String INDEX_PATH = StrUtil.join(File.separator, FileUtil.getUserHomePath(), "wetool",
             "wetool-plugin-everywhere", ".lucene");
