@@ -1,8 +1,9 @@
 package org.code4everything.wetool.plugin.everywhere.lucene;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
@@ -34,6 +35,8 @@ import java.nio.file.Paths;
  */
 @Slf4j
 public class LuceneIndexer {
+
+    private String indexedFile = StrUtil.join(File.separator, CommonConsts.INDEX_PATH, "indexed.txt");
 
     private IndexFilter folderFilter = new FolderFilter();
 
@@ -95,7 +98,6 @@ public class LuceneIndexer {
 
         // 索引内容
         document.add(new TextField("filepath", FileUtil.getAbsolutePath(file), Field.Store.YES));
-        document.add(new StringField("filename", FileUtil.getName(file), Field.Store.YES));
         if (contentFilter.shouldIndex(file)) {
             try {
                 document.add(new TextField("content", FileUtil.readUtf8String(file), Field.Store.NO));
@@ -105,7 +107,8 @@ public class LuceneIndexer {
             }
         }
         if (BootConfig.isDebug()) {
-            Console.log("lucene indexing file: " + FileUtil.getAbsolutePath(file));
+            final String log = StrUtil.format("lucene indexing file: {}\r\n", FileUtil.getAbsolutePath(file));
+            FileUtil.appendString(log, indexedFile, CharsetUtil.CHARSET_UTF_8);
         }
         writer.updateDocument(new Term("path", FileUtil.getAbsolutePath(file)), document);
     }

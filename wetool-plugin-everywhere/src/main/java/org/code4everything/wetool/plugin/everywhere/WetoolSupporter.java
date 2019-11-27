@@ -1,16 +1,13 @@
 package org.code4everything.wetool.plugin.everywhere;
 
-import cn.hutool.core.thread.ThreadUtil;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import org.code4everything.wetool.plugin.everywhere.constant.CommonConsts;
-import org.code4everything.wetool.plugin.everywhere.lucene.LuceneIndexer;
+import org.code4everything.wetool.plugin.everywhere.util.LuceneUtils;
 import org.code4everything.wetool.plugin.support.WePluginSupporter;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
-
-import java.io.IOException;
 
 /**
  * @author pantao
@@ -18,17 +15,9 @@ import java.io.IOException;
  */
 public class WetoolSupporter implements WePluginSupporter {
 
-    private LuceneIndexer luceneIndexer = new LuceneIndexer();
-
     @Override
     public boolean initialize() {
-        ThreadUtil.execute(() -> {
-            try {
-                luceneIndexer.createIndex();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        LuceneUtils.indexAsync();
         return true;
     }
 

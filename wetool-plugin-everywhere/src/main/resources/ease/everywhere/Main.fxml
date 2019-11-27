@@ -45,6 +45,11 @@
                 <Insets left="10.0"/>
             </HBox.margin>
         </TextField>
+        <TextField fx:id="filterText" promptText="文件名过滤（正则）" HBox.hgrow="NEVER" onKeyReleased="#resetFilterPattern">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </TextField>
         <Button mnemonicParsing="false" onAction="#findEverywhere" text="高能搜索">
             <HBox.margin>
                 <Insets left="10.0"/>

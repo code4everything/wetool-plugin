@@ -38,7 +38,7 @@ public class ContentFilter implements IndexFilter {
             return false;
         }
 
-        List<Pattern> excludes = formatted.getExcludeFilenames();
+        List<Pattern> excludes = formatted.getExcludePatterns();
         for (Pattern exclude : excludes) {
             if (exclude.matcher(filename).find()) {
                 return false;
@@ -50,7 +50,7 @@ public class ContentFilter implements IndexFilter {
             return false;
         }
 
-        List<Pattern> includes = formatted.getIncludeFilenames();
+        List<Pattern> includes = formatted.getIncludePatterns();
         for (Pattern include : includes) {
             if (include.matcher(filename).find()) {
                 return true;

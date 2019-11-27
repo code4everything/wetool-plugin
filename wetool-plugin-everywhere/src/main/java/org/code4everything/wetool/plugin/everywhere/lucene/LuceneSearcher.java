@@ -24,7 +24,9 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 /**
  * @author pantao
@@ -40,22 +42,23 @@ public class LuceneSearcher {
 
     private QueryParser filepathParser = new QueryParser("filepath", analyzer);
 
-    private QueryParser filenameParser = new QueryParser("filename", analyzer);
-
     private QueryParser contentParser = new QueryParser("content", analyzer);
 
     public LuceneSearcher() throws IOException {}
 
-    public List<FileInfo> search(String word, boolean addFolder, boolean addFile, boolean content) throws IOException
-            , ParseException {
-        Predicate<File> filter = f -> (addFolder && FileUtil.isDirectory(f)) || (addFile && FileUtil.isFile(f));
+    public List<FileInfo> search(String word, boolean addFolder, boolean addFile, boolean content,
+                                 Pattern pathFilter) throws IOException, ParseException {
         List<FileInfo> list = new LinkedList<>();
         if (addFile || addFolder) {
+            Predicate<File> filter = f -> {
+                boolean res = (addFolder && FileUtil.isDirectory(f)) || (addFile && FileUtil.isFile(f));
+                return res && (Objects.isNull(pathFilter) || pathFilter.matcher(f.getPath()).find());
+            };
             convertAndFilter(filepathParser.parse(word), list, filter);
-            convertAndFilter(filenameParser.parse(word), list, filter);
         }
         if (content) {
-            convertAndFilter(contentParser.parse(word), list, null);
+            Predicate<File> filter = f -> Objects.isNull(pathFilter) || pathFilter.matcher(f.getPath()).find();
+            convertAndFilter(contentParser.parse(word), list, filter);
         }
         return list;
     }

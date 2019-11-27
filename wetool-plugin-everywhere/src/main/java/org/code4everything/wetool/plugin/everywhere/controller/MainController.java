@@ -2,10 +2,8 @@ package org.code4everything.wetool.plugin.everywhere.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Console;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONObject;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -17,6 +15,7 @@ import org.code4everything.wetool.plugin.everywhere.config.EverywhereConfigurati
 import org.code4everything.wetool.plugin.everywhere.constant.CommonConsts;
 import org.code4everything.wetool.plugin.everywhere.lucene.LuceneSearcher;
 import org.code4everything.wetool.plugin.everywhere.model.FileInfo;
+import org.code4everything.wetool.plugin.everywhere.util.LuceneUtils;
 import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
@@ -27,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author pantao
@@ -63,6 +63,11 @@ public class MainController implements BaseViewController {
     @FXML
     public TableColumn<FileInfo, String> timeColumn;
 
+    @FXML
+    public TextField filterText;
+
+    private Pattern filterPattern;
+
     public MainController() throws IOException {}
 
     @FXML
@@ -75,24 +80,25 @@ public class MainController implements BaseViewController {
         pathColumn.setCellValueFactory(new PropertyValueFactory<>("path"));
         sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("modified"));
+        reloadConfig();
     }
 
     public void openConfigFile() {
         String path = EverywhereConfiguration.getPath();
         if (!FileUtil.exist(path)) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("includeFilenames", Collections.emptySet());
-            jsonObject.put("excludeFilenames", Collections.emptySet());
-            jsonObject.put("ignoreHiddenFile", true);
-            jsonObject.put("sizeLimit", "10,000,000");
-            FileUtil.writeUtf8String(jsonObject.toJSONString(), path);
+            final EverywhereConfiguration conf = new EverywhereConfiguration();
+            conf.setExcludePatterns(Collections.emptySet());
+            conf.setIgnoreHiddenFile(true);
+            conf.setIncludePatterns(Collections.emptySet());
+            conf.setSizeLimit("10,000,000");
+            FileUtil.writeUtf8String(conf.toJsonString(true), path);
         }
         FxUtils.openFile(path);
     }
 
     public void reloadConfig() {
-        final EverywhereConfiguration.Formatted formatted = EverywhereConfiguration.loadConfiguration();
-        Console.log(formatted);
+        EverywhereConfiguration.loadConfiguration();
+        LuceneUtils.indexAsync();
     }
 
     public void findEverywhere() throws IOException, ParseException {
@@ -110,7 +116,7 @@ public class MainController implements BaseViewController {
         }
 
         fileTable.getItems().clear();
-        List<FileInfo> list = searcher.search(word, folder, file, content);
+        List<FileInfo> list = searcher.search(word, folder, file, content, filterPattern);
         if (CollUtil.isEmpty(list)) {
             FxDialogs.showInformation("糟糕，什么也没找到！", null);
         } else {
@@ -161,5 +167,19 @@ public class MainController implements BaseViewController {
             return;
         }
         ClipboardUtil.setStr(list.get(0).getPath());
+    }
+
+    public void resetFilterPattern(KeyEvent keyEvent) throws IOException, ParseException {
+        if (StrUtil.isEmpty(filterText.getText())) {
+            filterPattern = null;
+            return;
+        }
+        try {
+            filterPattern = Pattern.compile(filterText.getText());
+        } catch (Exception e) {
+            // ignore
+            filterPattern = null;
+        }
+        keyReleased(keyEvent);
     }
 }

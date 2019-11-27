@@ -33,12 +33,12 @@ public class EverywhereConfiguration implements BaseBean {
     /**
      * 需要创建内容索引的文件名（正则匹配）
      */
-    private Set<String> includeFilenames;
+    private Set<String> includePatterns;
 
     /**
      * 不创建内容索引的文件名（正则匹配）
      */
-    private Set<String> excludeFilenames;
+    private Set<String> excludePatterns;
 
     private Boolean ignoreHiddenFile;
 
@@ -51,7 +51,7 @@ public class EverywhereConfiguration implements BaseBean {
         return formatted;
     }
 
-    public static Formatted loadConfiguration() {
+    public static void loadConfiguration() {
         String path = WeUtils.parsePathByOs(CONFIG_FILE);
         if (StrUtil.isNotBlank(path)) {
             String json = FileUtil.readUtf8String(path);
@@ -61,22 +61,21 @@ public class EverywhereConfiguration implements BaseBean {
                 // ignore
             }
         }
-        return formatted;
     }
 
     public static String getPath() {
         return StrUtil.emptyToDefault(WeUtils.parsePathByOs(CONFIG_FILE), FileUtils.currentWorkDir(CONFIG_FILE));
     }
 
-    public void setIncludeFilenames(Set<String> includeFilenames) {
-        this.includeFilenames = includeFilenames;
-        formatted.includeFilenames = toPatterns(includeFilenames);
+    public void setIncludePatterns(Set<String> includePatterns) {
+        this.includePatterns = includePatterns;
+        formatted.includePatterns = toPatterns(includePatterns);
     }
 
-    public void setExcludeFilenames(Set<String> excludeFilenames) {
-        this.excludeFilenames = excludeFilenames;
-        formatted.addExcluded(excludeFilenames);
-        formatted.excludeFilenames = toPatterns(excludeFilenames);
+    public void setExcludePatterns(Set<String> excludePatterns) {
+        this.excludePatterns = excludePatterns;
+        formatted.addExcluded(excludePatterns);
+        formatted.excludePatterns = toPatterns(excludePatterns);
     }
 
     public void setIgnoreHiddenFile(Boolean ignoreHiddenFile) {
@@ -108,15 +107,15 @@ public class EverywhereConfiguration implements BaseBean {
     }
 
     @ToString
-    public static class Formatted {
+    public static class Formatted implements BaseBean {
 
         private Set<String> excluded = new HashSet<>();
 
         @Getter
-        private List<Pattern> includeFilenames = Collections.emptyList();
+        private List<Pattern> includePatterns = Collections.emptyList();
 
         @Getter
-        private List<Pattern> excludeFilenames = Collections.emptyList();
+        private List<Pattern> excludePatterns = Collections.emptyList();
 
         @Getter
         private boolean ignoreHiddenFile = true;
@@ -135,12 +134,12 @@ public class EverywhereConfiguration implements BaseBean {
             if (!FileUtil.exist(file)) {
                 return;
             }
-            if (CollUtil.isEmpty(excludeFilenames)) {
-                excludeFilenames = new ArrayList<>();
+            if (CollUtil.isEmpty(excludePatterns)) {
+                excludePatterns = new ArrayList<>();
             }
             final String pattern = StrUtil.emptyToDefault(FileUtil.extName(file), FileUtil.getName(file));
             if (excluded.add(pattern)) {
-                excludeFilenames.add(Pattern.compile(pattern));
+                excludePatterns.add(Pattern.compile(pattern));
             }
         }
     }
