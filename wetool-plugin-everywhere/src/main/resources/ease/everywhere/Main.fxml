@@ -4,7 +4,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.code4everything.wetool.plugin.everywhere.controller.MainController">
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
@@ -59,9 +59,9 @@
     <TableView fx:id="fileTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="nameColumn" prefWidth="200.0" text="名称"/>
-            <TableColumn fx:id="pathColumn" prefWidth="400.0" text="路径"/>
+            <TableColumn fx:id="pathColumn" prefWidth="500.0" text="路径"/>
             <TableColumn fx:id="sizeColumn" prefWidth="70.0" text="大小"/>
-            <TableColumn fx:id="timeColumn" prefWidth="100.0" text="修改时间"/>
+            <TableColumn fx:id="timeColumn" prefWidth="120.0" text="修改时间"/>
         </columns>
         <VBox.margin>
             <Insets top="10.0"/>

@@ -50,10 +50,12 @@ public class LuceneUtils {
         ThreadUtil.execute(() -> {
             try {
                 List<FileInfo> list = getSearcher().search(word, folder, file, content, filterPattern);
+                searching = false;
                 if (ObjectUtil.isNotNull(searchNotification)) {
                     Platform.runLater(() -> searchNotification.call(list));
                 }
             } catch (Exception e) {
+                searching = false;
                 log.error("searching error: " + ExceptionUtil.stacktraceToString(e));
             }
         });
