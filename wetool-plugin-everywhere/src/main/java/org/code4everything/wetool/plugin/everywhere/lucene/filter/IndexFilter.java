@@ -1,4 +1,4 @@
-package org.code4everything.wetool.plugin.everywhere.filter;
+package org.code4everything.wetool.plugin.everywhere.lucene.filter;
 
 import java.io.File;
 

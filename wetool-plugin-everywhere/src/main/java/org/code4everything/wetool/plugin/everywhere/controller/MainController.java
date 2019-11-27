@@ -41,6 +41,9 @@ public class MainController implements BaseViewController {
     public TableColumn sizeColumn;
 
     @FXML
+    public TableColumn timeColumn;
+
+    @FXML
     private void initialize() {
         BeanFactory.registerView(CommonConsts.APP_ID, CommonConsts.APP_NAME, this);
     }

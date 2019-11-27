@@ -1,4 +1,4 @@
-package org.code4everything.wetool.plugin.everywhere.filter;
+package org.code4everything.wetool.plugin.everywhere.lucene.filter;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
@@ -14,6 +14,8 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
+ * 文件内容索引过滤器
+ *
  * @author pantao
  * @since 2019/11/26
  */
@@ -23,7 +25,7 @@ public class ContentFilter implements IndexFilter {
 
     @Override
     public boolean shouldIndex(File file) {
-        if (Objects.isNull(file)) {
+        if (!FileUtil.exist(file)) {
             return false;
         }
         if (file.isDirectory()) {

@@ -23,5 +23,5 @@ public class CommonConsts {
     /**
      * 创建内容索引的文件最大大小
      */
-    public static final int MAX_FILE_SIZE = 100_000_000;
+    public static final int MAX_FILE_SIZE = 10_000_000;
 }
