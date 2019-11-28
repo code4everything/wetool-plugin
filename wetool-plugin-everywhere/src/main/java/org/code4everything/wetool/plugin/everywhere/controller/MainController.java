@@ -128,14 +128,12 @@ public class MainController implements BaseViewController {
 
     public void keyReleased(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
-            if (StrUtil.isEmpty(filterText.getText())) {
-                filterPattern = null;
-            } else {
+            filterPattern = null;
+            if (StrUtil.isNotEmpty(filterText.getText())) {
                 try {
                     filterPattern = Pattern.compile(filterText.getText());
                 } catch (Exception e) {
                     // ignore
-                    filterPattern = null;
                 }
             }
             findEverywhere();

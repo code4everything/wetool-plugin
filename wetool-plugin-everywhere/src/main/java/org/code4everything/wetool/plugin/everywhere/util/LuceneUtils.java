@@ -50,14 +50,13 @@ public class LuceneUtils {
         ThreadUtil.execute(() -> {
             try {
                 List<FileInfo> list = getSearcher().search(word, folder, file, content, filterPattern);
-                searching = false;
                 if (ObjectUtil.isNotNull(searchNotification)) {
                     Platform.runLater(() -> searchNotification.call(list));
                 }
             } catch (Exception e) {
-                searching = false;
                 log.error("searching error: " + ExceptionUtil.stacktraceToString(e));
             }
+            searching = false;
         });
     }
 
@@ -69,11 +68,10 @@ public class LuceneUtils {
         ThreadUtil.execute(() -> {
             try {
                 LUCENE_INDEXER.createIndex();
-                indexing = false;
             } catch (IOException e) {
                 log.error("indexing file error: " + ExceptionUtil.stacktraceToString(e));
-                indexing = false;
             }
+            indexing = false;
         });
     }
 
