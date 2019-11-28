@@ -80,7 +80,6 @@ public class MainController implements BaseViewController {
         pathColumn.setCellValueFactory(new PropertyValueFactory<>("path"));
         sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("modified"));
-        reloadConfig();
     }
 
     public void openConfigFile() {
