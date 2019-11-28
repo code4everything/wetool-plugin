@@ -1,0 +1,17 @@
+{
+    "excludePatterns": [
+        "^C:\\\\Windows",
+        "^C:\\\\ProgramData",
+        "^C:\\\\Program Files",
+        "^C:\\\\PerfLogs"
+    ],
+    "ignoreHiddenFile": true,
+    "includePatterns": [
+        "java$",
+        "xml$",
+        "json$"
+    ],
+    "sizeLimit": "100,000",
+    "indexContent": true,
+    "reindexExpireBetweenSearch": 1440
+}

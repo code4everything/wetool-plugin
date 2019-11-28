@@ -8,7 +8,7 @@
 
 在WeTool工作目录的`conf`目录下新增`ftp-server-config.json`文件，并完善配置，配置参考如下：
 
-``` json
+```json
 {
     /*初始化时是否启动FTP服务*/
     "startOnStartup": true,

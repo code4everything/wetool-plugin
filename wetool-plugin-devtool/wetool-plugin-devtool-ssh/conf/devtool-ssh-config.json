@@ -1,0 +1,8 @@
+{
+    "defaultConsolePath": null,
+    "servers": [
+        {
+            "host": "localserver"
+        }
+    ]
+}

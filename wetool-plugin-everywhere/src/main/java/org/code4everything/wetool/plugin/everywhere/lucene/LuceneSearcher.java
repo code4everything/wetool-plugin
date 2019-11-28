@@ -18,6 +18,7 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
 import org.code4everything.wetool.plugin.everywhere.constant.CommonConsts;
 import org.code4everything.wetool.plugin.everywhere.model.FileInfo;
+import org.code4everything.wetool.plugin.everywhere.util.LuceneUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +49,7 @@ public class LuceneSearcher {
 
     public List<FileInfo> search(String word, boolean addFolder, boolean addFile, boolean content,
                                  Pattern pathFilter) throws IOException, ParseException {
+        LuceneUtils.getLuceneIndexer().updateSearchTime(System.currentTimeMillis());
         List<FileInfo> list = new LinkedList<>();
         if (addFile || addFolder) {
             Predicate<File> filter = f -> {

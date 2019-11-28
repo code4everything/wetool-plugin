@@ -47,6 +47,16 @@ public class EverywhereConfiguration implements BaseBean {
      */
     private String sizeLimit;
 
+    /**
+     * 两次搜索时间超过设置的时间时重新创建索引，单位：分钟
+     */
+    private Long reindexExpireBetweenSearch;
+
+    /**
+     * 是否索引文件内容（全局开关）
+     */
+    private Boolean indexContent;
+
     public static Formatted getFormatted() {
         return formatted;
     }
@@ -65,6 +75,18 @@ public class EverywhereConfiguration implements BaseBean {
 
     public static String getPath() {
         return StrUtil.emptyToDefault(WeUtils.parsePathByOs(CONFIG_FILE), FileUtils.currentWorkDir(CONFIG_FILE));
+    }
+
+    public void setIndexContent(Boolean indexContent) {
+        this.indexContent = indexContent;
+        formatted.indexContent = Boolean.TRUE.equals(indexContent);
+    }
+
+    public void setReindexExpireBetweenSearch(Long reindexExpireBetweenSearch) {
+        this.reindexExpireBetweenSearch = reindexExpireBetweenSearch;
+        if (ObjectUtil.isNotNull(reindexExpireBetweenSearch)) {
+            formatted.reindexExpireBetweenSearch = reindexExpireBetweenSearch;
+        }
     }
 
     public void setIncludePatterns(Set<String> includePatterns) {
@@ -122,6 +144,12 @@ public class EverywhereConfiguration implements BaseBean {
 
         @Getter
         private int sizeLimit = 10_000_000;
+
+        @Getter
+        private long reindexExpireBetweenSearch = 24 * 60L;
+
+        @Getter
+        private boolean indexContent = false;
 
         private void addExcluded(Set<String> excluded) {
             if (CollUtil.isEmpty(excluded)) {

@@ -8,7 +8,7 @@
 
 在WeTool工作目录的`conf`目录下新增`ftp-client-config.json`文件，并配置至少一个`ftp`服务器，插件即可正常加载
 
-``` json
+```json
 {
     /*初始化时是否打开选项卡*/
     "showOnStartup": false,
