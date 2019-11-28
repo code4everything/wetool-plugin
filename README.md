@@ -45,6 +45,7 @@
     <groupId>org.code4everything</groupId>
     <artifactId>wetool-plugin-test</artifactId>
     <version>1.0.1</version>
+    <scope>test</scope>
 </dependency>
 ```
 
