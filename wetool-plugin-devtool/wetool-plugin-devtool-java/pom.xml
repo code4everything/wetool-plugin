@@ -25,6 +25,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-script</artifactId>
+            <version>5.0.6</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
             <version>5.2.1.RELEASE</version>
@@ -40,6 +45,12 @@
             <groupId>org.code4everything</groupId>
             <artifactId>wetool-plugin-test</artifactId>
             <version>1.0.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13-rc-1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

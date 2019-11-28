@@ -5,48 +5,54 @@
 <?import javafx.scene.layout.*?>
 <VBox prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.code4everything.wetool.plugin.devtool.java.controller.MainController">
-    <children>
-        <HBox prefWidth="200.0">
+    <HBox prefWidth="200.0">
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        </padding>
+        <TextField fx:id="classFile" editable="false" promptText="CLASS文件" HBox.hgrow="ALWAYS">
+            <HBox.margin>
+                <Insets/>
+            </HBox.margin>
+        </TextField>
+        <TextField fx:id="targetFile" promptText="目标文件" HBox.hgrow="ALWAYS">
+            <HBox.margin>
+                <Insets left="10.0" right="10.0"/>
+            </HBox.margin>
+        </TextField>
+        <Button mnemonicParsing="false" onAction="#chooseTargetFile" text="浏览" HBox.hgrow="NEVER"/>
+        <Button mnemonicParsing="false" onAction="#javap" text="反汇编" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </Button>
+    </HBox>
+    <SplitPane dividerPositions="0.3" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
+        <HBox>
             <padding>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
             </padding>
-            <children>
-                <TextField fx:id="classFile" editable="false" promptText="CLASS文件" HBox.hgrow="ALWAYS">
-                    <HBox.margin>
-                        <Insets/>
-                    </HBox.margin>
-                </TextField>
-                <TextField fx:id="targetFile" promptText="目标文件" HBox.hgrow="ALWAYS">
+            <TextArea fx:id="expression" prefHeight="200.0" prefWidth="200.0" promptText="计算表达式"
+                      wrapText="true" HBox.hgrow="ALWAYS"/>
+            <VBox HBox.hgrow="NEVER">
+                <HBox.margin>
+                    <Insets left="10.0" right="10.0"/>
+                </HBox.margin>
+                <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+                        onAction="#parseSpel" text="SpEL解析" HBox.hgrow="NEVER" prefWidth="80">
                     <HBox.margin>
                         <Insets left="10.0" right="10.0"/>
                     </HBox.margin>
-                </TextField>
-                <Button mnemonicParsing="false" onAction="#chooseTargetFile" text="浏览" HBox.hgrow="NEVER"/>
-                <Button mnemonicParsing="false" onAction="#javap" text="反汇编" HBox.hgrow="NEVER">
-                    <HBox.margin>
-                        <Insets left="10.0"/>
-                    </HBox.margin>
                 </Button>
-            </children>
+                <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#parseJs"
+                        text="JS解析" VBox.vgrow="NEVER" prefWidth="80">
+                    <VBox.margin>
+                        <Insets top="10.0"/>
+                    </VBox.margin>
+                </Button>
+            </VBox>
+            <TextArea fx:id="parsedResult" prefHeight="200.0" prefWidth="200.0" promptText="解析结果" wrapText="true"
+                      HBox.hgrow="ALWAYS"/>
         </HBox>
-        <SplitPane dividerPositions="0.3" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0"
-                   VBox.vgrow="ALWAYS">
-            <HBox>
-                <padding>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-                </padding>
-                <TextArea fx:id="elExpression" prefHeight="200.0" prefWidth="200.0" promptText="SpringEL表达式"
-                          HBox.hgrow="ALWAYS" wrapText="true"/>
-                <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#parseEl"
-                        text="解析" HBox.hgrow="NEVER">
-                    <HBox.margin>
-                        <Insets left="10.0" right="10.0"/>
-                    </HBox.margin>
-                </Button>
-                <TextArea fx:id="elResult" prefHeight="200.0" prefWidth="200.0" promptText="解析结果"
-                          HBox.hgrow="ALWAYS" wrapText="true"/>
-            </HBox>
-            <VBox/>
-        </SplitPane>
-    </children>
+        <VBox/>
+    </SplitPane>
 </VBox>
