@@ -165,7 +165,7 @@ public class MainController implements BaseViewController {
         list.forEach(f -> {
             if (FileUtil.del(f.getPath())) {
                 deleted.add(f);
-                deleted.add(f);
+
             }
         });
         fileTable.getItems().removeAll(deleted);
