@@ -94,7 +94,7 @@ public class MainController implements BaseViewController {
             conf.setIncludePatterns(Collections.emptySet());
             conf.setSizeLimit("10,000,000");
             conf.setIndexContent(false);
-            conf.setReindexExpireBetweenSearch(24 * 60L);
+            conf.setIndexExpire(24 * 60L);
             FileUtil.writeUtf8String(conf.toJsonString(true), path);
         }
         FxUtils.openFile(path);
@@ -104,7 +104,7 @@ public class MainController implements BaseViewController {
         // 强制重新索引
         EverywhereConfiguration.loadConfiguration();
         EverywhereConfiguration.Formatted formatted = EverywhereConfiguration.getFormatted();
-        long time = System.currentTimeMillis() - formatted.getReindexExpireBetweenSearch() * 60 * 1000;
+        long time = System.currentTimeMillis() - formatted.getIndexExpire() * 60 * 1000;
         LuceneUtils.getLuceneIndexer().updateSearchTime(time);
         LuceneUtils.indexAsync();
     }

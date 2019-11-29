@@ -25,8 +25,8 @@
     "sizeLimit": "100,000",
     /*是否创建文件内容索引（全局）*/
     "indexContent": true,
-    /*重新创建索引的搜索间隔时间，当两次搜索间隔超过该设置时就重新创建索引，单位：分钟*/
-    "reindexExpireBetweenSearch": 1440
+    /*索引的过期时间，单位：分钟*/
+    "indexExpire": 1440
 }
 ```
 

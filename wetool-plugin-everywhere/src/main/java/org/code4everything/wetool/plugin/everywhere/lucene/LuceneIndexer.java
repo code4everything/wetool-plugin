@@ -93,7 +93,7 @@ public class LuceneIndexer {
         // 差值，毫秒转分钟
         long diff = (System.currentTimeMillis() - NumberUtil.parseLong(string)) / (1000 * 60);
         EverywhereConfiguration.Formatted formatted = EverywhereConfiguration.getFormatted();
-        return diff < formatted.getReindexExpireBetweenSearch();
+        return diff < formatted.getIndexExpire();
     }
 
     private void recursiveIndex(File file, IndexWriter writer) throws IOException {

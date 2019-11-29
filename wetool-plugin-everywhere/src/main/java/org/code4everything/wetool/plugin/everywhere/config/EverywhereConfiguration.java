@@ -50,7 +50,7 @@ public class EverywhereConfiguration implements BaseBean {
     /**
      * 两次搜索时间超过设置的时间时重新创建索引，单位：分钟
      */
-    private Long reindexExpireBetweenSearch;
+    private Long indexExpire;
 
     /**
      * 是否索引文件内容（全局开关）
@@ -82,10 +82,10 @@ public class EverywhereConfiguration implements BaseBean {
         formatted.indexContent = Boolean.TRUE.equals(indexContent);
     }
 
-    public void setReindexExpireBetweenSearch(Long reindexExpireBetweenSearch) {
-        this.reindexExpireBetweenSearch = reindexExpireBetweenSearch;
-        if (ObjectUtil.isNotNull(reindexExpireBetweenSearch)) {
-            formatted.reindexExpireBetweenSearch = reindexExpireBetweenSearch;
+    public void setIndexExpire(Long indexExpire) {
+        this.indexExpire = indexExpire;
+        if (ObjectUtil.isNotNull(indexExpire)) {
+            formatted.indexExpire = indexExpire;
         }
     }
 
@@ -146,7 +146,7 @@ public class EverywhereConfiguration implements BaseBean {
         private int sizeLimit = 10_000_000;
 
         @Getter
-        private long reindexExpireBetweenSearch = 24 * 60L;
+        private long indexExpire = 24 * 60L;
 
         @Getter
         private boolean indexContent = false;
