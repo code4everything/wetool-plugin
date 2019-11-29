@@ -103,9 +103,7 @@ public class MainController implements BaseViewController {
     public void reloadConfig() {
         // 强制重新索引
         EverywhereConfiguration.loadConfiguration();
-        EverywhereConfiguration.Formatted formatted = EverywhereConfiguration.getFormatted();
-        long time = System.currentTimeMillis() - formatted.getIndexExpire() * 60 * 1000;
-        LuceneUtils.getLuceneIndexer().updateSearchTime(time);
+        FileUtil.del(CommonConsts.INDEX_PATH);
         LuceneUtils.indexAsync();
     }
 

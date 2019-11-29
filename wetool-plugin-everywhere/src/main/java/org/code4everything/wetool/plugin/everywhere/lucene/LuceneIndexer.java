@@ -48,7 +48,7 @@ public class LuceneIndexer {
 
     private IndexFilter contentFilter = new ContentFilter();
 
-    public void updateSearchTime(long timestamp) {
+    private void updateSearchTime(long timestamp) {
         FileUtil.writeUtf8String(String.valueOf(timestamp), dateFile);
     }
 
