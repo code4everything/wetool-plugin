@@ -56,7 +56,7 @@
             </HBox.margin>
         </Button>
     </HBox>
-    <TableView fx:id="fileTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+    <TableView fx:id="fileTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" onMouseClicked="#tableClicked">
         <columns>
             <TableColumn fx:id="nameColumn" prefWidth="200.0" text="名称"/>
             <TableColumn fx:id="pathColumn" prefWidth="500.0" text="路径"/>

@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import org.code4everything.wetool.plugin.everywhere.config.EverywhereConfiguration;
 import org.code4everything.wetool.plugin.everywhere.constant.CommonConsts;
 import org.code4everything.wetool.plugin.everywhere.model.FileInfo;
@@ -177,5 +178,9 @@ public class MainController implements BaseViewController {
             return;
         }
         ClipboardUtil.setStr(list.get(0).getPath());
+    }
+
+    public void tableClicked(MouseEvent event) {
+        FxUtils.doubleClicked(event, this::openFile);
     }
 }
