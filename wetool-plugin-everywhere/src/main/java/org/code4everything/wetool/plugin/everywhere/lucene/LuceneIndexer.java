@@ -4,7 +4,6 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
@@ -40,17 +39,11 @@ public class LuceneIndexer {
 
     private String indexedFile = StrUtil.join(File.separator, CommonConsts.INDEX_PATH, "indexed.file");
 
-    private String dateFile = StrUtil.join(File.separator, CommonConsts.INDEX_PATH, "search.last");
-
     private IndexFilter folderFilter = new FolderFilter();
 
     private IndexFilter filenameFilter = new FilenameFilter();
 
     private IndexFilter contentFilter = new ContentFilter();
-
-    public void updateSearchTime(long timestamp) {
-        FileUtil.writeUtf8String(String.valueOf(timestamp), dateFile);
-    }
 
     public void createIndex() throws IOException {
         if (isIndexedValid()) {
@@ -78,20 +71,15 @@ public class LuceneIndexer {
                 }
             }
         }
-        updateSearchTime(System.currentTimeMillis());
         log.info("lucene index expend: {}ms", System.currentTimeMillis() - start);
     }
 
     private boolean isIndexedValid() {
-        if (!FileUtil.exist(dateFile)) {
-            return false;
-        }
-        String string = FileUtil.readUtf8String(dateFile);
-        if (!NumberUtil.isNumber(string)) {
+        if (!FileUtil.exist(indexedFile)) {
             return false;
         }
         // 差值，毫秒转分钟
-        long diff = (System.currentTimeMillis() - NumberUtil.parseLong(string)) / (1000 * 60);
+        long diff = (System.currentTimeMillis() - FileUtil.lastModifiedTime(indexedFile).getTime()) / (1000 * 60);
         EverywhereConfiguration.Formatted formatted = EverywhereConfiguration.getFormatted();
         return diff < formatted.getIndexExpire();
     }

@@ -13,5 +13,5 @@
     ],
     "sizeLimit": "100,000",
     "indexContent": true,
-    "reindexExpireBetweenSearch": 1440
+    "indexExpire": 1440
 }

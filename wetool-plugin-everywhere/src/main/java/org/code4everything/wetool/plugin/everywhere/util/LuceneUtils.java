@@ -38,10 +38,6 @@ public class LuceneUtils {
         LuceneUtils.searchNotification = searchNotification;
     }
 
-    public static LuceneIndexer getLuceneIndexer() {
-        return LUCENE_INDEXER;
-    }
-
     public static void searchAsync(String word, boolean folder, boolean file, boolean content, Pattern filterPattern) {
         if (searching) {
             return;
