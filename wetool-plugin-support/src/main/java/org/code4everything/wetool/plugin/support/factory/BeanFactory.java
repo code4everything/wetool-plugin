@@ -27,6 +27,11 @@ public class BeanFactory {
 
     private static final Map<String, SoftReference<Object>> PROTOTYPE_MAPPING = new ConcurrentHashMap<>(16);
 
+    public static void clearCache() {
+        VIEW_MAPPING.clear();
+        PROTOTYPE_MAPPING.clear();
+    }
+
     /**
      * 注册多例Bean
      */

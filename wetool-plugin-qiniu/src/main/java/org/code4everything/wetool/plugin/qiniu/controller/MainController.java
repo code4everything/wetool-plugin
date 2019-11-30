@@ -222,7 +222,7 @@ public class MainController extends BaseQiniuController {
         // 设置默认的开始和结束日期，并事件刷新数据
         endDP.setValue(LocalDate.now());
         long startTime = System.currentTimeMillis() - QiniuConsts.DATE_SPAN_OF_THIRTY_ONE;
-        LocalDate localEndDate = DateUtils.toLocalDate(new Date(startTime));
+        LocalDate localEndDate = DateUtils.toLocalDateTime(new Date(startTime)).toLocalDate();
         startDP.setValue(localEndDate);
         // 设置桶下拉框改变事件，改变后配置新的上传环境
         bucketCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {

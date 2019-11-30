@@ -50,6 +50,7 @@ public class LuceneIndexer {
             return;
         }
         FileUtil.del(indexedFile);
+        FileUtil.touch(indexedFile);
         long start = System.currentTimeMillis();
         // 配置索引方式
         @Cleanup Directory dir = FSDirectory.open(Paths.get(CommonConsts.INDEX_PATH));
