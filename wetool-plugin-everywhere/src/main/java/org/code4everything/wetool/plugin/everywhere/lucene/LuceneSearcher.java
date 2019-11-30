@@ -49,7 +49,7 @@ public class LuceneSearcher {
 
     public List<FileInfo> search(String word, boolean addFolder, boolean addFile, boolean content,
                                  Pattern pathFilter) throws IOException, ParseException {
-        LuceneUtils.indexAsync();
+        LuceneUtils.indexAsync(false);
         List<FileInfo> list = new LinkedList<>();
         if (addFile || addFolder) {
             Predicate<File> filter = f -> {
