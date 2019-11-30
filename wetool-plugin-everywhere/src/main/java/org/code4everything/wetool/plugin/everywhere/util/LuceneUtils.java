@@ -1,11 +1,13 @@
 package org.code4everything.wetool.plugin.everywhere.util;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ObjectUtil;
 import javafx.application.Platform;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.code4everything.wetool.plugin.everywhere.constant.CommonConsts;
 import org.code4everything.wetool.plugin.everywhere.lucene.LuceneIndexer;
 import org.code4everything.wetool.plugin.everywhere.lucene.LuceneSearcher;
 import org.code4everything.wetool.plugin.everywhere.model.FileInfo;
@@ -56,11 +58,14 @@ public class LuceneUtils {
         });
     }
 
-    public static void indexAsync() {
+    public static void indexAsync(boolean force) {
         if (indexing) {
             return;
         }
         indexing = true;
+        if (force) {
+            FileUtil.del(CommonConsts.INDEX_PATH);
+        }
         ThreadUtil.execute(() -> {
             try {
                 LUCENE_INDEXER.createIndex();

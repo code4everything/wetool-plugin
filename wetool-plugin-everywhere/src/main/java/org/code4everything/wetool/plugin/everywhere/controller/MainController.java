@@ -103,8 +103,7 @@ public class MainController implements BaseViewController {
     public void reloadConfig() {
         // 强制重新索引
         EverywhereConfiguration.loadConfiguration();
-        FileUtil.del(CommonConsts.INDEX_PATH);
-        LuceneUtils.indexAsync();
+        LuceneUtils.indexAsync(true);
     }
 
     public void findEverywhere() {
