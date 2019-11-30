@@ -1,12 +1,15 @@
 {
     "servers": [
         {
+            /*全局唯一，为空时使用host作为别名*/
             "alias": "",
             "host": "localserver",
             "port": 6379,
             "password": "",
             "initialConnect": true,
-            "dbs": []
+            "dbs": [
+                0
+            ]
         }
     ]
 }

@@ -13,7 +13,6 @@ public class FtpServerConnectionTest {
     @Test
     public void testConnection() {
         try {
-
             Ftp ftp = new Ftp("127.0.0.1", 21, "test", "test");
             Console.log(ftp.ls("/"));
         } catch (Exception e) {

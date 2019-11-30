@@ -1,8 +1,15 @@
 {
+    /*终端默认路径*/
     "defaultConsolePath": null,
     "servers": [
         {
-            "host": "localserver"
+            /*全局唯一，为空时使用host作为别名*/
+            "alias": "",
+            "host": "localserver",
+            "port": 22,
+            "username": "root",
+            "password": "root",
+            "charset": "utf-8"
         }
     ]
 }
