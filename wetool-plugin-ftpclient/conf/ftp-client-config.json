@@ -5,7 +5,7 @@
         {
             /*FTP连接名称*/
             "name": "EaseFtp",
-            "host": "127.0.0.1",
+            "host": "localserver",
             "port": 21,
             "anonymous": false,
             "username": "root",

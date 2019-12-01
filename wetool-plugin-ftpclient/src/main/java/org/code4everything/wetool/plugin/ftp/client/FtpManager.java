@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPFile;
 import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.boot.base.function.BooleanFunction;
+import org.code4everything.wetool.plugin.ftp.client.config.FtpConfig;
 import org.code4everything.wetool.plugin.ftp.client.config.FtpInfo;
 import org.code4everything.wetool.plugin.ftp.client.constant.FtpConsts;
 import org.code4everything.wetool.plugin.ftp.client.controller.FtpController;
@@ -80,7 +81,7 @@ public class FtpManager {
                 files.forEach(f -> DOWNLOAD_QUEUE.offer(new FtpDownload(name, f.getKey(), f.getValue(), path)));
             }
         }
-        FtpController controller = BeanFactory.get(FtpController.class);
+        FtpController controller = BeanFactory.getViewObject(FtpConsts.TAB_ID + FtpConsts.TAB_NAME);
         if (shouldExe) {
             // 异步下载
             ThreadUtil.execute(() -> {
@@ -214,7 +215,7 @@ public class FtpManager {
 
     public static String generateConfigKey(String ftpName) {
         return "config:" + FtpConsts.AUTHOR + FtpConsts.NAME + ftpName;
-}
+    }
 
     private static void retry(BooleanFunction func) {
         Exception ex = null;
@@ -241,7 +242,10 @@ public class FtpManager {
     public static Ftp getFtp(String name) {
         Ftp ftp = BeanFactory.get(generateFtpKey(name));
         if (Objects.isNull(ftp)) {
-            FtpInfo fo = BeanFactory.get(generateConfigKey(name));
+            FtpInfo fo = BeanFactory.get(generateConfigKey(name), () -> {
+                FtpConfig.loadConfigAndParse();
+                return BeanFactory.get(generateConfigKey(name));
+            });
             if (fo.getAnonymous()) {
                 ftp = new Ftp(fo.getHost(), fo.getPort(), "anonymous", "", fo.getCharset());
             } else {

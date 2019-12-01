@@ -1,26 +1,20 @@
 package org.code4everything.wetool.plugin.ftp.client;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.core.util.StrUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.ftp.client.config.FtpConfig;
-import org.code4everything.wetool.plugin.ftp.client.config.FtpInfo;
 import org.code4everything.wetool.plugin.ftp.client.constant.FtpConsts;
 import org.code4everything.wetool.plugin.ftp.client.model.LastUsedInfo;
 import org.code4everything.wetool.plugin.support.WePluginSupporter;
-import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
 import java.awt.event.ActionListener;
-import java.util.List;
 
 /**
  * @author pantao
@@ -34,24 +28,7 @@ public class WetoolSupporter implements WePluginSupporter {
     @Override
     public boolean initialize() {
         // 获取配置
-        ftpConfig = FtpConfig.getConfig();
-        List<FtpInfo> ftps = FtpConfig.getFtps(ftpConfig);
-        for (FtpInfo ftpInfo : ftps) {
-            if (StrUtil.isEmpty(ftpInfo.getName())) {
-                // 无效的配置
-                log.info("invalid ftp config, the name of ftp connection must not be empty: {}", ftpInfo);
-                continue;
-            }
-            LastUsedInfo.getInstance().addFtpName(ftpInfo.getName());
-            if (ftpInfo.getSelect()) {
-                LastUsedInfo.getInstance().setFtpName(ftpInfo.getName());
-            }
-            BeanFactory.register(FtpManager.generateConfigKey(ftpInfo.getName()), ftpInfo);
-            // 是否进行初始化连接
-            if (ftpInfo.isInitConnect()) {
-                ThreadUtil.execute(() -> FtpManager.getFtp(ftpInfo.getName()));
-            }
-        }
+        ftpConfig = FtpConfig.loadConfigAndParse();
         if (CollUtil.isEmpty(LastUsedInfo.getInstance().getFtpNames())) {
             log.error("ftp config not found, plugin will exit");
             return false;
