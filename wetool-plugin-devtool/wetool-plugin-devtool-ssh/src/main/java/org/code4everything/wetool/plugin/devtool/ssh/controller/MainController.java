@@ -17,8 +17,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import org.code4everything.wetool.plugin.devtool.ssh.config.PullingConfiguration;
 import org.code4everything.wetool.plugin.devtool.ssh.config.ServerConfiguration;
-import org.code4everything.wetool.plugin.devtool.ssh.config.ServerSyncConfiguration;
 import org.code4everything.wetool.plugin.devtool.ssh.config.SftpFile;
 import org.code4everything.wetool.plugin.devtool.ssh.config.SshConfiguration;
 import org.code4everything.wetool.plugin.devtool.ssh.constant.CommonConsts;
@@ -49,6 +49,8 @@ public class MainController implements BaseViewController {
     private final SftpFile textDir = new SftpFile(null, true);
 
     private final EventHandler<Event> noAction = e -> {};
+
+    private final Map<PullingConfiguration, Integer> delayMap = new HashMap<>();
 
     @FXML
     public ComboBox<String> serverCombo;
@@ -82,7 +84,11 @@ public class MainController implements BaseViewController {
             thread.setName("Sftp-File-Sync");
             return thread;
         });
-        service.execute(this::sync);
+        service.execute(() -> {
+            while (true) {
+                pull();
+            }
+        });
     }
 
     public void openConfigFile() {
@@ -113,6 +119,7 @@ public class MainController implements BaseViewController {
         });
         serverCombo.getSelectionModel().select(0);
         openLocalTerminal();
+        delayMap.clear();
     }
 
     public void openLocalTerminal() {
@@ -207,34 +214,45 @@ public class MainController implements BaseViewController {
         });
     }
 
-    private void sync() {
+    private void pull() {
         Collection<ServerConfiguration> list = SftpUtils.listConf();
         for (ServerConfiguration conf : list) {
-            List<ServerSyncConfiguration> syncs = conf.getSyncs();
-            if (CollUtil.isEmpty(syncs)) {
+            Set<PullingConfiguration> pullingList = conf.getPullingList();
+            if (CollUtil.isEmpty(pullingList)) {
                 continue;
             }
 
-            for (ServerSyncConfiguration sync : syncs) {
-                if (!sync.getEnable()) {
+            Sftp sftp = SftpUtils.getSftp(conf.getAlias());
+
+            for (PullingConfiguration pulling : pullingList) {
+                if (!pulling.getEnable()) {
                     continue;
                 }
 
-                SftpFile sftpFile = new SftpFile(sync.getRemoteDir(), true);
-                Sftp sftp = SftpUtils.getSftp(conf.getAlias());
+                final Integer delay = delayMap.getOrDefault(pulling, 0);
+                if (delay % pulling.getDelay() != 0) {
+                    delayMap.put(pulling, delay + 1);
+                    continue;
+                }
+
+                SftpFile sftpFile = new SftpFile(pulling.getRemoteDir(), true);
 
                 Pattern p = null;
                 try {
-                    p = Pattern.compile(sync.getFileFilter());
+                    p = Pattern.compile(pulling.getFileFilter());
                 } catch (Exception e) {
                     // ignore
                 }
 
                 List<SftpFile> files = listFiles(sftp, sftpFile, p);
-                File folder = new File(sync.getLocalDir());
+                File folder = FileUtil.mkdir(pulling.getLocalDir());
                 files.forEach(f -> sftp.download(f.getPath(), folder));
+
+                delayMap.put(pulling, delay + 1);
             }
         }
+
+        // 一秒钟执行一次
         ThreadUtil.sleep(1000);
     }
 

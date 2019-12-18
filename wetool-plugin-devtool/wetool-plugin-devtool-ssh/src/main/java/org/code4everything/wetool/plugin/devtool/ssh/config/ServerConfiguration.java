@@ -12,6 +12,7 @@ import org.code4everything.boot.base.bean.BaseBean;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author pantao
@@ -50,7 +51,7 @@ public class ServerConfiguration implements BaseBean {
 
     private String charset;
 
-    private List<ServerSyncConfiguration> syncs;
+    private Set<PullingConfiguration> pullingList;
 
     public Charset getCharset() {
         return CharsetUtil.charset(charset);

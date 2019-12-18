@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.code4everything.boot.base.bean.BaseBean;
 
+import java.util.Objects;
+
 /**
  * @author pantao
  * @since 2019/12/18
@@ -19,7 +21,7 @@ import org.code4everything.boot.base.bean.BaseBean;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class ServerSyncConfiguration implements BaseBean {
+public class PullingConfiguration implements BaseBean {
 
     private Boolean enable;
 
@@ -36,6 +38,24 @@ public class ServerSyncConfiguration implements BaseBean {
      * synchronize delay, default: 60s
      */
     private Integer delay;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PullingConfiguration that = (PullingConfiguration) o;
+        return Objects.equals(getRemoteDir(), that.getRemoteDir()) && Objects.equals(getFileFilter(),
+                that.getFileFilter()) && Objects.equals(getLocalDir(), that.getLocalDir());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getRemoteDir(), getFileFilter(), getLocalDir());
+    }
 
     @Generated
     public boolean getEnable() {
