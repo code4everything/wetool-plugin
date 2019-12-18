@@ -3,6 +3,7 @@ package org.code4everything.wetool.plugin.devtool.ssh.controller;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.ssh.Sftp;
@@ -17,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import org.code4everything.wetool.plugin.devtool.ssh.config.ServerConfiguration;
+import org.code4everything.wetool.plugin.devtool.ssh.config.ServerSyncConfiguration;
 import org.code4everything.wetool.plugin.devtool.ssh.config.SftpFile;
 import org.code4everything.wetool.plugin.devtool.ssh.config.SshConfiguration;
 import org.code4everything.wetool.plugin.devtool.ssh.constant.CommonConsts;
@@ -26,8 +28,11 @@ import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -69,6 +74,15 @@ public class MainController implements BaseViewController {
         config.setCursorBlink(true);
         fileList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         reloadConfig();
+
+        // 文件同步线程
+        final ExecutorService service = Executors.newSingleThreadExecutor(r -> {
+            Thread thread = new Thread(r);
+            thread.setDaemon(true);
+            thread.setName("Sftp-File-Sync");
+            return thread;
+        });
+        service.execute(this::sync);
     }
 
     public void openConfigFile() {
@@ -193,6 +207,37 @@ public class MainController implements BaseViewController {
         });
     }
 
+    private void sync() {
+        Collection<ServerConfiguration> list = SftpUtils.listConf();
+        for (ServerConfiguration conf : list) {
+            List<ServerSyncConfiguration> syncs = conf.getSyncs();
+            if (CollUtil.isEmpty(syncs)) {
+                continue;
+            }
+
+            for (ServerSyncConfiguration sync : syncs) {
+                if (!sync.getEnable()) {
+                    continue;
+                }
+
+                SftpFile sftpFile = new SftpFile(sync.getRemoteDir(), true);
+                Sftp sftp = SftpUtils.getSftp(conf.getAlias());
+
+                Pattern p = null;
+                try {
+                    p = Pattern.compile(sync.getFileFilter());
+                } catch (Exception e) {
+                    // ignore
+                }
+
+                List<SftpFile> files = listFiles(sftp, sftpFile, p);
+                File folder = new File(sync.getLocalDir());
+                files.forEach(f -> sftp.download(f.getPath(), folder));
+            }
+        }
+        ThreadUtil.sleep(1000);
+    }
+
     private void download(boolean open) {
         final ObservableList<SftpFile> list = fileList.getSelectionModel().getSelectedItems();
         if (CollUtil.isEmpty(list)) {
@@ -219,19 +264,25 @@ public class MainController implements BaseViewController {
         fileList.getItems().clear();
         // 文件夹
         List<String> dirs = ObjectUtil.defaultIfNull(sftp.lsDirs(dir.getPath()), Collections.emptyList());
-        dirs = filterFile(dirs);
+        dirs = filterFile(dirs, null);
         fileList.getItems().addAll(dirs.stream().map(d -> SftpFile.of(dir, d, true)).collect(Collectors.toList()));
         // 文件
-        List<String> files = ObjectUtil.defaultIfNull(sftp.lsFiles(dir.getPath()), Collections.emptyList());
-        files = filterFile(files);
-        fileList.getItems().addAll(files.stream().map(f -> SftpFile.of(dir, f, false)).collect(Collectors.toList()));
+        fileList.getItems().addAll(listFiles(sftp, dir, null));
     }
 
-    private List<String> filterFile(List<String> files) {
+    private List<SftpFile> listFiles(Sftp sftp, SftpFile dir, Pattern pattern) {
+        List<String> files = ObjectUtil.defaultIfNull(sftp.lsFiles(dir.getPath()), Collections.emptyList());
+        files = filterFile(files, pattern);
+        return files.stream().map(f -> SftpFile.of(dir, f, false)).collect(Collectors.toList());
+    }
+
+    private List<String> filterFile(List<String> files, Pattern pattern) {
         if (CollUtil.isEmpty(files)) {
             return Collections.emptyList();
         }
-        return files.stream().filter(s -> Objects.isNull(pattern) || pattern.matcher(s).find()).collect(Collectors.toList());
+
+        Pattern p = ObjectUtil.defaultIfNull(pattern, this.pattern);
+        return files.stream().filter(s -> Objects.isNull(p) || p.matcher(s).find()).collect(Collectors.toList());
     }
 
     private void openTerminal(ServerConfiguration server, String charset) {

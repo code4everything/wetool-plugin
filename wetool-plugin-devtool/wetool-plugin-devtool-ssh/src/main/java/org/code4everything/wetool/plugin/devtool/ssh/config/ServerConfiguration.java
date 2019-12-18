@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 import org.code4everything.boot.base.bean.BaseBean;
 
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -48,6 +49,8 @@ public class ServerConfiguration implements BaseBean {
     private String password;
 
     private String charset;
+
+    private List<ServerSyncConfiguration> syncs;
 
     public Charset getCharset() {
         return CharsetUtil.charset(charset);
