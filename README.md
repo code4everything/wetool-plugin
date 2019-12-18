@@ -34,7 +34,7 @@
 <dependency>
     <groupId>org.code4everything</groupId>
     <artifactId>wetool-plugin-support</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
@@ -44,7 +44,7 @@
 <dependency>
     <groupId>org.code4everything</groupId>
     <artifactId>wetool-plugin-test</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -67,7 +67,9 @@
 
 - [简易FTP服务器](wetool-plugin-repository/ease-ftp-server/readme.md)
 
-- [开发工具]()
+- [开发工具](wetool-plugin-repository/ease-devtool/readme.md)
+
+- [Everywhere文件检索工具](wetool-plugin-repository/ease-everywhere/readme.md)
 
 ### 参与贡献
 

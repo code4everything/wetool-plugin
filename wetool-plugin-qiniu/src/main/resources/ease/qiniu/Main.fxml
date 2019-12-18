@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<VBox xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.code4everything.wetool.plugin.qiniu.controller.MainController">
     <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0"
                 prefWidth="700.0" VBox.vgrow="ALWAYS">
@@ -14,23 +14,25 @@
                      prefWidth="700.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
                 <Tab text="文件上传">
                     <HBox>
-                        <SplitPane dividerPositions="0.6" prefHeight="520.0" prefWidth="702.0" HBox.hgrow="ALWAYS">
+                        <SplitPane dividerPositions="0.6" prefHeight="520.0" prefWidth="702.0"
+                                   HBox.hgrow="ALWAYS">
                             <padding>
                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                             </padding>
                             <VBox>
                                 <TextArea fx:id="uploadStatusTA" editable="false"
-                                          maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                          prefHeight="504.0" prefWidth="336.0" promptText="文件上传状态" VBox.vgrow="ALWAYS">
+                                          maxHeight="1.7976931348623157E308"
+                                          maxWidth="1.7976931348623157E308" prefHeight="504.0"
+                                          prefWidth="336.0" promptText="文件上传状态" VBox.vgrow="ALWAYS">
                                     <contextMenu>
                                         <ContextMenu>
                                             <items>
-                                                <MenuItem mnemonicParsing="false" onAction="#clearUploadStatus"
-                                                          text="清空"/>
-                                                <MenuItem mnemonicParsing="false" onAction="#saveUploadStatus"
-                                                          text="另存为"/>
-                                                <MenuItem mnemonicParsing="false" onAction="#copyUploadStatus"
-                                                          text="复制"/>
+                                                <MenuItem mnemonicParsing="false"
+                                                          onAction="#clearUploadStatus" text="清空"/>
+                                                <MenuItem mnemonicParsing="false"
+                                                          onAction="#saveUploadStatus" text="另存为"/>
+                                                <MenuItem mnemonicParsing="false"
+                                                          onAction="#copyUploadStatus" text="复制"/>
                                             </items>
                                         </ContextMenu>
                                     </contextMenu>
@@ -40,9 +42,11 @@
                                 </TextArea>
                             </VBox>
                             <VBox prefHeight="500.0" prefWidth="171.0">
-                                <ComboBox fx:id="prefixCB" editable="true" maxHeight="1.7976931348623157E308"
-                                          maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="277.0"
-                                          promptText="文件前缀, 不设置则为空" VBox.vgrow="NEVER">
+                                <ComboBox fx:id="prefixCB" editable="true"
+                                          maxHeight="1.7976931348623157E308"
+                                          maxWidth="1.7976931348623157E308" prefHeight="35.0"
+                                          prefWidth="277.0" promptText="文件前缀, 不设置则为空"
+                                          VBox.vgrow="NEVER">
                                     <VBox.margin>
                                         <Insets left="10.0"/>
                                     </VBox.margin>
@@ -51,18 +55,22 @@
                                     <padding>
                                         <Insets left="10.0" right="10.0" top="10.0"/>
                                     </padding>
-                                    <CheckBox fx:id="recursiveCB" mnemonicParsing="false" text="文件夹递归"
-                                              selected="true"/>
-                                    <CheckBox fx:id="keepPathCB" mnemonicParsing="false" text="保持文件夹路径" selected="true">
+                                    <CheckBox fx:id="recursiveCB" mnemonicParsing="false"
+                                              selected="true" text="文件夹递归"/>
+                                    <CheckBox fx:id="keepPathCB" mnemonicParsing="false"
+                                              selected="true" text="保持文件夹路径">
                                         <HBox.margin>
                                             <Insets left="10.0"/>
                                         </HBox.margin>
                                     </CheckBox>
                                 </HBox>
                                 <TextArea fx:id="selectedFileTA" maxHeight="1.7976931348623157E308"
-                                          maxWidth="1.7976931348623157E308" onDragDropped="#dragFileDropped"
-                                          onDragOver="#dragFileOver" prefHeight="800.0" prefWidth="332.0"
-                                          promptText="文件路径, 一个文件一行, 支持拖曳文件, 支持抓取网络文件" VBox.vgrow="ALWAYS">
+                                          maxWidth="1.7976931348623157E308"
+                                          onDragDropped="#dragFileDropped"
+                                          onDragOver="#dragFileOver" prefHeight="800.0"
+                                          prefWidth="332.0"
+                                          promptText="文件路径, 一个文件一行, 支持拖曳文件, 支持抓取网络文件"
+                                          VBox.vgrow="ALWAYS">
                                     <VBox.margin>
                                         <Insets left="10.0" top="10.0"/>
                                     </VBox.margin>
@@ -71,18 +79,21 @@
                                     <VBox.margin>
                                         <Insets left="10.0" top="10.0"/>
                                     </VBox.margin>
-                                    <Button contentDisplay="CENTER" maxHeight="1.7976931348623157E308"
-                                            maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                            onAction="#showOpenFileDialog" prefHeight="27.0" prefWidth="156.0"
-                                            text="选择文件"
-                                            HBox.hgrow="ALWAYS">
+                                    <Button alignment="CENTER" contentDisplay="CENTER"
+                                            maxHeight="1.7976931348623157E308"
+                                            maxWidth="1.7976931348623157E308"
+                                            mnemonicParsing="false"
+                                            onAction="#showOpenFileDialog" prefHeight="27.0"
+                                            prefWidth="156.0" text="选择文件" HBox.hgrow="ALWAYS">
                                         <HBox.margin>
                                             <Insets right="10.0"/>
                                         </HBox.margin>
                                     </Button>
-                                    <Button alignment="CENTER" maxHeight="1.7976931348623157E308"
-                                            maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                            onAction="#uploadFile" prefHeight="27.0" prefWidth="156.0" text="开始上传"
+                                    <Button alignment="CENTER"
+                                            maxHeight="1.7976931348623157E308"
+                                            maxWidth="1.7976931348623157E308"
+                                            mnemonicParsing="false" onAction="#uploadFile"
+                                            prefHeight="27.0" prefWidth="156.0" text="开始上传"
                                             HBox.hgrow="ALWAYS">
                                         <HBox.margin>
                                             <Insets left="10.0"/>
@@ -95,7 +106,8 @@
                 </Tab>
                 <Tab text="资源管理">
                     <VBox>
-                        <HBox alignment="CENTER_LEFT" prefHeight="52.0" prefWidth="700.0" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER_LEFT" prefHeight="52.0" prefWidth="700.0"
+                              VBox.vgrow="NEVER">
                             <padding>
                                 <Insets left="10.0"/>
                             </padding>
@@ -104,8 +116,8 @@
                                     <Font size="14.0"/>
                                 </font>
                             </Label>
-                            <TextField fx:id="domainTF" editable="false" prefHeight="27.0"
-                                       prefWidth="245.0" promptText="空间域名" HBox.hgrow="NEVER">
+                            <TextField fx:id="domainTF" editable="false" prefHeight="27.0" prefWidth="245.0"
+                                       promptText="空间域名" HBox.hgrow="NEVER">
                                 <HBox.margin>
                                     <Insets left="10.0"/>
                                 </HBox.margin>
@@ -131,7 +143,8 @@
                                        HBox.hgrow="ALWAYS">
                                 <columns>
                                     <TableColumn fx:id="nameTC" prefWidth="278.0" text="文件名"/>
-                                    <TableColumn fx:id="typeTC" minWidth="5.0" prefWidth="81.0" text="文件类型"/>
+                                    <TableColumn fx:id="typeTC" minWidth="5.0" prefWidth="81.0"
+                                                 text="文件类型"/>
                                     <TableColumn fx:id="sizeTC" prefWidth="90.0" text="文件大小"/>
                                     <TableColumn fx:id="timeTC" prefWidth="152.0" text="最后更新时间"/>
                                 </columns>
@@ -139,31 +152,36 @@
                                     <Insets bottom="10.0" left="10.0"/>
                                 </HBox.margin>
                             </TableView>
-                            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="NEVER">
-                                <Button mnemonicParsing="false" onAction="#refreshResourceData" text="刷新列表"
-                                        VBox.vgrow="NEVER"/>
-                                <Button mnemonicParsing="false" onAction="#copyLink" text="复制链接" VBox.vgrow="NEVER">
-                                    <VBox.margin>
-                                        <Insets top="10.0"/>
-                                    </VBox.margin>
-                                </Button>
-                                <Button mnemonicParsing="false" onAction="#deleteFile" text="删除文件" VBox.vgrow="NEVER">
-                                    <VBox.margin>
-                                        <Insets top="10.0"/>
-                                    </VBox.margin>
-                                </Button>
-                                <Button mnemonicParsing="false" onAction="#showFileMovableDialog" text="移动到..."
+                            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0"
+                                  HBox.hgrow="NEVER">
+                                <Button mnemonicParsing="false" onAction="#refreshResourceData"
+                                        text="刷新列表" VBox.vgrow="NEVER"/>
+                                <Button mnemonicParsing="false" onAction="#copyLink" text="复制链接"
                                         VBox.vgrow="NEVER">
                                     <VBox.margin>
                                         <Insets top="10.0"/>
                                     </VBox.margin>
                                 </Button>
-                                <Button mnemonicParsing="false" onAction="#setLife" text="生存时间" VBox.vgrow="NEVER">
+                                <Button mnemonicParsing="false" onAction="#deleteFile" text="删除文件"
+                                        VBox.vgrow="NEVER">
                                     <VBox.margin>
                                         <Insets top="10.0"/>
                                     </VBox.margin>
                                 </Button>
-                                <Button mnemonicParsing="false" onAction="#updateFile" text="更新镜像" VBox.vgrow="NEVER">
+                                <Button mnemonicParsing="false" onAction="#showFileMovableDialog"
+                                        text="移动到..." VBox.vgrow="NEVER">
+                                    <VBox.margin>
+                                        <Insets top="10.0"/>
+                                    </VBox.margin>
+                                </Button>
+                                <Button mnemonicParsing="false" onAction="#setLife" text="生存时间"
+                                        VBox.vgrow="NEVER">
+                                    <VBox.margin>
+                                        <Insets top="10.0"/>
+                                    </VBox.margin>
+                                </Button>
+                                <Button mnemonicParsing="false" onAction="#updateFile" text="更新镜像"
+                                        VBox.vgrow="NEVER">
                                     <VBox.margin>
                                         <Insets top="10.0"/>
                                     </VBox.margin>
@@ -180,12 +198,14 @@
                                         <Insets top="10.0"/>
                                     </VBox.margin>
                                 </Button>
-                                <Button mnemonicParsing="false" onAction="#openFile" text="打开文件" VBox.vgrow="NEVER">
+                                <Button mnemonicParsing="false" onAction="#openFile" text="打开文件"
+                                        VBox.vgrow="NEVER">
                                     <VBox.margin>
                                         <Insets top="10.0"/>
                                     </VBox.margin>
                                 </Button>
-                                <Button mnemonicParsing="false" onAction="#refreshFile" text="文件刷新" VBox.vgrow="NEVER">
+                                <Button mnemonicParsing="false" onAction="#refreshFile" text="文件刷新"
+                                        VBox.vgrow="NEVER">
                                     <VBox.margin>
                                         <Insets top="10.0"/>
                                     </VBox.margin>
@@ -211,8 +231,8 @@
                 </Tab>
                 <Tab text="数据统计">
                     <VBox>
-                        <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0"
-                              prefWidth="700.0" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity"
+                              prefHeight="40.0" prefWidth="700.0" VBox.vgrow="NEVER">
                             <Label text="开始日期" HBox.hgrow="NEVER">
                                 <font>
                                     <Font size="14.0"/>
@@ -221,8 +241,8 @@
                                     <Insets/>
                                 </HBox.margin>
                             </Label>
-                            <DatePicker fx:id="startDP" onAction="#dateChange" prefWidth="125.0" promptText="开始日期"
-                                        HBox.hgrow="NEVER">
+                            <DatePicker fx:id="startDP" onAction="#dateChange" prefWidth="125.0"
+                                        promptText="开始日期" HBox.hgrow="NEVER">
                                 <HBox.margin>
                                     <Insets left="10.0"/>
                                 </HBox.margin>
@@ -235,13 +255,14 @@
                                     <Insets left="10.0"/>
                                 </HBox.margin>
                             </Label>
-                            <DatePicker fx:id="endDP" onAction="#dateChange" prefWidth="125.0" promptText="结束日期"
-                                        HBox.hgrow="NEVER">
+                            <DatePicker fx:id="endDP" onAction="#dateChange" prefWidth="125.0"
+                                        promptText="结束日期" HBox.hgrow="NEVER">
                                 <HBox.margin>
                                     <Insets left="10.0"/>
                                 </HBox.margin>
                             </DatePicker>
-                            <ComboBox fx:id="fluxUnitCB" prefWidth="70.0" promptText="统计单位" HBox.hgrow="NEVER">
+                            <ComboBox fx:id="fluxUnitCB" prefWidth="70.0" promptText="统计单位"
+                                      HBox.hgrow="NEVER">
                                 <HBox.margin>
                                     <Insets left="10.0"/>
                                 </HBox.margin>
@@ -287,7 +308,7 @@
                 </BorderPane.margin>
                 <HBox VBox.vgrow="NEVER">
                     <padding>
-                        <Insets top="10" bottom="10"/>
+                        <Insets bottom="10" top="10"/>
                     </padding>
                     <ComboBox fx:id="bucketCB" minHeight="-Infinity" minWidth="-Infinity" prefHeight="27.0"
                               prefWidth="205.0" promptText="还没有选择存储空间" HBox.hgrow="NEVER">

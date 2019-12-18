@@ -214,7 +214,7 @@ public class FtpManager {
 
     public static String generateConfigKey(String ftpName) {
         return "config:" + FtpConsts.AUTHOR + FtpConsts.NAME + ftpName;
-    }
+}
 
     private static void retry(BooleanFunction func) {
         Exception ex = null;
