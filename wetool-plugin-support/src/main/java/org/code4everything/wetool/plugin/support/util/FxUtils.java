@@ -350,7 +350,7 @@ public class FxUtils {
      * @param url 视图在classpath中路径，需要保证url的唯一性
      * @param cache 是否缓存
      *
-     * @since 1.0.2
+     * @since 1.1.0
      */
     public static Pane loadFxml(Class<?> cls, String url, boolean cache) {
         Pane pane = BeanFactory.get(url);
