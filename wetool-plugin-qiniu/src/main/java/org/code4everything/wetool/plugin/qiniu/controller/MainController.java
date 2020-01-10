@@ -39,7 +39,6 @@ import org.code4everything.wetool.plugin.qiniu.util.QiniuUtils;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
 import java.time.LocalDate;
@@ -571,7 +570,7 @@ public class MainController extends BaseQiniuController {
     /**
      * 添加上传的文件，支持拖曳文件夹
      */
-    private void appendFile(@Nullable File[] files, boolean isRecursive) {
+    private void appendFile(File[] files, boolean isRecursive) {
         if (ArrayUtil.isNotEmpty(files)) {
             for (File file : files) {
                 if (file.isDirectory()) {

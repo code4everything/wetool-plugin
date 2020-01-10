@@ -25,7 +25,7 @@ public class WetoolSupporter implements WePluginSupporter, Callable<Tab> {
     public MenuItem registerBarMenu() {
         final Callable<Tab> callable = this;
         return FxUtils.createMenuItem(QiniuConsts.TAB_NAME, (EventHandler<ActionEvent>) event -> {
-            Node node = FxUtils.loadFxml(QiniuConsts.QINIU_VIEW_URL);
+            Node node = FxUtils.loadFxml(WetoolSupporter.class, QiniuConsts.QINIU_VIEW_URL, true);
             FxUtils.openTab(node, QiniuConsts.TAB_ID, QiniuConsts.TAB_NAME, callable);
             ConfigUtils.loadConfig();
         });

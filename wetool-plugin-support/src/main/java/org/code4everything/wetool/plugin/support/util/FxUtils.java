@@ -357,6 +357,7 @@ public class FxUtils {
         if (ObjectUtil.isNull(pane)) {
             URL realUrl = cls.getResource(url);
             try {
+                FXMLLoader.setDefaultClassLoader(cls.getClassLoader());
                 pane = FXMLLoader.load(realUrl);
                 if (cache) {
                     BeanFactory.register(url, pane);

@@ -25,7 +25,7 @@ public class WetoolSupporter implements WePluginSupporter {
     }
 
     private void openTab() {
-        Node node = FxUtils.loadFxml("/ease/everywhere/Main.fxml");
+        Node node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/everywhere/Main.fxml", true);
         FxUtils.openTab(node, CommonConsts.APP_ID, CommonConsts.APP_NAME);
     }
 }

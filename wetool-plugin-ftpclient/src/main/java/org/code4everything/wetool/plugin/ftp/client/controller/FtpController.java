@@ -72,7 +72,6 @@ public class FtpController implements BaseViewController {
         uploadStatus.setText("");
         downloadStatus.setText("");
 
-
         localFiles.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         remoteFiles.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 

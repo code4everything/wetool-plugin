@@ -22,6 +22,7 @@ import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -88,7 +89,7 @@ public class MainController implements BaseViewController {
 
     public void openRedis(MouseEvent event) throws Exception {
         TreeItem<String> source = redisExplorer.getSelectionModel().getSelectedItem();
-        if (source == rootTree) {
+        if (Objects.isNull(source) || source == rootTree) {
             return;
         }
         if (event.getClickCount() != 2) {

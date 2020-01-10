@@ -1,7 +1,7 @@
 {
     "author": "ease",
     "name": "wetool-devtool-redis",
-    "version": "1.0.2",
-    "requireWetoolVersion": "1.0.2",
+    "version": "1.1.0",
+    "requireWetoolVersion": "1.1.0",
     "supportedClass": "org.code4everything.wetool.plugin.devtool.redis.WetoolSupporter"
 }

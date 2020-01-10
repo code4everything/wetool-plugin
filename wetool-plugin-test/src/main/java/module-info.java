@@ -4,8 +4,6 @@ module org.code4everything.wetool.plugin.test {
 
     requires java.base;
 
-    requires org.mapstruct;
-
     requires hutool.core;
     requires hutool.system;
     requires hutool.crypto;
