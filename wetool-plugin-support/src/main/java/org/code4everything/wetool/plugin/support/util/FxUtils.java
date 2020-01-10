@@ -345,14 +345,14 @@ public class FxUtils {
     }
 
     /**
-     * 加载视图，解决java9模块化的问题
+     * 加载视图，解决java9模块化后的问题
      *
      * @param url 视图在classpath中路径，需要保证url的唯一性
      * @param cache 是否缓存
      *
      * @since 1.1.0
      */
-    public static Pane loadFxml(Class<?> cls, String url, boolean cache) {
+    public static synchronized Pane loadFxml(Class<?> cls, String url, boolean cache) {
         Pane pane = BeanFactory.get(url);
         if (ObjectUtil.isNull(pane)) {
             URL realUrl = cls.getResource(url);
