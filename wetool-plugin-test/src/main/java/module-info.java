@@ -7,7 +7,6 @@ module org.code4everything.wetool.plugin.test {
     requires hutool.core;
     requires hutool.system;
     requires hutool.crypto;
-    requires hutool.extra;
 
     requires boot.surface;
     requires fastjson;

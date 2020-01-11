@@ -1,9 +1,9 @@
 package org.code4everything.wetool.plugin.devtool.ssh.ssh;
 
-import cn.hutool.extra.ssh.Sftp;
 import lombok.experimental.UtilityClass;
 import org.code4everything.boot.base.ReferenceUtils;
 import org.code4everything.wetool.plugin.devtool.ssh.config.ServerConfiguration;
+import org.code4everything.wetool.plugin.devtool.ssh.hutool.Sftp;
 
 import java.lang.ref.WeakReference;
 import java.util.Collection;

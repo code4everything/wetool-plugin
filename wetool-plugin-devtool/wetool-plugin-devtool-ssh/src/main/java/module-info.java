@@ -3,8 +3,8 @@
  * @since 2020/1/10
  */
 module wetool.plugin.devtool.ssh {
+    requires jsch;
     requires terminalfx;
-    requires hutool.extra;
 
     requires java.base;
 

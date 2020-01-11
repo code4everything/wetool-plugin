@@ -83,12 +83,6 @@
             <artifactId>hutool-system</artifactId>
             <version>${hutool.version}</version>
         </dependency>
-        <!--扩展工具-->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-extra</artifactId>
-            <version>${hutool.version}</version>
-        </dependency>
         <!--快速开发工具-->
         <dependency>
             <groupId>org.projectlombok</groupId>

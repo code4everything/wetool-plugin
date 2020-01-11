@@ -5,7 +5,6 @@
 module wetool.plugin.ftpclient {
     requires commons.net;
     requires com.google.common;
-    requires hutool.extra;
 
     requires java.base;
 
