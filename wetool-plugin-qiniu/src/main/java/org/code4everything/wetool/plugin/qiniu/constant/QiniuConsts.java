@@ -40,7 +40,7 @@ public class QiniuConsts {
 
     public static final String BUCKET_URL = "空间域名";
 
-    public static final String[] BUCKET_NAME_ARRAY = {"华东", "华北", "华南", "北美" };
+    public static final String[] BUCKET_NAME_ARRAY = {"华东", "华北", "华南", "北美"};
 
     public static final String FILE_CHOOSER_TITLE = "选择需要上传的文件";
 

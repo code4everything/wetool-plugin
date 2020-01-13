@@ -91,7 +91,6 @@ public class FxDialogs {
      *
      * @param header 头部，可为Null
      * @param content 提示内容，可为Null
-     * @param consumer，处理结果的回调
      * @param items Choice可有的选项
      * @param <T> 结果类型
      */
@@ -168,6 +167,8 @@ public class FxDialogs {
 
             // 添加至面板
             GridPane gridPane = new GridPane();
+            gridPane.setPrefWidth(900);
+            gridPane.setPrefHeight(600);
             gridPane.setMaxWidth(Double.MAX_VALUE);
             gridPane.add(textArea, 0, 0);
 

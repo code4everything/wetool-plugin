@@ -4,14 +4,14 @@
 
 2. 在`pom.xml`文件中`project`节点下添加如下内容：
 
-    ``` xml
+    ```xml
     <properties>
-        <java.veresion>1.8</java.veresion>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <java.veresion>11</java.veresion>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
+
     <!--私有仓库-->
     <repositories>
         <repository>
@@ -19,23 +19,23 @@
             <url>https://code4everything.gitee.io/repository/maven</url>
         </repository>
     </repositories>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.code4everything</groupId>
             <artifactId>wetool-plugin-support</artifactId>
-            <version>1.0.2</version>
+            <version>1.1.0</version>
             <optional>true</optional>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.code4everything</groupId>
             <artifactId>wetool-plugin-test</artifactId>
-            <version>1.0.2</version>
+            <version>1.1.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -43,8 +43,21 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.8</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>1.3.1.Final</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -66,7 +79,7 @@
 
 3. 在`resources`目录下新建一个`Hello Word`视图，例如：`/ease/sample/Sample.fxml`，这里我们需要保证路径的唯一性，至少应该增加两个父级目录，第一级文件夹用`AuthorName`命名，第二级文件夹用`AppName`命名
 
-    ``` xml
+    ```xml
     <?xml version="1.0" encoding="UTF-8"?>
     
     
@@ -99,7 +112,7 @@
 
     实现`BaseViewController`并将其注册至`BeanFactory`，可以获取`WeTool`的一些能力，比如：用户点击了打开文件、保存文件等
     
-    ``` java
+    ```java
     public class SampleController implements BaseViewController {
     
         /**
@@ -134,7 +147,7 @@
 
 5. 新建一个实现了`org.code4everything.wetool.plugin.support.WePluginSupporter`接口的类，例如：`org.code4everything.wetool.plugin.sample.WetoolSupporter`
 
-    ``` java
+    ```java
     @Slf4j
     public class WetoolSupporter implements WePluginSupporter {
     
@@ -160,7 +173,7 @@
             // 自定义事件监听
             item.setOnAction(e -> {
                 // 注意保证fxml文件的url路径唯一性
-                Node node = FxUtils.loadFxml("/ease/sample/Sample.fxml");
+                Node node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/sample/Sample.fxml", true);
                 FxDialogs.showInformation(SampleController.TAB_NAME, "welcome to wetool plugin");
                 FxUtils.openTab(node, SampleController.TAB_ID, SampleController.TAB_NAME);
             });
@@ -198,8 +211,8 @@
     {
         "author": "ease",
         "name": "sample",
-        "version": "1.0.2",
-        "requireWetoolVersion": "1.0.2",
+        "version": "1.1.0",
+        "requireWetoolVersion": "1.1.0",
         "supportedClass": "org.code4everything.wetool.plugin.sample.WetoolSupporter"
     }
     ```

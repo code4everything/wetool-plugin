@@ -49,12 +49,12 @@ public class WetoolSupporter implements WePluginSupporter {
         java.awt.Menu menu = new java.awt.Menu(FtpConsts.TAB_NAME);
         // 上传文件
         menu.add(FxUtils.createMenuItem(FtpConsts.UPLOAD_FILE, (ActionListener) e -> {
-            Node dialogPane = FxUtils.loadFxml("/ease/ftpclient/FtpUploadDialog.fxml");
+            Node dialogPane = FxUtils.loadFxml(WetoolSupporter.class, "/ease/ftpclient/FtpUploadDialog.fxml", true);
             FxDialogs.showDialog(null, dialogPane);
         }));
         // 下载文件
         menu.add(FxUtils.createMenuItem(FtpConsts.DOWNLOAD_FILE, (ActionListener) e -> {
-            Node dialogPane = FxUtils.loadFxml("/ease/ftpclient/FtpDownloadDialog.fxml");
+            Node dialogPane = FxUtils.loadFxml(WetoolSupporter.class, "/ease/ftpclient/FtpDownloadDialog.fxml", true);
             FxDialogs.showDialog(null, dialogPane);
         }));
         return menu;
@@ -62,7 +62,7 @@ public class WetoolSupporter implements WePluginSupporter {
 
     private void openTab() {
         Platform.runLater(() -> {
-            Node node = FxUtils.loadFxml("/ease/ftpclient/FtpTabView.fxml");
+            Node node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/ftpclient/FtpTabView.fxml", true);
             FxUtils.openTab(node, FtpConsts.TAB_ID, FtpConsts.TAB_NAME);
         });
     }

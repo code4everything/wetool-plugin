@@ -341,10 +341,23 @@ public class FxUtils {
      * @since 1.0.2
      */
     public static Pane loadFxml(String url, boolean cache) {
+        return loadFxml(FxUtils.class, url, cache);
+    }
+
+    /**
+     * 加载视图，解决java9模块化后的问题
+     *
+     * @param url 视图在classpath中路径，需要保证url的唯一性
+     * @param cache 是否缓存
+     *
+     * @since 1.1.0
+     */
+    public static synchronized Pane loadFxml(Class<?> cls, String url, boolean cache) {
         Pane pane = BeanFactory.get(url);
         if (ObjectUtil.isNull(pane)) {
-            URL realUrl = FxUtils.class.getResource(url);
+            URL realUrl = cls.getResource(url);
             try {
+                FXMLLoader.setDefaultClassLoader(cls.getClassLoader());
                 pane = FXMLLoader.load(realUrl);
                 if (cache) {
                     BeanFactory.register(url, pane);
