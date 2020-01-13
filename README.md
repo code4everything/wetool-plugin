@@ -11,7 +11,7 @@
 
 ### 开发须知
 
-- 安装有Java8及以上版本（必须）
+- 安装有Java11及以上版本（必须）
 - 了解JavaFX图形化技术（必须）
 - 安装有Lombok工具（必须）
 - 安装有Maven、Git开发环境（必须）
@@ -21,7 +21,7 @@
 
 个人Maven仓库
 
-``` xml
+```xml
 <repository>
     <id>ease-maven</id>
     <url>https://code4everything.gitee.io/repository/maven</url>
@@ -30,21 +30,21 @@
 
 插件基础支持库
 
-``` xml
+```xml
 <dependency>
     <groupId>org.code4everything</groupId>
     <artifactId>wetool-plugin-support</artifactId>
-    <version>1.0.2</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
 插件测试支持库
 
-``` xml
+```xml
 <dependency>
     <groupId>org.code4everything</groupId>
     <artifactId>wetool-plugin-test</artifactId>
-    <version>1.0.2</version>
+    <version>1.1.0</version>
     <scope>test</scope>
 </dependency>
 ```

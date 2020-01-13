@@ -4,7 +4,7 @@
 
 获取用户的配置，第一个字符串类型的参数为`Alibaba Fast Json`中的`Path`：[路径语法参考](https://github.com/alibaba/fastjson/wiki/JSONPath)
 
-``` java
+```java
 T config = WeUtils.getConfig().getConfig(String, Class<T>);
 // 或者
 Object config = WeUtils.getConfig().getConfig(String);
@@ -12,7 +12,7 @@ Object config = WeUtils.getConfig().getConfig(String);
 
 ### Bean工厂
 
-``` java
+```java
 // 注册单例的Bean
 BeanFactory.register(T);
 
@@ -31,7 +31,7 @@ BeanFactory.register(String, Object);
 
 [FxUtils](src/main/java/org/code4everything/wetool/plugin/support/util/FxUtils.java)
 
-``` java
+```java
 // 打开选项卡，参数说明：视图内容，自定义tabId，自定义tabName
 FxUtils.openTab(Node, String, String);
 
@@ -44,8 +44,8 @@ FxUtils.getStage();
 // 用系统默认软件打开文件
 FxUtils.openFile(File);
 
-// 加载视图，参数说明：视图在classpath中路径
-FxUtils.loadFxml(String);
+// 加载视图，参数说明：WePluginSupporter实现类，视图在classpath中路径，是否缓存
+FxUtils.loadFxml(Class<?>, String, boolean);
 
 // 创建菜单
 FxUtils.createMenuItem(String, EventHandler<ActionEvent>);
@@ -57,7 +57,7 @@ FxUtils.makePluginMenu(String)
   
 [FxDialogs](src/main/java/org/code4everything/wetool/plugin/support/util/FxDialogs.java)
 
-``` java
+```text
 FxDialogs.showDialog
 FxDialogs.showChoice
 FxDialogs.showTextInput
