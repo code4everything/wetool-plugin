@@ -1,3 +1,5 @@
+package org.code4everything.wetool.plugin.thirdparty.downloader;
+
 import org.code4everything.wetool.plugin.test.WetoolTester;
 
 /**
