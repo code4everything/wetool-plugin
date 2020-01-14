@@ -1,11 +1,13 @@
 package org.code4everything.wetool.plugin.support.config;
 
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.*;
 import org.code4everything.boot.base.bean.BaseBean;
 import org.code4everything.wetool.plugin.support.WePluginSupporter;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author pantao
@@ -15,12 +17,12 @@ import java.io.Serializable;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"supportedClass", "requireWetoolVersion"})
+@RequiredArgsConstructor
 public class WePluginInfo implements BaseBean, Serializable {
 
     private static final long serialVersionUID = -8103599072656856290L;
 
-    private static final String DEFAULT_REQUIRE_WETOOL_VERSION = "1.0.0";
+    private static final String DEFAULT_REQUIRE_WETOOL_VERSION = "1.1.1";
 
     /**
      * 插件作者
@@ -62,6 +64,13 @@ public class WePluginInfo implements BaseBean, Serializable {
     @NonNull
     private String supportedClass;
 
+    /**
+     * 是否隔离插件，即使用独立的类加载器
+     *
+     * @since 1.1.1
+     */
+    private Boolean isolated;
+
     public WePluginInfo(String author, String name, String version) {
         this(author, name, version, DEFAULT_REQUIRE_WETOOL_VERSION);
     }
@@ -74,7 +83,29 @@ public class WePluginInfo implements BaseBean, Serializable {
     }
 
     @Generated
+    public boolean getIsolated() {
+        return BooleanUtil.isTrue(isolated);
+    }
+
+    @Generated
     public String getRequireWetoolVersion() {
         return StrUtil.emptyToDefault(requireWetoolVersion, DEFAULT_REQUIRE_WETOOL_VERSION);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        WePluginInfo that = (WePluginInfo) o;
+        return Objects.equals(getAuthor(), that.getAuthor()) && Objects.equals(getName(), that.getName()) && Objects.equals(getVersion(), that.getVersion());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAuthor(), getName(), getVersion());
     }
 }

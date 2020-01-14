@@ -45,6 +45,7 @@ public class WetoolTester extends WeApplication {
 
     public static void runTest(WePluginInfo info, WeConfig config, String[] args) {
         // 加载插件支持类
+        BootConfig.setDebug(true);
         Class<WePluginSupporter> clazz = ClassUtil.loadClass(info.getSupportedClass());
         try {
             supporter = clazz.newInstance();
@@ -56,7 +57,6 @@ public class WetoolTester extends WeApplication {
         log.info("starting wetool on os: {}", SystemUtil.getOsInfo().getName());
         WetoolTester.info = info;
         BeanFactory.register(config);
-        BootConfig.setDebug(true);
         launch(args);
     }
 
