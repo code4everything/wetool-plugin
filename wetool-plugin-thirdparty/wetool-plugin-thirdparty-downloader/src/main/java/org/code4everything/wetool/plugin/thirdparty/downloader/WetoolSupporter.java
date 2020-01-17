@@ -22,17 +22,7 @@ public class WetoolSupporter implements WePluginSupporter {
 
     private static final String TAB_NAME = "蜗牛下载器";
 
-    @Override
-    public boolean initialize() {
-        SystemContext.info();
-        final boolean enable = SystemContext.listen();
-        if (enable) {
-            SystemContext.init();
-            GuiHandler.getInstance().init((String[]) null);
-            return true;
-        }
-        return false;
-    }
+    private boolean initialized = false;
 
     @Override
     public MenuItem registerBarMenu() {
@@ -53,6 +43,15 @@ public class WetoolSupporter implements WePluginSupporter {
     }
 
     private void openTab() {
+        if (!initialized) {
+            SystemContext.info();
+            final boolean enable = SystemContext.listen();
+            if (enable) {
+                SystemContext.init();
+                GuiHandler.getInstance().init((String[]) null);
+            }
+            initialized = true;
+        }
         Node node = FxUtils.loadFxml(WetoolSupporter.class, "/fxml/main.fxml", true);
         FxUtils.openTab(node, TAB_ID, TAB_NAME);
     }
