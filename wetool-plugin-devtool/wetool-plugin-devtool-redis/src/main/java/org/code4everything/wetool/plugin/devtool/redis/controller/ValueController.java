@@ -3,6 +3,7 @@ package org.code4everything.wetool.plugin.devtool.redis.controller;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import javafx.fxml.FXML;
@@ -189,74 +190,95 @@ public class ValueController {
         deleteKey();
         key = keyText.getText();
 
-        updateHash(jedis);
-        updateSortedSet(jedis);
-        updateSet(jedis);
-        updateList(jedis);
-        updateString(jedis);
+        boolean result = updateHash(jedis);
+        result |= updateSortedSet(jedis);
+        result |= updateSet(jedis);
+        result |= updateList(jedis);
+        result |= updateString(jedis);
 
         if (expire > 0) {
             jedis.expire(key, expire);
         }
-        FxDialogs.showInformation("保存成功", null);
-    }
-
-    private void updateString(Jedis jedis) {
-        if (typeStringRadio.isSelected()) {
-            jedis.set(key, valueText.getText());
+        if (result) {
+            FxDialogs.showInformation("保存成功", null);
         }
     }
 
-    private void updateList(Jedis jedis) {
+    private boolean updateString(Jedis jedis) {
+        if (typeStringRadio.isSelected()) {
+            jedis.set(key, valueText.getText());
+            return true;
+        }
+        return false;
+    }
+
+    private boolean updateList(Jedis jedis) {
         if (typeListRadio.isSelected()) {
             List<String> list = StrUtil.splitTrim(valueText.getText(), lineSep);
             jedis.rpush(key, list.toArray(new String[0]));
+            return true;
         }
+        return false;
     }
 
-    private void updateSet(Jedis jedis) {
+    private boolean updateSet(Jedis jedis) {
         if (typeSetRadio.isSelected()) {
             List<String> list = StrUtil.splitTrim(valueText.getText(), lineSep);
             jedis.sadd(key, list.toArray(new String[0]));
+            return true;
         }
+        return false;
     }
 
-    private void updateSortedSet(Jedis jedis) {
+    private boolean updateSortedSet(Jedis jedis) {
         if (typeSortedSetRadio.isSelected()) {
             List<String> list = StrUtil.splitTrim(valueText.getText(), lineSep);
             Map<String, Double> map = new HashMap<>(list.size(), 1);
             for (String kv : list) {
-                if (!kv.contains(":")) {
-                    FxDialogs.showInformation("格式不正确！", null);
-                    return;
-                }
-                List<String> kvs = StrUtil.splitTrim(kv, ":", 2);
+                Pair<String, String> pair = parseKeyValue(kv);
                 try {
-                    double score = Double.parseDouble(kvs.get(1));
-                    map.put(kvs.get(0), score);
+                    double score = Double.parseDouble(pair.getValue());
+                    map.put(pair.getKey(), score);
                 } catch (Exception e) {
                     FxDialogs.showInformation("格式不正确！", null);
-                    return;
+                    return false;
                 }
                 jedis.zadd(key, map);
             }
+            return true;
         }
+        return false;
     }
 
-    private void updateHash(Jedis jedis) {
+    private boolean updateHash(Jedis jedis) {
         if (typeHashRadio.isSelected()) {
             List<String> list = StrUtil.splitTrim(valueText.getText(), lineSep);
             Map<String, String> map = new HashMap<>(list.size(), 1);
             for (String kv : list) {
-                if (!kv.contains(":")) {
+                Pair<String, String> pair = parseKeyValue(kv);
+                if (Objects.isNull(pair)) {
                     FxDialogs.showInformation("格式不正确！", null);
-                    return;
+                    return false;
                 }
-                List<String> kvs = StrUtil.splitTrim(kv, ":", 2);
-                map.put(kvs.get(0), kvs.get(1));
+                map.put(pair.getKey(), pair.getValue());
             }
             jedis.hmset(key, map);
+            return true;
         }
+        return false;
+    }
+
+    private Pair<String, String> parseKeyValue(String kv) {
+        if (StrUtil.isBlank(kv)) {
+            return null;
+        }
+        int idx = kv.lastIndexOf(":");
+
+        if (idx < 1) {
+            return null;
+        }
+
+        return new Pair<>(StrUtil.trim(kv.substring(0, idx)), StrUtil.trim(kv.substring(idx + 1)));
     }
 
     public void delete() {
