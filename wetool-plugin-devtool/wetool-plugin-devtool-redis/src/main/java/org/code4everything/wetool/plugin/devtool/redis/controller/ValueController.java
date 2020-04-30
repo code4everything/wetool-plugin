@@ -136,14 +136,9 @@ public class ValueController {
         values.forEach(value -> {
             String key = "";
             if (hasKey) {
-                List<String> items = StrUtil.splitTrim(value, ':');
-                value = "null";
-                if (items.size() > 0) {
-                    key = items.get(0);
-                }
-                if (items.size() > 1) {
-                    value = items.get(1);
-                }
+                int idx = value.indexOf(":");
+                key = StrUtil.sub(value, 0, idx);
+                value = idx > 0 ? StrUtil.sub(value, idx + 1, value.length()) : "null";
             }
             StringBuilder sb = new StringBuilder();
             for (char c : wrapper.toCharArray()) {
