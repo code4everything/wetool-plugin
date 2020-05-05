@@ -10,6 +10,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <wetool.version>1.1.1</wetool.version>
     </properties>
 
     <!--私有仓库-->
@@ -24,14 +25,14 @@
         <dependency>
             <groupId>org.code4everything</groupId>
             <artifactId>wetool-plugin-support</artifactId>
-            <version>1.1.0</version>
+            <version>${wetool.version}</version>
             <optional>true</optional>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.code4everything</groupId>
             <artifactId>wetool-plugin-test</artifactId>
-            <version>1.1.0</version>
+            <version>${wetool.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
