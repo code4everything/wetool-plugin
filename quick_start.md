@@ -11,6 +11,8 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <wetool.version>1.1.1</wetool.version>
+        <junit.version>4.13-beta-3</junit.version>
+        <mapstruct.version>1.3.1.Final</mapstruct.version>
     </properties>
 
     <!--私有仓库-->
@@ -33,6 +35,24 @@
             <groupId>org.code4everything</groupId>
             <artifactId>wetool-plugin-test</artifactId>
             <version>${wetool.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-jdk8</artifactId>
+            <version>${mapstruct.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${mapstruct.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -235,3 +255,7 @@
 
 
 > 本示例完整代码请参考：[wetool-plugin-sample](wetool-plugin-sample)
+
+### 注意事项
+
+1. 不要将 `hutool-core` 打包到插件 `jar` 包中了

@@ -15,6 +15,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hutool.version>5.3.2</hutool.version>
         <javafx.version>14-ea+6</javafx.version>
+        <junit.version>4.13-beta-3</junit.version>
+        <lombok.version>1.18.10</lombok.version>
+        <boot.surface.version>1.1.6</boot.surface.version>
     </properties>
 
     <!--私有仓库-->
@@ -69,7 +72,7 @@
         <dependency>
             <groupId>org.code4everything</groupId>
             <artifactId>boot-surface</artifactId>
-            <version>1.1.6</version>
+            <version>${boot.surface.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>hutool-core</artifactId>
@@ -87,13 +90,13 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.10</version>
+            <version>${lombok.version}</version>
         </dependency>
         <!--单元测试-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13-beta-3</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
