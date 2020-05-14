@@ -8,6 +8,7 @@
 /**/dependency-reduced-pom.xml
 /wetool-plugin-qiniu/conf/qiniu-config.json
 *.db
+conf/
 
 # User-specific stuff
 .idea/**/workspace.xml
