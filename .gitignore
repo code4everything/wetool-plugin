@@ -9,6 +9,7 @@
 /wetool-plugin-qiniu/conf/qiniu-config.json
 *.db
 conf/
+plugins/
 
 # User-specific stuff
 .idea/**/workspace.xml
