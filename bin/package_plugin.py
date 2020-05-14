@@ -40,6 +40,17 @@ for plugin in plugin_list:
     with open('./pom.xml', 'w', encoding='utf-8') as fw:
         fw.write(re.sub('<wetool.version>.*?</wetool.version>',
                         version.join(['<wetool.version>', '</wetool.version>']), content, 1))
+
+    plugin_info_path = './src/main/resources/plugin.json'
+    with open(plugin_info_path, 'r', encoding='utf-8') as fr:
+        content = fr.read()
+    with open(plugin_info_path, 'w', encoding='utf-8') as fw:
+        content = re.sub('"version": ".*?"', '"version": "%s"' %
+                         version, content, 1)
+        content = re.sub('"requireWetoolVersion": ".*?"',
+                         '"requireWetoolVersion": "%s"' % version, content, 1)
+        fw.write(content)
+
     print(os.popen('mvn clean package').read())
     shutil.copyfile(os.path.sep.join([os.getcwd(), 'target', '%s-%s.jar' % (name, version)]),
                     os.path.sep.join([plugin_path, '%s-%s.jar' % (name, version)]))
