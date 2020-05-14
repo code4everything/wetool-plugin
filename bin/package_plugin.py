@@ -45,7 +45,7 @@ def package(plugin):
     name = plugin[plugin.rfind('/')+1:]
 
     # 替换pom文件版本
-    print('package plugin %s' % name)
+    print('package plugin %s\r\n' % name)
     with open('./pom.xml', 'r', encoding='utf-8') as fr:
         content = fr.read()
     with open('./pom.xml', 'w', encoding='utf-8') as fw:
@@ -79,6 +79,9 @@ print(os.popen('git commit -m "shell package plugin %s"' % version).read())
 
 # 打包外部插件
 for arg in sys.argv[1:]:
-    package('../%s-wetool-plugin' % arg)
+    path = '../%s-wetool-plugin' % arg
+    package(path)
+    os.chdir(path)
     print(os.popen('git add .').read())
     print(os.popen('git commit -m "shell package %s"' % version).read())
+    os.chdir(cwd)
