@@ -48,6 +48,10 @@ def copy_to(name):
 
 # 拉取代码
 print(os.popen('git pull').read())
+cwd = os.getcwd()
+os.chdir(project_repository_path)
+print(os.popen('git pull').read())
+os.chdir(cwd)
 
 # 发布support
 os.chdir('./wetool-plugin-support')
