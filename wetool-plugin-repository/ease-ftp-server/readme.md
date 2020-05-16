@@ -2,7 +2,7 @@
 
 基于Apache Ftp Server实现FTP服务器
 
-最新下载地址：[wetool-plugin-ftpserver-1.1.0.jar](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-ftpserver-1.1.0.jar)
+最新下载地址：[wetool-plugin-ftpserver-1.1.1.jar](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-ftpserver-1.1.1.jar)
 
 ### 配置说明
 
@@ -32,9 +32,13 @@
 
 ### 历史更新
 
+#### [v1.1.1](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-ftpserver-1.1.1.jar)
+
+- 更新WeTool版本
+
 #### [v1.1.0](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-ftpserver-1.1.0.jar)
 
-- 多更新WeTool版本
+- 更新WeTool版本
 
 #### [v1.0.2](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-ftpserver-1.0.2.jar)
 
