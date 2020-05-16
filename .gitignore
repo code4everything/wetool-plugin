@@ -10,6 +10,7 @@
 *.db
 conf/
 plugins/
+dependency-reduced-pom.xml
 
 # User-specific stuff
 .idea/**/workspace.xml
