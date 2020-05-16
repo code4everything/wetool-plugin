@@ -16,7 +16,7 @@ plugin_list = ['./wetool-plugin-devtool/wetool-plugin-devtool-java',
                './wetool-plugin-qiniu',
                './wetool-plugin-thirdparty/wetool-plugin-thirdparty-downloader']
 
-# 切换目录，拿去代码
+# 切换目录，拉取代码
 os.chdir('..')
 cwd = os.getcwd()
 print(os.popen('git pull').read())
@@ -80,6 +80,8 @@ print(os.popen('git commit -m "shell package plugin %s"' % version).read())
 # 打包外部插件
 for arg in sys.argv[1:]:
     path = '../%s-wetool-plugin' % arg
+    os.chdir(path)
+    print(os.popen('git pull').read())
     package(path)
     os.chdir(path)
     print(os.popen('git add .').read())
