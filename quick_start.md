@@ -74,7 +74,7 @@
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
-                            <version>1.3.1.Final</version>
+                            <version>${mapstruct.version}</version>
                         </path>
                     </annotationProcessorPaths>
                     <source>11</source>
