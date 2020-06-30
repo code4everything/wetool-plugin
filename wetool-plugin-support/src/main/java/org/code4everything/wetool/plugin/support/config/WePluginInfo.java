@@ -71,6 +71,11 @@ public class WePluginInfo implements BaseBean, Serializable {
      */
     private Boolean isolated;
 
+    /**
+     * 支持的操作系统：windows, mac, linux
+     */
+    private String supportOs;
+
     public WePluginInfo(String author, String name, String version) {
         this(author, name, version, DEFAULT_REQUIRE_WETOOL_VERSION);
     }
