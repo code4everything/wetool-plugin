@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import lombok.*;
 import org.code4everything.boot.base.bean.BaseBean;
 import org.code4everything.wetool.plugin.support.WePluginSupporter;
+import org.code4everything.wetool.plugin.support.constant.AppConsts;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -21,8 +22,6 @@ import java.util.Objects;
 public class WePluginInfo implements BaseBean, Serializable {
 
     private static final long serialVersionUID = -8103599072656856290L;
-
-    private static final String DEFAULT_REQUIRE_WETOOL_VERSION = "1.1.1";
 
     /**
      * 插件作者
@@ -77,7 +76,7 @@ public class WePluginInfo implements BaseBean, Serializable {
     private String supportOs;
 
     public WePluginInfo(String author, String name, String version) {
-        this(author, name, version, DEFAULT_REQUIRE_WETOOL_VERSION);
+        this(author, name, version, AppConsts.CURRENT_VERSION);
     }
 
     public WePluginInfo(String author, String name, String version, String requireWetoolVersion) {
@@ -94,8 +93,15 @@ public class WePluginInfo implements BaseBean, Serializable {
 
     @Generated
     public String getRequireWetoolVersion() {
-        return StrUtil.emptyToDefault(requireWetoolVersion, DEFAULT_REQUIRE_WETOOL_VERSION);
+        return StrUtil.emptyToDefault(requireWetoolVersion, AppConsts.CURRENT_VERSION);
     }
+
+    public String getSupportOs() {
+        return StrUtil.emptyToDefault(supportOs, "windows,linux,mac");
+    }
+
+    @Generated
+
 
     @Override
     public boolean equals(Object o) {
