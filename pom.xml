@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.code4everything</groupId>
+    <artifactId>wetool-plugin</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+
+    <modules>
+        <module>wetool-plugin-support</module>
+        <module>wetool-plugin-test</module>
+        <module>wetool-plugin-sample</module>
+        <module>wetool-plugin-everywhere</module>
+        <module>wetool-plugin-ftpclient</module>
+        <module>wetool-plugin-ftpserver</module>
+        <module>wetool-plugin-qiniu</module>
+        <module>wetool-plugin-devtool/wetool-plugin-devtool-java</module>
+        <module>wetool-plugin-devtool/wetool-plugin-devtool-redis</module>
+        <module>wetool-plugin-devtool/wetool-plugin-devtool-ssh</module>
+        <module>wetool-plugin-devtool/wetool-plugin-devtool-utilities</module>
+        <module>wetool-plugin-thirdparty/wetool-plugin-thirdparty-downloader</module>
+    </modules>
+
+    <properties>
+        <java.veresion>11</java.veresion>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+</project>
