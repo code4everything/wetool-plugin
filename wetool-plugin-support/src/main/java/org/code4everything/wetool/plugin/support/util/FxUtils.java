@@ -114,6 +114,20 @@ public class FxUtils {
      * 创建菜单
      *
      * @param label 菜单名
+     * @param handler 事件处理器
+     *
+     * @return 菜单
+     *
+     * @since 1.1.2
+     */
+    public static MenuItem createBarMenuItem(String label, EventHandler<ActionEvent> handler) {
+        return createMenuItem(label, handler);
+    }
+
+    /**
+     * 创建菜单
+     *
+     * @param label 菜单名
      * @param listener 监听器
      *
      * @return 菜单
@@ -124,6 +138,20 @@ public class FxUtils {
         java.awt.MenuItem item = new java.awt.MenuItem(label);
         item.addActionListener(listener);
         return item;
+    }
+
+    /**
+     * 创建菜单
+     *
+     * @param label 菜单名
+     * @param listener 监听器
+     *
+     * @return 菜单
+     *
+     * @since 1.1.2
+     */
+    public static java.awt.MenuItem createTrayMenuItem(String label, ActionListener listener) {
+        return createMenuItem(label, listener);
     }
 
     /**
