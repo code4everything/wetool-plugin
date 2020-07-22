@@ -2,6 +2,7 @@ package org.code4everything.wetool.plugin.devtool.redis.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,15 +11,20 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import org.code4everything.boot.base.StringUtils;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisVO;
 import org.code4everything.wetool.plugin.devtool.redis.util.RedisTabUtils;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
+import redis.clients.jedis.GeoRadiusResponse;
+import redis.clients.jedis.GeoUnit;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.params.GeoRadiusParam;
 
 import java.util.*;
-
+import java.util.stream.Collectors;
 
 /**
  * @author pantao
@@ -191,6 +197,32 @@ public class ExplorerController implements Comparator<JedisVO> {
         }
     }
 
+    public void openGeo() {
+        List<JedisVO> list = keyTable.getSelectionModel().getSelectedItems();
+
+        if (CollUtil.isNotEmpty(list)) {
+            list = list.stream().filter(jedisVO -> "zset".equals(jedisVO.getType())).collect(Collectors.toList());
+        }
+        if (CollUtil.isEmpty(list)) {
+            FxDialogs.showInformation("GEO", "非法的数据结构");
+            return;
+        }
+
+        JedisVO jedisVO = list.get(0);
+        String geoHtml = null;
+        try {
+            geoHtml = getGeoMapHtml(jedisVO.getKey());
+        } catch (Exception e) {
+            FxDialogs.showError("非GEO结构，无法显示！");
+        }
+
+        WebView browser = new WebView();
+        WebEngine webEngine = browser.getEngine();
+        webEngine.loadContent(geoHtml);
+
+        FxDialogs.showDialog(jedisVO.getKey(), browser);
+    }
+
     public void deleteKeys() {
         Set<String> keys = new HashSet<>();
         ObservableList<JedisVO> list = keyTable.getSelectionModel().getSelectedItems();
@@ -205,6 +237,32 @@ public class ExplorerController implements Comparator<JedisVO> {
         jedis.del(keys.toArray(new String[0]));
         keyTable.getItems().removeAll(list);
         FxDialogs.showInformation("删除成功！", null);
+    }
+
+    private String getGeoMapHtml(String geoKey) {
+        Jedis jedis = JedisUtils.getJedis(redisServer);
+        GeoRadiusParam param = GeoRadiusParam.geoRadiusParam().withCoord();
+        List<GeoRadiusResponse> list = jedis.georadius(geoKey, 0, 0, Double.MAX_VALUE, GeoUnit.KM, param);
+
+        if (Objects.isNull(list)) {
+            list = Collections.emptyList();
+        }
+
+        String template = "var marker_{}=new AMap.Marker({position:[{},{}],title:'{}'});map.add(marker_{});";
+        StringBuilder scripts = new StringBuilder().append("<!DOCTYPE html><html lang='cn'>");
+        scripts.append("<head><meta charset='utf-8'><title>GEO地图</title><script type='text/javascript' ");
+        scripts.append("src='https://webapi.amap.com/maps?v=1.4.15&key=f99090997c9043f8977a58e4aa2cfd5d'></script>");
+        scripts.append("</head><body><div id='container' style='width:100%;height:100%;position:absolute;'></div>");
+        scripts.append("<script>var map=new AMap.Map('container',{zoom: 11,resizeEnable: true,viewMode: '2D'});");
+
+        for (int i = 0; i < list.size(); i++) {
+            GeoRadiusResponse response = list.get(i);
+            double lng = response.getCoordinate().getLongitude();
+            double lat = response.getCoordinate().getLatitude();
+            String title = new String(response.getMember(), CharsetUtil.CHARSET_UTF_8);
+            scripts.append(StrUtil.format(template, i, lng, lat, title, i));
+        }
+        return scripts.append("</script></body></html>").toString();
     }
 
     private Set<String> listKeysForContainer(String container) {

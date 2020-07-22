@@ -40,6 +40,7 @@
             <contextMenu>
                 <ContextMenu>
                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#openGeo" text="GEO地图"/>
                         <MenuItem mnemonicParsing="false" onAction="#deleteKeys" text="删除"/>
                     </items>
                 </ContextMenu>

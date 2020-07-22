@@ -30,6 +30,10 @@
 
 ![redis](images/redis.png)
 
+`Redis Geo`地图
+
+![redis_geo](images/redis_geo.png)
+
 ### 3. SFTP-SSH工具
 
 配置文件
@@ -55,6 +59,10 @@
 ![sftp](images/sftp.png)
 
 ### 更新历史
+
+#### [v1.1.2](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-devtool-1.1.2.zip)
+
+- Redis支持打开GEO地图
 
 #### [v1.1.1](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-devtool-1.1.1.zip)
 
