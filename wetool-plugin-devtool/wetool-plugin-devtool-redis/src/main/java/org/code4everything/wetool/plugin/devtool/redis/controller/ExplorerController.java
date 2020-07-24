@@ -158,24 +158,22 @@ public class ExplorerController implements Comparator<JedisVO> {
 
         Set<JedisVO> list = new HashSet<>(keys.size(), 1);
         keys.forEach(key -> {
-            if (!list.contains(key)) {
-                JedisVO jedisVO = new JedisVO();
-                String child = StrUtil.removePrefix(key, searchText.getText());
-                child = StringUtils.trim(child, ':', 2);
-                int idx = child.indexOf(":");
-                if (idx > 0 && idx < StringUtils.trim(child, ':', 1).length()) {
-                    // 添加容器
-                    jedisVO.setKey(StrUtil.removeSuffix(key, child.substring(idx)));
-                    jedisVO.setSize("-");
-                    jedisVO.setType("container");
-                } else {
-                    // 添加KEY
-                    jedisVO.setKey(key);
-                    jedisVO.setType(jedis.type(key));
-                    jedisVO.setSize(getSize(jedis, key, jedisVO.getType()));
-                }
-                list.add(jedisVO);
+            JedisVO jedisVO = new JedisVO();
+            String child = StrUtil.removePrefix(key, searchText.getText());
+            child = StringUtils.trim(child, ':', 2);
+            int idx = child.indexOf(":");
+            if (idx > 0 && idx < StringUtils.trim(child, ':', 1).length()) {
+                // 添加容器
+                jedisVO.setKey(StrUtil.removeSuffix(key, child.substring(idx)));
+                jedisVO.setSize("-");
+                jedisVO.setType("container");
+            } else {
+                // 添加KEY
+                jedisVO.setKey(key);
+                jedisVO.setType(jedis.type(key));
+                jedisVO.setSize(getSize(jedis, key, jedisVO.getType()));
             }
+            list.add(jedisVO);
         });
         return new ArrayList<>(list);
     }

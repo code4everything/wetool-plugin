@@ -93,7 +93,7 @@ public class QiniuUtils {
             }
             if (res.indexOf(StringConsts.Sign.DOT) == 0) {
                 res.insert(0, "0");
-            } else if (res.indexOf(StringConsts.Sign.DOT) == 0) {
+            } else if (res.indexOf("-.") == 0) {
                 res = new StringBuilder("-0." + res.substring(2, res.length()));
             }
         }

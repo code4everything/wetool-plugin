@@ -232,7 +232,7 @@ public class ValueController {
             for (String kv : list) {
                 Pair<String, String> pair = parseKeyValue(kv);
                 try {
-                    double score = Double.parseDouble(pair.getValue());
+                    double score = Double.parseDouble(Objects.requireNonNull(pair).getValue());
                     map.put(pair.getKey(), score);
                 } catch (Exception e) {
                     FxDialogs.showInformation("格式不正确！", null);

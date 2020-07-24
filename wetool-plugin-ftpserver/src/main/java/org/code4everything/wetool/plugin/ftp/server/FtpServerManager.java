@@ -16,6 +16,7 @@ import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.File;
+import java.util.Objects;
 
 /**
  * @author pantao
@@ -30,10 +31,10 @@ class FtpServerManager {
 
     static void start() {
         try {
-            if (ObjectUtil.isNull(server) || server.isStopped()) {
+            if (Objects.isNull(server) || server.isStopped()) {
                 // 读取配置
                 FtpServerConfig config = loadConfig();
-                if (ObjectUtil.isNull(config) || CollUtil.isEmpty(config.getUsers())) {
+                if (Objects.isNull(config) || CollUtil.isEmpty(config.getUsers())) {
                     FxDialogs.showError("FTP启动失败：请完善配置文件！");
                     return;
                 }

@@ -248,22 +248,22 @@ public class QiniuService {
         }
     }
 
-
     /**
      * 获取空间带宽统计，使用自定义单位
      */
     public XYChart.Series<String, Long> getBucketBandwidth(String[] domains, String startDate, String endDate,
                                                            String unit) {
+        // 设置图表
+        XYChart.Series<String, Long> series = new XYChart.Series<>();
+        series.setName(QiniuConsts.BUCKET_BANDWIDTH_COUNT.replaceAll("[A-Z]+", unit));
         // 获取带宽数据
-        CdnResult.BandwidthResult bandwidthResult = null;
+        CdnResult.BandwidthResult bandwidthResult;
         try {
             bandwidthResult = sdkManager.getBandwidthData(domains, startDate, endDate);
         } catch (QiniuException e) {
             Platform.runLater(() -> DialogUtils.showException(QiniuConsts.BUCKET_BAND_ERROR, e));
+            return series;
         }
-        // 设置图表
-        XYChart.Series<String, Long> series = new XYChart.Series<>();
-        series.setName(QiniuConsts.BUCKET_BANDWIDTH_COUNT.replaceAll("[A-Z]+", unit));
         // 格式化数据
         if (ObjectUtil.isNotNull(bandwidthResult) && CollUtil.isNotEmpty(bandwidthResult.data)) {
             long unitSize = QiniuUtils.sizeToLong("1 " + unit);
