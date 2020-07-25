@@ -1,7 +1,9 @@
 package org.code4everything.wetool.plugin.test;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.system.SystemUtil;
 import com.alibaba.fastjson.JSON;
 import javafx.stage.Stage;
@@ -48,9 +50,9 @@ public class WetoolTester extends WeApplication {
         BootConfig.setDebug(true);
         Class<WePluginSupporter> clazz = ClassUtil.loadClass(info.getSupportedClass());
         try {
-            supporter = clazz.newInstance();
+            supporter = ReflectUtil.newInstance(clazz);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
             return;
         }
         // 启动WeTool

@@ -8,6 +8,7 @@ import javafx.scene.control.cell.TextFieldListCell;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
+import org.code4everything.wetool.plugin.support.util.FxDialogs;
 
 import java.lang.reflect.Field;
 
@@ -37,7 +38,7 @@ public class UnmodifiableTextFieldListCell<T> extends TextFieldListCell<T> {
             field.setAccessible(true);
             ((TextField) field.get(this)).setEditable(false);
         } catch (Exception e) {
-            e.printStackTrace();
+            FxDialogs.showException("程序异常", e);
         }
     }
 }

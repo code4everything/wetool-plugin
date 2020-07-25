@@ -26,6 +26,8 @@ import java.util.Optional;
  */
 public class QiniuDialog {
 
+    private static final String[] BUCKET_NAME_ARRAY = {"华东", "华北", "华南", "北美"};
+
     /**
      * 显示移动文件的弹窗
      */
@@ -135,8 +137,8 @@ public class QiniuDialog {
         url.setPromptText(QiniuConsts.BUCKET_URL);
         // 桶区域输入框
         ComboBox<String> zone = new ComboBox<>();
-        zone.getItems().addAll(QiniuConsts.BUCKET_NAME_ARRAY);
-        zone.setValue(QiniuConsts.BUCKET_NAME_ARRAY[0]);
+        zone.getItems().addAll(BUCKET_NAME_ARRAY);
+        zone.setValue(BUCKET_NAME_ARRAY[0]);
         // 设置容器
         GridPane grid = Dialogs.getGridPane();
         grid.add(new Label(QiniuConsts.BUCKET_NAME), 0, 0);

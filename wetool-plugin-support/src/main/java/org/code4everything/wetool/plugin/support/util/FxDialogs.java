@@ -1,5 +1,6 @@
 package org.code4everything.wetool.plugin.support.util;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -12,8 +13,6 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.support.constant.AppConsts;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -148,10 +147,7 @@ public class FxDialogs {
             Alert alert = makeAlert(header, "错误信息追踪：", Alert.AlertType.ERROR, Modality.APPLICATION_MODAL);
 
             // 输出异常信息
-            StringWriter stringWriter = new StringWriter();
-            PrintWriter printWriter = new PrintWriter(stringWriter);
-            e.printStackTrace(printWriter);
-            String exception = stringWriter.toString();
+            String exception = ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE);
             log.error(exception);
 
             // 异常信息容易
