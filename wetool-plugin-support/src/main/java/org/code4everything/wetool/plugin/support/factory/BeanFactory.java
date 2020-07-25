@@ -9,6 +9,7 @@ import org.code4everything.wetool.plugin.support.BaseViewController;
 
 import java.lang.ref.SoftReference;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -60,7 +61,7 @@ public class BeanFactory {
     @SuppressWarnings("unchecked")
     public static <T> T get(String name, TypeFunction<T> defaultCallback) {
         T value = (T) ReferenceUtils.unwrap(PROTOTYPE_MAPPING.get(name));
-        if (ObjectUtil.isNull(value) && ObjectUtil.isNotNull(defaultCallback)) {
+        if (Objects.isNull(value) && Objects.nonNull(defaultCallback)) {
             value = defaultCallback.call();
             register(name, value);
         }
