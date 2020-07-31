@@ -12,6 +12,7 @@ import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.wetool.plugin.devtool.redis.config.ConnectionConfiguration;
 import org.code4everything.wetool.plugin.devtool.redis.config.RedisConfiguration;
 import org.code4everything.wetool.plugin.devtool.redis.constant.CommonConsts;
@@ -107,7 +108,7 @@ public class MainController implements BaseViewController {
         String url = "/ease/devtool/redis/Explorer.fxml";
         String label = currentServerDb.getText();
         RedisTabUtils.openTab(redisExplorerTab, url, label, label, () -> {
-            int idx = label.lastIndexOf(":");
+            int idx = label.lastIndexOf(':');
             String alias = label.substring(0, idx);
             String db = label.substring(idx + 1);
             int currentDb = StrUtil.isEmpty(db) ? 0 : NumberUtil.parseInt(StrUtil.removePrefix(db, "db"));
@@ -124,7 +125,7 @@ public class MainController implements BaseViewController {
             FxDialogs.showError("输入格式不正确！");
             return;
         }
-        int idx = curr.lastIndexOf(":");
+        int idx = curr.lastIndexOf(':');
         if (!JedisUtils.containsServer(curr.substring(0, idx))) {
             FxDialogs.showError("找不到对应的连接信息，请前往配置文件添加！");
             return;

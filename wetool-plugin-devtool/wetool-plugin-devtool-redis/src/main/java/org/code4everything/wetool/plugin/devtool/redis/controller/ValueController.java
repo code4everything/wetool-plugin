@@ -4,10 +4,12 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Pair;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
@@ -22,7 +24,7 @@ import java.util.*;
  */
 public class ValueController {
 
-    private final String lineSep = "\n";
+    private static final String LINE_SEP = "\n";
 
     @FXML
     public TextField expireText;
@@ -73,7 +75,7 @@ public class ValueController {
 
     public void refresh() {
         Jedis jedis = JedisUtils.getJedis(keyExplorer);
-        if (StrUtil.isEmpty(key) || !jedis.exists(key)) {
+        if (StrUtil.isEmpty(key) || !BooleanUtil.isTrue(jedis.exists(key))) {
             return;
         }
 
@@ -82,22 +84,22 @@ public class ValueController {
         switch (keyExplorer.getType()) {
             case "hash":
                 Map<String, String> map = jedis.hgetAll(key);
-                map.forEach((k, v) -> sb.append(k).append(": ").append(v).append(lineSep));
+                map.forEach((k, v) -> sb.append(k).append(": ").append(v).append(LINE_SEP));
                 typeGroup.selectToggle(typeHashRadio);
                 break;
             case "zset":
                 Set<Tuple> tuples = jedis.zrangeWithScores(key, 0, -1);
-                tuples.forEach(t -> sb.append(t.getElement()).append(": ").append(t.getScore()).append(lineSep));
+                tuples.forEach(t -> sb.append(t.getElement()).append(": ").append(t.getScore()).append(LINE_SEP));
                 typeGroup.selectToggle(typeSortedSetRadio);
                 break;
             case "set":
                 Set<String> set = jedis.smembers(key);
-                set.forEach(m -> sb.append(m).append(lineSep));
+                set.forEach(m -> sb.append(m).append(LINE_SEP));
                 typeGroup.selectToggle(typeSetRadio);
                 break;
             case "list":
                 List<String> list = jedis.lrange(key, 0, -1);
-                list.forEach(e -> sb.append(e).append(lineSep));
+                list.forEach(e -> sb.append(e).append(LINE_SEP));
                 typeGroup.selectToggle(typeListRadio);
                 break;
             default:
@@ -134,16 +136,16 @@ public class ValueController {
         List<String> values = StrUtil.splitTrim(valueText.getText(), '\n');
         boolean hasKey = typeSortedSetRadio.isSelected() || typeHashRadio.isSelected();
         values.forEach(value -> {
-            String key = "";
+            String jsonKey = "";
             if (hasKey) {
-                int idx = value.indexOf(":");
-                key = StrUtil.sub(value, 0, idx);
+                int idx = value.indexOf(':');
+                jsonKey = StrUtil.sub(value, 0, idx);
                 value = idx > 0 ? StrUtil.sub(value, idx + 1, value.length()) : "null";
             }
             StringBuilder sb = new StringBuilder();
             for (char c : wrapper.toCharArray()) {
                 if (c == 'k') {
-                    sb.append(key);
+                    sb.append(jsonKey);
                 } else if (c == 'v') {
                     sb.append(value);
                 } else {
@@ -209,7 +211,7 @@ public class ValueController {
 
     private boolean updateList(Jedis jedis) {
         if (typeListRadio.isSelected()) {
-            List<String> list = StrUtil.splitTrim(valueText.getText(), lineSep);
+            List<String> list = StrUtil.splitTrim(valueText.getText(), LINE_SEP);
             jedis.rpush(key, list.toArray(new String[0]));
             return true;
         }
@@ -218,7 +220,7 @@ public class ValueController {
 
     private boolean updateSet(Jedis jedis) {
         if (typeSetRadio.isSelected()) {
-            List<String> list = StrUtil.splitTrim(valueText.getText(), lineSep);
+            List<String> list = StrUtil.splitTrim(valueText.getText(), LINE_SEP);
             jedis.sadd(key, list.toArray(new String[0]));
             return true;
         }
@@ -227,7 +229,7 @@ public class ValueController {
 
     private boolean updateSortedSet(Jedis jedis) {
         if (typeSortedSetRadio.isSelected()) {
-            List<String> list = StrUtil.splitTrim(valueText.getText(), lineSep);
+            List<String> list = StrUtil.splitTrim(valueText.getText(), LINE_SEP);
             Map<String, Double> map = new HashMap<>(list.size(), 1);
             for (String kv : list) {
                 Pair<String, String> pair = parseKeyValue(kv);
@@ -247,7 +249,7 @@ public class ValueController {
 
     private boolean updateHash(Jedis jedis) {
         if (typeHashRadio.isSelected()) {
-            List<String> list = StrUtil.splitTrim(valueText.getText(), lineSep);
+            List<String> list = StrUtil.splitTrim(valueText.getText(), LINE_SEP);
             Map<String, String> map = new HashMap<>(list.size(), 1);
             for (String kv : list) {
                 Pair<String, String> pair = parseKeyValue(kv);
@@ -267,7 +269,7 @@ public class ValueController {
         if (StrUtil.isBlank(kv)) {
             return null;
         }
-        int idx = kv.lastIndexOf(":");
+        int idx = kv.lastIndexOf(':');
 
         if (idx < 1) {
             return null;

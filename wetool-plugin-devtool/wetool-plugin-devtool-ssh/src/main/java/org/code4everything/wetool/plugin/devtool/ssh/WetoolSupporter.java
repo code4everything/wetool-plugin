@@ -1,7 +1,5 @@
 package org.code4everything.wetool.plugin.devtool.ssh;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Menu;
 import org.code4everything.wetool.plugin.devtool.ssh.constant.CommonConsts;
@@ -18,8 +16,7 @@ public class WetoolSupporter implements WePluginSupporter {
     @Override
     public boolean initialize() {
         Menu menu = FxUtils.makePluginMenu(AppConsts.Title.DEV_TOOL);
-        menu.getItems().add(FxUtils.createMenuItem(CommonConsts.APP_NAME,
-                (EventHandler<ActionEvent>) event -> openTab()));
+        menu.getItems().add(FxUtils.createBarMenuItem(CommonConsts.APP_NAME, event -> openTab()));
         return true;
     }
 

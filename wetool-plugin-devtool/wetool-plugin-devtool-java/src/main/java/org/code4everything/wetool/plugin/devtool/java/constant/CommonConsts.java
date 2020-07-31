@@ -12,6 +12,4 @@ public class CommonConsts {
     public static final String APP_NAME = "JAVA工具";
 
     public static final String APP_ID = "ease-devtool-java";
-
-    // public static final String SE_NAME = "常用功能";
 }

@@ -1,7 +1,5 @@
 package org.code4everything.wetool.plugin.sample;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +34,7 @@ public class WetoolSupporter implements WePluginSupporter {
      */
     @Override
     public MenuItem registerBarMenu() {
-        return FxUtils.createMenuItem("插件示例", (EventHandler<ActionEvent>) event -> {
+        return FxUtils.createBarMenuItem("插件示例", event -> {
             // 注意保证fxml文件的url路径唯一性
             Node node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/sample/Sample.fxml", true);
             FxDialogs.showInformation(SampleController.TAB_NAME, "welcome to wetool plugin");

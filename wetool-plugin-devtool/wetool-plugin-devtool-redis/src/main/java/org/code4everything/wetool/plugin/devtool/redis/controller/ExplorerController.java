@@ -32,6 +32,20 @@ import java.util.stream.Collectors;
  */
 public class ExplorerController implements Comparator<JedisVO> {
 
+    private static final Map<String, Integer> KEY_ORDER = new HashMap<>();
+
+    private static final String TYPE_CONTAINER = "Container";
+
+    static {
+        // 初始化KEY顺序
+        KEY_ORDER.put("container", 1);
+        KEY_ORDER.put("string", 2);
+        KEY_ORDER.put("list", 3);
+        KEY_ORDER.put("set", 4);
+        KEY_ORDER.put("zset", 5);
+        KEY_ORDER.put("hash", 6);
+    }
+
     @FXML
     public TabPane keyTab;
 
@@ -53,24 +67,12 @@ public class ExplorerController implements Comparator<JedisVO> {
     @FXML
     public TableView<JedisVO> keyTable;
 
-    private Map<String, Integer> keyOrder = new HashMap<>();
-
     private JedisUtils.RedisServer redisServer;
-
-    {
-        // 初始化KEY顺序
-        keyOrder.put("container", 1);
-        keyOrder.put("string", 2);
-        keyOrder.put("list", 3);
-        keyOrder.put("set", 4);
-        keyOrder.put("zset", 5);
-        keyOrder.put("hash", 6);
-    }
 
     @FXML
     private void initialize() {
         redisServer = JedisUtils.getRedisServer();
-        searchWay.getItems().addAll("Container", "Precise", "Pattern");
+        searchWay.getItems().addAll(TYPE_CONTAINER, "Precise", "Pattern");
         searchWay.getSelectionModel().select(0);
 
         // 定义表格类型
@@ -83,7 +85,7 @@ public class ExplorerController implements Comparator<JedisVO> {
     public void doSearch() throws Exception {
         keyTable.getItems().clear();
         List<JedisVO> list = null;
-        if ("Container".equals(searchWay.getValue())) {
+        if (TYPE_CONTAINER.equals(searchWay.getValue())) {
             list = searchForContainer();
         } else if ("Pattern".equals(searchWay.getValue())) {
             list = searchForPattern();
@@ -109,8 +111,8 @@ public class ExplorerController implements Comparator<JedisVO> {
 
     @Override
     public int compare(JedisVO j1, JedisVO j2) {
-        Integer o1 = keyOrder.getOrDefault(j1.getType(), 99);
-        Integer o2 = keyOrder.getOrDefault(j2.getType(), 99);
+        Integer o1 = KEY_ORDER.getOrDefault(j1.getType(), 99);
+        Integer o2 = KEY_ORDER.getOrDefault(j2.getType(), 99);
         int diff = o1.compareTo(o2);
         return diff == 0 ? j1.getKey().compareTo(j2.getKey()) : diff;
     }
@@ -121,7 +123,7 @@ public class ExplorerController implements Comparator<JedisVO> {
         }
         JedisVO jedisVO = keyTable.getSelectionModel().getSelectedItem();
         if (jedisVO.isContainer()) {
-            searchWay.setValue("Container");
+            searchWay.setValue(TYPE_CONTAINER);
             searchText.setText(jedisVO.getKey());
             doSearch();
         } else {

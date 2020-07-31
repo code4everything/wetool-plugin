@@ -42,13 +42,13 @@ import java.util.stream.Collectors;
  */
 public class MainController implements BaseViewController {
 
+    private static final EventHandler<Event> NO_ACTION = e -> {};
+
     private final TerminalConfig config = new TerminalConfig();
 
     private final Map<String, Integer> terminalCountMap = new HashMap<>();
 
     private final SftpFile textDir = new SftpFile(null, true);
-
-    private final EventHandler<Event> noAction = e -> {};
 
     private final Map<PullingConfiguration, Integer> delayMap = new HashMap<>();
 
@@ -267,7 +267,7 @@ public class MainController implements BaseViewController {
             if (!f.isDir()) {
                 String path = StrUtil.addPrefixIfNot(f.getPath(), "/");
                 sftp.download(f.getPath(), folder);
-                downloaded.add(folder.getAbsolutePath() + path.substring(path.lastIndexOf("/")));
+                downloaded.add(folder.getAbsolutePath() + path.substring(path.lastIndexOf('/')));
             }
         }));
         if (open) {
@@ -319,7 +319,7 @@ public class MainController implements BaseViewController {
                 ClipboardUtil.setStr(server.getPassword());
             });
         }
-        terminal.setOnCloseRequest(noAction);
+        terminal.setOnCloseRequest(NO_ACTION);
         terminalTabPane.getTabs().add(terminal);
         terminalTabPane.getSelectionModel().select(terminal);
     }

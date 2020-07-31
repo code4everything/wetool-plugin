@@ -1,7 +1,5 @@
 package org.code4everything.wetool.plugin.everywhere;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import org.code4everything.wetool.plugin.everywhere.constant.CommonConsts;
@@ -21,7 +19,7 @@ public class WetoolSupporter implements WePluginSupporter {
 
     @Override
     public MenuItem registerBarMenu() {
-        return FxUtils.createMenuItem(CommonConsts.APP_NAME, (EventHandler<ActionEvent>) event -> openTab());
+        return FxUtils.createBarMenuItem(CommonConsts.APP_NAME, event -> openTab());
     }
 
     private void openTab() {

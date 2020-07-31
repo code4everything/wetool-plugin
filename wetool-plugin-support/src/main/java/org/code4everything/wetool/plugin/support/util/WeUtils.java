@@ -60,7 +60,7 @@ public class WeUtils {
      * @since 1.0.1
      */
     public static String parsePathByOs(String parentDir, String filename) {
-        int idx = filename.lastIndexOf(StringConsts.Sign.DOT);
+        int idx = filename.lastIndexOf('.');
         String name = filename.substring(0, idx);
         String ext = filename.substring(idx);
         return parsePathByOs(parentDir, name + "-win" + ext, name + "-mac" + ext, name + "-lin" + ext, filename);
