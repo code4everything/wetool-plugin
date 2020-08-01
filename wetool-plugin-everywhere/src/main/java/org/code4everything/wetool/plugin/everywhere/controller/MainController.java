@@ -64,8 +64,6 @@ public class MainController implements BaseViewController {
 
     private Pattern filterPattern;
 
-    public MainController() {}
-
     @FXML
     private void initialize() {
         BeanFactory.registerView(CommonConsts.APP_ID, CommonConsts.APP_NAME, this);

@@ -1,6 +1,6 @@
 package org.code4everything.wetool.plugin.qiniu.model;
 
-import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.collection.CollUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -55,11 +55,12 @@ public class ConfigBean implements Serializable {
     }
 
     public BucketBean getBucketBean(String bucket) {
-        if (CollectionUtil.isNotEmpty(buckets)) {
-            for (BucketBean bean : buckets) {
-                if (Objects.equals(bean.getBucket(), bucket)) {
-                    return bean;
-                }
+        if (CollUtil.isEmpty(buckets)) {
+            return null;
+        }
+        for (BucketBean bean : buckets) {
+            if (Objects.equals(bean.getBucket(), bucket)) {
+                return bean;
             }
         }
         return null;

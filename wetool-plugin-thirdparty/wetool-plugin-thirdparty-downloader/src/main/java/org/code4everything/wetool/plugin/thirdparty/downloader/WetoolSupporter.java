@@ -3,14 +3,10 @@ package org.code4everything.wetool.plugin.thirdparty.downloader;
 import com.acgist.snail.gui.GuiHandler;
 import com.acgist.snail.system.context.SystemContext;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import org.code4everything.wetool.plugin.support.WePluginSupporter;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
-
-import java.awt.event.ActionListener;
 
 /**
  * @author pantao
@@ -26,12 +22,12 @@ public class WetoolSupporter implements WePluginSupporter {
 
     @Override
     public MenuItem registerBarMenu() {
-        return FxUtils.createMenuItem(TAB_NAME, (EventHandler<ActionEvent>) actionEvent -> openTab());
+        return FxUtils.createBarMenuItem(TAB_NAME, actionEvent -> openTab());
     }
 
     @Override
     public java.awt.MenuItem registerTrayMenu() {
-        return FxUtils.createMenuItem(TAB_NAME, (ActionListener) e -> Platform.runLater(() -> {
+        return FxUtils.createTrayMenuItem(TAB_NAME, e -> Platform.runLater(() -> {
             FxUtils.getStage().show();
             openTab();
         }));

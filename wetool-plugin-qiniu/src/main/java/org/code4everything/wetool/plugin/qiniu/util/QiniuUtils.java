@@ -3,6 +3,7 @@ package org.code4everything.wetool.plugin.qiniu.util;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import lombok.experimental.UtilityClass;
@@ -16,7 +17,6 @@ import org.code4everything.wetool.plugin.qiniu.model.ConfigBean;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.regex.Pattern;
@@ -83,8 +83,8 @@ public class QiniuUtils {
         StringBuilder res = new StringBuilder();
         if (HAS_DIGIT_PATTERN.matcher(string).matches()) {
             string = string.replaceAll("(\\s|[a-zA-Z])+", "");
-            res = new StringBuilder(string.indexOf("-") == 0 ? "-" : "");
-            int dotIdx = string.lastIndexOf(".");
+            res = new StringBuilder(string.indexOf('-') == 0 ? "-" : "");
+            int dotIdx = string.lastIndexOf('.');
             for (int i = 0; i < string.length(); i++) {
                 char c = string.charAt(i);
                 if (Character.isDigit(c) || i == dotIdx) {
@@ -185,13 +185,8 @@ public class QiniuUtils {
         if (!domain.startsWith(HTTP)) {
             domain = HTTP + "://" + domain;
         }
-        fileName = fileName.replaceAll(" ", "qn_code_per_20").replaceAll("/", "qn_code_per_2F");
-        try {
-            fileName = URLEncoder.encode(fileName, "utf-8").replaceAll("qn_code_per_2F", "/");
-            return String.format("%s/%s", domain, fileName.replaceAll("qn_code_per_20", "%20"));
-        } catch (UnsupportedEncodingException e) {
-            log.error("encode url failed, message -> " + e.getMessage());
-            return "";
-        }
+        fileName = fileName.replace(" ", "qn_code_per_20").replace("/", "qn_code_per_2F");
+        fileName = URLEncoder.encode(fileName, CharsetUtil.CHARSET_UTF_8).replace("qn_code_per_2F", "/");
+        return String.format("%s/%s", domain, fileName.replace("qn_code_per_20", "%20"));
     }
 }

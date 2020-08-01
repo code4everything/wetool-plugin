@@ -1,10 +1,10 @@
 package org.code4everything.wetool.plugin.qiniu.util;
 
-import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import javafx.application.Platform;
 import lombok.experimental.UtilityClass;
 import org.code4everything.wetool.plugin.qiniu.api.SdkConfigurer;
@@ -32,7 +32,7 @@ public class ConfigUtils {
      */
     public static void loadConfig() {
         if (FileUtil.exist(CONFIG_PATH)) {
-            ConfigBean config = JSONObject.parseObject(FileUtil.readUtf8String(CONFIG_PATH), ConfigBean.class);
+            ConfigBean config = JSON.parseObject(FileUtil.readUtf8String(CONFIG_PATH), ConfigBean.class);
             if (ObjectUtil.isNotNull(config)) {
                 BeanFactory.register(config);
                 if (StrUtil.isNotEmpty(config.getAccessKey()) && StrUtil.isNotEmpty(config.getSecretKey())) {
@@ -40,7 +40,7 @@ public class ConfigUtils {
                     SdkConfigurer.createAuth(config.getAccessKey(), config.getSecretKey());
                 }
                 MainController controller = MainController.getInstance();
-                if (CollectionUtil.isEmpty(config.getBuckets())) {
+                if (CollUtil.isEmpty(config.getBuckets())) {
                     // 设置一个空的桶列表，防止出现空指针
                     config.setBuckets(new ArrayList<>());
                 } else {
@@ -53,7 +53,7 @@ public class ConfigUtils {
                         controller.zoneTF.setText(bucket.getZone());
                     });
                 }
-                if (CollectionUtil.isEmpty(config.getPrefixes())) {
+                if (CollUtil.isEmpty(config.getPrefixes())) {
                     // 设置一个空的前缀列表，防止出现空指针
                     config.setPrefixes(new ArrayList<>());
                 } else {
@@ -75,6 +75,6 @@ public class ConfigUtils {
      * 写配置文件
      */
     public static void writeConfig() {
-        FileUtil.writeUtf8String(JSONObject.toJSONString(ConfigBean.getConfig(), true), CONFIG_PATH);
+        FileUtil.writeUtf8String(JSON.toJSONString(ConfigBean.getConfig(), true), CONFIG_PATH);
     }
 }

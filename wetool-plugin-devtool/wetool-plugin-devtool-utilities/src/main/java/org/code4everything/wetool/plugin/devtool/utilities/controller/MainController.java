@@ -26,9 +26,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class MainController implements BaseViewController {
 
-    private final ThreadFactory FACTORY = ThreadFactoryBuilder.create().setDaemon(true).build();
+    private static final ThreadFactory FACTORY = ThreadFactoryBuilder.create().setDaemon(true).build();
 
-    private final ScheduledThreadPoolExecutor EXECUTOR = new ScheduledThreadPoolExecutor(1, FACTORY);
+    private static final ScheduledThreadPoolExecutor EXECUTOR = new ScheduledThreadPoolExecutor(1, FACTORY);
 
     private final Map<Boolean, String> toggleMap = new HashMap<>(2, 1);
 
@@ -68,7 +68,6 @@ public class MainController implements BaseViewController {
         currentDateTimeField.setText(DateUtil.formatDateTime(date));
         currentTimestampField.setText(String.valueOf(date.getTime()));
     }
-
 
     public void toggleScheduler() {
         toggleButton.setText(toggleMap.get(shouldUpdateTime));

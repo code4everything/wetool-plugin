@@ -30,9 +30,6 @@ public class WeTab implements BaseBean, Serializable {
      */
     private Set<String> supports;
 
-    @Override
-    public void requireNonNullProperty() {}
-
     @Generated
     public Set<String> getLoads() {
         return Objects.isNull(loads) ? new HashSet<>() : loads;

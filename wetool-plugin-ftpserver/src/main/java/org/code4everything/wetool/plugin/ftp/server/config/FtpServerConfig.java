@@ -36,7 +36,7 @@ public class FtpServerConfig implements BaseBean, Serializable {
     }
 
     @Generated
-    public Boolean getStartOnStartup() {
+    public boolean getStartOnStartup() {
         return ObjectUtil.defaultIfNull(startOnStartup, false);
     }
 }

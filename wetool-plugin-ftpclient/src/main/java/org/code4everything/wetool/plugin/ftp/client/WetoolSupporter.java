@@ -2,8 +2,6 @@ package org.code4everything.wetool.plugin.ftp.client;
 
 import cn.hutool.core.collection.CollUtil;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +11,6 @@ import org.code4everything.wetool.plugin.ftp.client.model.LastUsedInfo;
 import org.code4everything.wetool.plugin.support.WePluginSupporter;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
-
-import java.awt.event.ActionListener;
 
 /**
  * @author pantao
@@ -41,19 +37,19 @@ public class WetoolSupporter implements WePluginSupporter {
         if (ftpConfig.getShowOnStartup()) {
             openTab();
         }
-        return FxUtils.createMenuItem(FtpConsts.TAB_NAME, (EventHandler<ActionEvent>) e -> openTab());
+        return FxUtils.createBarMenuItem(FtpConsts.TAB_NAME, e -> openTab());
     }
 
     @Override
     public java.awt.MenuItem registerTrayMenu() {
         java.awt.Menu menu = new java.awt.Menu(FtpConsts.TAB_NAME);
         // 上传文件
-        menu.add(FxUtils.createMenuItem(FtpConsts.UPLOAD_FILE, (ActionListener) e -> {
+        menu.add(FxUtils.createTrayMenuItem(FtpConsts.UPLOAD_FILE, e -> {
             Node dialogPane = FxUtils.loadFxml(WetoolSupporter.class, "/ease/ftpclient/FtpUploadDialog.fxml", true);
             FxDialogs.showDialog(null, dialogPane);
         }));
         // 下载文件
-        menu.add(FxUtils.createMenuItem(FtpConsts.DOWNLOAD_FILE, (ActionListener) e -> {
+        menu.add(FxUtils.createTrayMenuItem(FtpConsts.DOWNLOAD_FILE, e -> {
             Node dialogPane = FxUtils.loadFxml(WetoolSupporter.class, "/ease/ftpclient/FtpDownloadDialog.fxml", true);
             FxDialogs.showDialog(null, dialogPane);
         }));

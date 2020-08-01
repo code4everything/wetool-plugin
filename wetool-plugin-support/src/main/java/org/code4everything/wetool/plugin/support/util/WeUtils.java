@@ -12,7 +12,6 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.FileUtils;
 import org.code4everything.boot.base.constant.IntegerConsts;
-import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.boot.config.BootConfig;
 import org.code4everything.wetool.plugin.support.config.WeConfig;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;

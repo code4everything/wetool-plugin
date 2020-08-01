@@ -1,9 +1,9 @@
 package org.code4everything.wetool.plugin.qiniu.api;
 
 import com.qiniu.cdn.CdnManager;
-import com.qiniu.common.Zone;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
+import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.persistent.FileRecorder;
 import com.qiniu.util.Auth;
@@ -25,7 +25,7 @@ public class SdkConfigurer {
 
     private static final String[] BUCKET_NAME_ARRAY = {"华东", "华北", "华南", "北美"};
 
-    private static final Map<String, Zone> ZONE = new HashMap<>();
+    private static final Map<String, Region> REGION_MAP = new HashMap<>();
 
     private static Auth auth = null;
 
@@ -37,10 +37,10 @@ public class SdkConfigurer {
 
     static {
         // 加载空间区域
-        ZONE.put(BUCKET_NAME_ARRAY[0], Zone.zone0());
-        ZONE.put(BUCKET_NAME_ARRAY[1], Zone.zone1());
-        ZONE.put(BUCKET_NAME_ARRAY[2], Zone.zone2());
-        ZONE.put(BUCKET_NAME_ARRAY[3], Zone.zoneNa0());
+        REGION_MAP.put(BUCKET_NAME_ARRAY[0], Region.huadong());
+        REGION_MAP.put(BUCKET_NAME_ARRAY[1], Region.huabei());
+        REGION_MAP.put(BUCKET_NAME_ARRAY[2], Region.huanan());
+        REGION_MAP.put(BUCKET_NAME_ARRAY[3], Region.beimei());
     }
 
     public static CdnManager getCdnManager() {
@@ -72,7 +72,7 @@ public class SdkConfigurer {
      */
     public static boolean configUploadEnv(String zone, String bucket) {
         // 构造一个带指定Zone对象的配置类
-        Configuration configuration = new Configuration(SdkConfigurer.ZONE.get(zone));
+        Configuration configuration = new Configuration(SdkConfigurer.REGION_MAP.get(zone));
         // 生成上传凭证，然后准备上传
         String workDir = Paths.get(FileUtils.currentWorkDir(), bucket).toString();
         try {
