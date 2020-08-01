@@ -12,7 +12,6 @@ import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.wetool.plugin.devtool.redis.config.ConnectionConfiguration;
 import org.code4everything.wetool.plugin.devtool.redis.config.RedisConfiguration;
 import org.code4everything.wetool.plugin.devtool.redis.constant.CommonConsts;

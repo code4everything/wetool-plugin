@@ -9,7 +9,6 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;

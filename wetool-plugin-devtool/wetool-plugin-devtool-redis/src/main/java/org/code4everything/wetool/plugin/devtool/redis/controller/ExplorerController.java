@@ -163,7 +163,7 @@ public class ExplorerController implements Comparator<JedisVO> {
             JedisVO jedisVO = new JedisVO();
             String child = StrUtil.removePrefix(key, searchText.getText());
             child = StringUtils.trim(child, ':', 2);
-            int idx = child.indexOf(":");
+            int idx = child.indexOf(':');
             if (idx > 0 && idx < StringUtils.trim(child, ':', 1).length()) {
                 // 添加容器
                 jedisVO.setKey(StrUtil.removeSuffix(key, child.substring(idx)));
