@@ -1,7 +1,9 @@
 package org.code4everything.wetool.plugin.devtool.redis.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import javafx.collections.ObservableList;
@@ -14,6 +16,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import org.code4everything.boot.base.StringUtils;
+import org.code4everything.wetool.plugin.devtool.redis.config.GeoAmapConfiguration;
+import org.code4everything.wetool.plugin.devtool.redis.config.RedisConfiguration;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisVO;
 import org.code4everything.wetool.plugin.devtool.redis.util.RedisTabUtils;
@@ -248,22 +252,27 @@ public class ExplorerController implements Comparator<JedisVO> {
             list = Collections.emptyList();
         }
 
-        // @formatter:off
-        String template = "map.add(new AMap.Marker({position:[{},{}],title:'{}'}));" +
-                "map.add(new AMap.Circle({center:new AMap.LngLat({},{}),radius:1500,strokeColor:'blue',strokeOpacity:0.15,strokeWeight:1,fillColor:'blue',fillOpacity:0.15}))";
-        // @formatter:on
+        String template = "map.add(new AMap.Marker({position:[{},{}],title:'{}'}));";
+        GeoAmapConfiguration amapConf = RedisConfiguration.getConfiguration().getGeoAmapConf();
+        if (BooleanUtil.isTrue(amapConf.getCircleEnabled())) {
+            // @formatter:off
+            String circle = "map.add(new AMap.Circle({center:new AMap.LngLat({},{}),radius:{radius}" +
+                    ",strokeColor:'{strokeColor}',strokeOpacity:{strokeOpacity},strokeWeight:{strokeWeight}" +
+                    ",fillColor:'{fillColor}',fillOpacity:{fillOpacity}}));";
+            // @formatter:on
+            template += StrUtil.format(circle, BeanUtil.beanToMap(amapConf));
+        }
         StringBuilder scripts = new StringBuilder().append("<!DOCTYPE html><html lang='cn'>");
         scripts.append("<head><meta charset='utf-8'><title>GEO地图</title><script type='text/javascript' ");
         scripts.append("src='https://webapi.amap.com/maps?v=1.4.15&key=f99090997c9043f8977a58e4aa2cfd5d'></script>");
         scripts.append("</head><body><div id='container' style='width:100%;height:100%;position:absolute;'></div>");
         scripts.append("<script>var map=new AMap.Map('container',{zoom:11,resizeEnable:true,viewMode:'2D'});");
 
-        for (int i = 0; i < list.size(); i++) {
-            GeoRadiusResponse response = list.get(i);
+        for (GeoRadiusResponse response : list) {
             double lng = response.getCoordinate().getLongitude();
             double lat = response.getCoordinate().getLatitude();
             String title = new String(response.getMember(), CharsetUtil.CHARSET_UTF_8);
-            scripts.append(StrUtil.format(template, lng, lat, title, lng,lat));
+            scripts.append(StrUtil.format(template, lng, lat, title, lng, lat));
         }
         return scripts.append("</script></body></html>").toString();
     }

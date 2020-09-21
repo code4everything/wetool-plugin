@@ -1,4 +1,8 @@
 {
+    "geoAmapConf": {
+        "circleEnabled": true,
+        "radius": 500
+    },
     "servers": [
         {
             /*全局唯一，为空时使用host作为别名*/
