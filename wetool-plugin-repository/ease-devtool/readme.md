@@ -1,6 +1,6 @@
 ### 开发工具
 
-最新下载地址：[wetool-plugin-devtool-1.1.1.zip](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-devtool-1.1.1.zip)
+最新下载地址：[wetool-plugin-devtool-1.1.2.zip](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-devtool-1.1.2.zip)
 
 #### 1. Java工具
 

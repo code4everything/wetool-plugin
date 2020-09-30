@@ -14,7 +14,7 @@ public class AppConsts {
     /**
      * 当前版本号
      */
-    public static final String CURRENT_VERSION = "1.1.1";
+    public static final String CURRENT_VERSION = "1.1.2";
 
     /**
      * 兼容的最低版本号

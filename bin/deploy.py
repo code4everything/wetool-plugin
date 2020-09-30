@@ -88,8 +88,8 @@ print(os.popen('git commit -m "shell release v%s"' % version).read())
 
 # 发布test
 print('deploy wetool-plugin-test...\r\n')
-replace_version()
 os.chdir('../wetool-plugin/wetool-plugin-test')
+replace_version()
 print(os.popen('mvn clean deploy').read())
 copy_to('wetool-plugin-test')
 
