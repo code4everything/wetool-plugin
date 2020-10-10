@@ -2,7 +2,7 @@
 
 一个可以管理七牛云对象存储的WeTool插件
 
-最新版下载地址：[wetool-plugin-qiniu-1.1.2.jar](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-qiniu-1.1.2.jar)
+最新版下载地址：[wetool-plugin-qiniu-1.1.2.jar](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-qiniu-1.1.2.jar)
 
 > 第一次运行时，先重置密钥，然后添加存储空间（Bucket）即可。
 
@@ -22,30 +22,30 @@
 
 ### 历史更新
 
-#### [v1.1.2](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-qiniu-1.1.2.jar)
+#### [v1.1.2](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-qiniu-1.1.2.jar)
 
 - 更新WeTool版本
 
-#### [v1.1.1](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-qiniu-1.1.1.jar)
+#### [v1.1.1](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-qiniu-1.1.1.jar)
 
 - 更新WeTool版本
 
-#### [v1.1.0](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-qiniu-1.1.0.jar)
+#### [v1.1.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-qiniu-1.1.0.jar)
 
 - 更新WeTool版本
 
-#### [v1.0.2](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-qiniu-1.0.2.jar)
+#### [v1.0.2](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-qiniu-1.0.2.jar)
 
 - 修复上传按钮的样式问题
 - 迁移配置文件路径
 - 更新WeTool版本
 
-#### [v1.0.1](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-qiniu-1.0.1.jar)
+#### [v1.0.1](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-qiniu-1.0.1.jar)
 
 - 更新WeTool版本
 - 支持WeToo菜单打开文件
 
-#### [v1.0.0](http://share.qiniu.segocat.com/tool/wetool/plugin/wetool-plugin-qiniu-1.0.0.jar)
+#### [v1.0.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-qiniu-1.0.0.jar)
 
 - 文件的上传下载，删除，重命名
 - 移动、复制，刷新文件
