@@ -62,8 +62,6 @@ public class MainController implements BaseViewController {
     @FXML
     public TextField filterText;
 
-    private Pattern filterPattern;
-
     @FXML
     private void initialize() {
         BeanFactory.registerView(CommonConsts.APP_ID, CommonConsts.APP_NAME, this);
@@ -110,28 +108,29 @@ public class MainController implements BaseViewController {
             return;
         }
 
-        final boolean folder = folderCheck.isSelected();
-        final boolean file = fileCheck.isSelected();
-        final boolean content = contentCheck.isSelected();
+        boolean folder = folderCheck.isSelected();
+        boolean file = fileCheck.isSelected();
+        boolean content = contentCheck.isSelected();
 
         if (!folder && !file && !content) {
             return;
         }
 
         fileTable.getItems().clear();
+
+        Pattern filterPattern = null;
+        if (StrUtil.isNotBlank(filterText.getText())) {
+            try {
+                filterPattern = Pattern.compile(filterText.getText());
+            } catch (Exception e) {
+                // ignore
+            }
+        }
         LuceneUtils.searchAsync(word, folder, file, content, filterPattern);
     }
 
     public void keyReleased(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
-            filterPattern = null;
-            if (StrUtil.isNotEmpty(filterText.getText())) {
-                try {
-                    filterPattern = Pattern.compile(filterText.getText());
-                } catch (Exception e) {
-                    // ignore
-                }
-            }
             findEverywhere();
         }
     }
@@ -161,7 +160,6 @@ public class MainController implements BaseViewController {
         list.forEach(f -> {
             if (FileUtil.del(f.getPath())) {
                 deleted.add(f);
-
             }
         });
         fileTable.getItems().removeAll(deleted);

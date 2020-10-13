@@ -16,6 +16,7 @@ import org.code4everything.wetool.plugin.support.util.Callable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
 /**
@@ -28,9 +29,9 @@ public class LuceneUtils {
 
     private static final LuceneIndexer LUCENE_INDEXER = new LuceneIndexer();
 
-    private static boolean indexing = false;
+    private static final AtomicBoolean INDEXING = new AtomicBoolean(false);
 
-    private static boolean searching = false;
+    private static final AtomicBoolean SEARCHING = new AtomicBoolean(false);
 
     private static LuceneSearcher searcher = null;
 
@@ -41,10 +42,10 @@ public class LuceneUtils {
     }
 
     public static void searchAsync(String word, boolean folder, boolean file, boolean content, Pattern filterPattern) {
-        if (searching) {
+        if (SEARCHING.get()) {
             return;
         }
-        searching = true;
+        SEARCHING.set(true);
         ThreadUtil.execute(() -> {
             try {
                 List<FileInfo> list = getSearcher().search(word, folder, file, content, filterPattern);
@@ -54,25 +55,25 @@ public class LuceneUtils {
             } catch (Exception e) {
                 log.error("searching error: " + ExceptionUtil.stacktraceToString(e));
             }
-            searching = false;
+            SEARCHING.set(false);
         });
     }
 
     public static void indexAsync(boolean force) {
-        if (indexing) {
+        if (INDEXING.get()) {
             return;
         }
-        indexing = true;
-        if (force) {
-            FileUtil.del(CommonConsts.INDEX_PATH);
-        }
+        INDEXING.set(true);
         ThreadUtil.execute(() -> {
             try {
+                if (force) {
+                    FileUtil.del(CommonConsts.INDEX_PATH);
+                }
                 LUCENE_INDEXER.createIndex();
             } catch (IOException e) {
                 log.error("indexing file error: " + ExceptionUtil.stacktraceToString(e));
             }
-            indexing = false;
+            INDEXING.set(false);
         });
     }
 
