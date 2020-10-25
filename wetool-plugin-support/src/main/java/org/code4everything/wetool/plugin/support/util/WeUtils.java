@@ -14,6 +14,7 @@ import org.code4everything.boot.base.FileUtils;
 import org.code4everything.boot.base.constant.IntegerConsts;
 import org.code4everything.boot.config.BootConfig;
 import org.code4everything.wetool.plugin.support.config.WeConfig;
+import org.code4everything.wetool.plugin.support.event.EventCenter;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
 import java.io.File;
@@ -211,6 +212,7 @@ public class WeUtils {
      * 退出系统
      */
     public static void exitSystem() {
+        EventCenter.publishEvent(EventCenter.EVENT_WETOOL_EXIT, DateUtil.date());
         log.info("wetool exited");
         System.exit(IntegerConsts.ZERO);
     }

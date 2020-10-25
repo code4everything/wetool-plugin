@@ -1,6 +1,7 @@
 package org.code4everything.wetool.plugin.support.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -27,6 +28,7 @@ import org.code4everything.boot.base.FileUtils;
 import org.code4everything.boot.base.function.VoidFunction;
 import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.constant.AppConsts;
+import org.code4everything.wetool.plugin.support.event.EventCenter;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
 import java.awt.*;
@@ -404,6 +406,7 @@ public class FxUtils {
      * 重启本工具库
      */
     public static void restart() {
+        EventCenter.publishEvent(EventCenter.EVENT_WETOOL_RESTART, DateUtil.date());
         String batchFile = WeUtils.getConfig().getRestartBatch();
         if (StrUtil.isEmpty(batchFile)) {
             // 获取当前程序运行路径

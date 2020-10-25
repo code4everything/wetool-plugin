@@ -1,9 +1,13 @@
 package org.code4everything.wetool.plugin.support.event;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.code4everything.wetool.plugin.support.event.handler.BaseNoMessageEventHandler;
+import org.code4everything.wetool.plugin.support.event.handler.BaseQuickStartClickedEventHandler;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,9 +21,39 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EventCenter {
 
     /**
-     * 注意这个事件没有 EventMessage 对象
+     * 注意这个事件没有 EventMessage 对象，订阅事件时可使用 {@link BaseNoMessageEventHandler}
      */
     public static final String EVENT_SECONDS_TIMER = "wetool_timer_seconds";
+
+    /**
+     * 点击快启菜单，订阅事件时可使用 {@link BaseQuickStartClickedEventHandler}
+     */
+    public static final String EVENT_QUICK_START_CLICKED = "wetool_quick_start_clicked";
+
+    /**
+     * 清楚所有缓存事件，订阅事件可使用 {@link BaseNoMessageEventHandler}
+     */
+    public static final String EVENT_CLEAR_FXML_CACHE = "wetool_clear_fxml_cache";
+
+    /**
+     * WeTool重启事件，该事件包括推出事件，订阅事件可使用 {@link BaseNoMessageEventHandler}
+     */
+    public static final String EVENT_WETOOL_RESTART = "wetool_restart";
+
+    /**
+     * WeTool退出事件，订阅事件可使用 {@link BaseNoMessageEventHandler}
+     */
+    public static final String EVENT_WETOOL_EXIT = "wetool_exit";
+
+    /**
+     * WeTool界面显示事件，订阅事件可使用 {@link BaseNoMessageEventHandler}
+     */
+    public static final String EVENT_WETOOL_SHOW = "wetool_show";
+
+    /**
+     * WeTool界面隐藏事件，订阅事件可使用 {@link BaseNoMessageEventHandler}
+     */
+    public static final String EVENT_WETOOL_HIDDEN = "wetool_hidden";
 
     public static final String EVENT_MOUSE_LOCATION = "wetool_mouse_location";
 
@@ -93,6 +127,8 @@ public class EventCenter {
             }
         });
 
+        String time = DateUtil.format(eventTime, DatePattern.NORM_DATETIME_MS_FORMAT);
+        log.debug("publish event '{}' success, event time: {}", eventKey, time);
         return true;
     }
 
