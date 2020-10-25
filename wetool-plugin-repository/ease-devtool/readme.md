@@ -60,6 +60,10 @@
 
 ### 更新历史
 
+#### [v1.2.0]()
+
+- Redis支持Key复制粘贴
+
 #### [v1.1.2](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-devtool-1.1.2.zip)
 
 - Redis支持打开GEO地图

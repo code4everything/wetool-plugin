@@ -48,6 +48,7 @@ module org.code4everything.wetool.plugin.support {
     exports org.code4everything.wetool.plugin.support.exception;
     exports org.code4everything.wetool.plugin.support.factory;
     exports org.code4everything.wetool.plugin.support.util;
+    exports org.code4everything.wetool.plugin.support.event;
 
     // 开放反射权限
     opens org.code4everything.wetool.plugin.support.config;
