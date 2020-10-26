@@ -6,6 +6,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.code4everything.wetool.plugin.support.event.handler.BaseClipboardChangedEventHandler;
 import org.code4everything.wetool.plugin.support.event.handler.BaseNoMessageEventHandler;
 import org.code4everything.wetool.plugin.support.event.handler.BaseQuickStartClickedEventHandler;
 
@@ -55,7 +56,10 @@ public class EventCenter {
      */
     public static final String EVENT_WETOOL_HIDDEN = "wetool_hidden";
 
-    public static final String EVENT_MOUSE_LOCATION = "wetool_mouse_location";
+    /**
+     * 剪贴板变化事件（仅针对文本内容），订阅事件可使用 {@link BaseClipboardChangedEventHandler}
+     */
+    public static final String EVENT_CLIPBOARD_CHANGED = "event_clipboard_changed";
 
     private static final Map<String, EventMode> EVENT_MAP = new ConcurrentHashMap<>();
 

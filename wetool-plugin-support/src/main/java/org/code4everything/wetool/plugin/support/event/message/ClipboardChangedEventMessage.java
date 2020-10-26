@@ -7,16 +7,16 @@ import org.code4everything.wetool.plugin.support.event.EventMessage;
 
 /**
  * @author pantao
- * @since 2020/10/25
+ * @since 2020/10/26
  */
 @Data
 @AllArgsConstructor
 @Accessors(chain = true)
-public class QuickStartEventMessage implements EventMessage {
+public class ClipboardChangedEventMessage implements EventMessage {
 
-    private String location;
+    private final String clipboardText;
 
-    public static QuickStartEventMessage of(String location) {
-        return new QuickStartEventMessage(location);
+    public static ClipboardChangedEventMessage of(String clipboardText) {
+        return new ClipboardChangedEventMessage(clipboardText);
     }
 }
