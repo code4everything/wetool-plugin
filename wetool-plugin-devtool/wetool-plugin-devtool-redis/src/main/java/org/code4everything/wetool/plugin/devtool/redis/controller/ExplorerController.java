@@ -7,6 +7,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -241,6 +242,10 @@ public class ExplorerController implements Comparator<JedisVO> {
         jedis.del(keys.toArray(new String[0]));
         keyTable.getItems().removeAll(list);
         FxDialogs.showInformation("删除成功！", null);
+    }
+
+    public void copyKeyValue(ActionEvent actionEvent) {
+        // TODO: 2020/10/26 复制KeyValue
     }
 
     private String getGeoMapHtml(String geoKey) {

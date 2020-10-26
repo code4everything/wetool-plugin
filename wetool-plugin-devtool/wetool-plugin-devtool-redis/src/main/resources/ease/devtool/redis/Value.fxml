@@ -124,5 +124,10 @@
                 <Insets left="10.0"/>
             </HBox.margin>
         </Button>
+        <Button mnemonicParsing="false" onAction="#copyKeyValue" text="复制" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </Button>
     </HBox>
 </VBox>

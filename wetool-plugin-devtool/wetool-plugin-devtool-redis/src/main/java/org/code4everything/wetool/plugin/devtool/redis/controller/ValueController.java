@@ -7,6 +7,7 @@ import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
@@ -198,6 +199,10 @@ public class ValueController {
         if (result) {
             FxDialogs.showInformation("保存成功", null);
         }
+    }
+
+    public void copyKeyValue(ActionEvent actionEvent) {
+        // TODO: 2020/10/26 复制KeyValue
     }
 
     private boolean updateString(Jedis jedis) {

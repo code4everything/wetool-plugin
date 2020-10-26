@@ -105,7 +105,7 @@ public class JedisUtils {
 
         private int db;
 
-        private RedisServer(String alias, int db) {
+        public RedisServer(String alias, int db) {
             this.alias = alias;
             this.db = db;
         }
