@@ -9,6 +9,8 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class CommonConsts {
 
+    public static final String KEY_VALUE_COPY_PREFIX = "wetool-redis-key-value-json-copy:";
+
     public static final String APP_ID = "ease.devtool.redis";
 
     public static final String APP_NAME = "Redis客户端";

@@ -4,13 +4,17 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Pair;
+import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
-import javafx.event.ActionEvent;
+import com.alibaba.fastjson.JSON;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import lombok.Setter;
+import org.code4everything.wetool.plugin.devtool.redis.constant.CommonConsts;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
+import org.code4everything.wetool.plugin.devtool.redis.model.RedisKeyValue;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 import redis.clients.jedis.Jedis;
@@ -59,6 +63,7 @@ public class ValueController {
     @FXML
     public TextArea jsonFormatText;
 
+    @Setter
     private JedisUtils.KeyExplorer keyExplorer;
 
     private String key;
@@ -66,10 +71,12 @@ public class ValueController {
     @FXML
     private void initialize() {
         keyExplorer = JedisUtils.getKeyExplorer();
-        serverLabel.setText(StrUtil.format("服务器：{}，数据库：db{}", keyExplorer.getAlias(), keyExplorer.getDb()));
-        keyText.setText(keyExplorer.getKey());
-        key = keyText.getText();
-        refresh();
+        if (Objects.nonNull(keyExplorer)) {
+            serverLabel.setText(StrUtil.format("服务器：{}，数据库：db{}", keyExplorer.getAlias(), keyExplorer.getDb()));
+            keyText.setText(keyExplorer.getKey());
+            key = keyText.getText();
+            refresh();
+        }
         jsonFormatText.setPromptText("prefix=[\r\ndelimiter=,\r\nsuffix=]\r\nwrapper=kv");
     }
 
@@ -201,8 +208,35 @@ public class ValueController {
         }
     }
 
-    public void copyKeyValue(ActionEvent actionEvent) {
-        // TODO: 2020/10/26 复制KeyValue
+    public void copyKeyValue() {
+        String json = JSON.toJSONString(List.of(getRedisKeyValue()));
+        ClipboardUtil.setStr(CommonConsts.KEY_VALUE_COPY_PREFIX + json);
+    }
+
+    public RedisKeyValue getRedisKeyValue() {
+        RedisKeyValue redisKeyValue = new RedisKeyValue();
+        redisKeyValue.setKey(keyText.getText());
+        redisKeyValue.setValue(valueText.getText());
+
+        if (StrUtil.isBlank(expireText.getText())) {
+            redisKeyValue.setExpire(-1);
+        } else {
+            redisKeyValue.setExpire(NumberUtil.parseInt(expireText.getText()));
+        }
+
+        if (typeHashRadio.isSelected()) {
+            redisKeyValue.setType("hash");
+        } else if (typeSortedSetRadio.isSelected()) {
+            redisKeyValue.setType("zset");
+        } else if (typeSetRadio.isSelected()) {
+            redisKeyValue.setType("set");
+        } else if (typeListRadio.isSelected()) {
+            redisKeyValue.setType("list");
+        } else {
+            redisKeyValue.setType("string");
+        }
+
+        return redisKeyValue;
     }
 
     private boolean updateString(Jedis jedis) {

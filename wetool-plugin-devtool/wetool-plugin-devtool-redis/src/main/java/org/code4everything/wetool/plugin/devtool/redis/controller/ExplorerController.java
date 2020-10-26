@@ -3,11 +3,12 @@ package org.code4everything.wetool.plugin.devtool.redis.controller;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -19,8 +20,10 @@ import javafx.scene.web.WebView;
 import org.code4everything.boot.base.StringUtils;
 import org.code4everything.wetool.plugin.devtool.redis.config.GeoAmapConfiguration;
 import org.code4everything.wetool.plugin.devtool.redis.config.RedisConfiguration;
+import org.code4everything.wetool.plugin.devtool.redis.constant.CommonConsts;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisVO;
+import org.code4everything.wetool.plugin.devtool.redis.model.RedisKeyValue;
 import org.code4everything.wetool.plugin.devtool.redis.util.RedisTabUtils;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import redis.clients.jedis.GeoRadiusResponse;
@@ -229,8 +232,8 @@ public class ExplorerController implements Comparator<JedisVO> {
     }
 
     public void deleteKeys() {
-        Set<String> keys = new HashSet<>();
         ObservableList<JedisVO> list = keyTable.getSelectionModel().getSelectedItems();
+        Set<String> keys = new HashSet<>();
         list.forEach(jedisVO -> {
             if (jedisVO.isContainer()) {
                 keys.addAll(listKeysForContainer(jedisVO.getKey()));
@@ -244,8 +247,26 @@ public class ExplorerController implements Comparator<JedisVO> {
         FxDialogs.showInformation("删除成功！", null);
     }
 
-    public void copyKeyValue(ActionEvent actionEvent) {
-        // TODO: 2020/10/26 复制KeyValue
+    /**
+     * 暂时不支持复制container
+     */
+    public void copyKeyValue() {
+        ObservableList<JedisVO> list = keyTable.getSelectionModel().getSelectedItems();
+        RedisTabUtils.loadValueControllerOnly("复制失败！", controller -> {
+            List<RedisKeyValue> keyValueList = list.stream().map(jedisVO -> {
+                controller.keyText.setText(jedisVO.getKey());
+                controller.valueText.setText(jedisVO.getType());
+
+                JedisUtils.KeyExplorer keyExplorer = new JedisUtils.KeyExplorer(redisServer, jedisVO.getKey(),
+                        jedisVO.getType());
+                controller.setKeyExplorer(keyExplorer);
+                controller.refresh();
+                return controller.getRedisKeyValue();
+            }).collect(Collectors.toList());
+
+            String json = CommonConsts.KEY_VALUE_COPY_PREFIX + JSON.toJSONString(keyValueList);
+            ClipboardUtil.setStr(json);
+        });
     }
 
     private String getGeoMapHtml(String geoKey) {

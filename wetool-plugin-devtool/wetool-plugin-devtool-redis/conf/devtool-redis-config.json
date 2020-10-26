@@ -9,7 +9,7 @@
             "alias": "",
             "host": "localserver",
             "port": 6379,
-            "password": "",
+            "password": "123456",
             "initialConnect": true,
             "dbs": [
                 0

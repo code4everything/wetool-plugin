@@ -2,43 +2,43 @@ package org.code4everything.wetool.plugin.devtool.redis.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import com.alibaba.fastjson.JSON;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.devtool.redis.config.ConnectionConfiguration;
 import org.code4everything.wetool.plugin.devtool.redis.config.RedisConfiguration;
 import org.code4everything.wetool.plugin.devtool.redis.constant.CommonConsts;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
+import org.code4everything.wetool.plugin.devtool.redis.model.RedisKeyValue;
 import org.code4everything.wetool.plugin.devtool.redis.util.RedisTabUtils;
 import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
+import org.code4everything.wetool.plugin.support.util.DialogWinnable;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
-import redis.clients.jedis.Jedis;
 
-import java.util.Objects;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
  * @author pantao
  * @since 2019/11/13
  */
+@Slf4j
 public class MainController implements BaseViewController {
 
     private final Pattern serverDbPattern = Pattern.compile(".+:db\\d+$");
-
-    private final ContextMenu dbContextMenu = new ContextMenu();
 
     @FXML
     public TextField currentServerDb;
@@ -61,18 +61,6 @@ public class MainController implements BaseViewController {
         BeanFactory.registerView(CommonConsts.APP_ID, CommonConsts.APP_NAME, this);
         redisExplorer.setRoot(rootTree);
         reloadConfig();
-
-        // 数据库右键菜单
-        dbContextMenu.getItems().add(FxUtils.createBarMenuItem("粘贴到这里", new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                if (Objects.isNull(rightClickedRedisServer)) {
-                    return;
-                }
-                Jedis jedis = JedisUtils.getJedis(rightClickedRedisServer);
-                // TODO: 2020/10/26 将复制的内容拷贝到数据库
-            }
-        }));
     }
 
     public void openConfigFile() {
@@ -100,17 +88,6 @@ public class MainController implements BaseViewController {
                 SortedSet<Integer> sortedSet = new TreeSet<>(server.getDbs());
                 sortedSet.forEach(db -> {
                     TreeItem<String> dbTree = new TreeItem<>("db" + db);
-                    JedisUtils.RedisServer redisServer = new JedisUtils.RedisServer(server.getAlias(), db);
-                    dbTree.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                        if (event.getButton() != MouseButton.SECONDARY) {
-                            return;
-                        }
-                        // TODO: 2020/10/26 检查剪贴板格式
-                        Node node = event.getPickResult().getIntersectedNode();
-                        rightClickedRedisServer = redisServer;
-                        dbContextMenu.show(node, javafx.geometry.Side.BOTTOM, 0, 0);
-                    });
-
                     serverTree.getChildren().add(dbTree);
                 });
             }
@@ -124,15 +101,73 @@ public class MainController implements BaseViewController {
         if (Objects.isNull(source) || source == rootTree) {
             return;
         }
+
+        String alias = source.getParent().getValue();
+        String db = source.getValue();
+
+        if (event.getButton() == MouseButton.SECONDARY && source.getParent() != rootTree) {
+            handleRightClick(alias, db);
+            return;
+        }
+
         if (event.getClickCount() != 2) {
             return;
         }
+
         if (source.getParent() == rootTree) {
-            currentServerDb.setText(source.getValue() + ":db0");
+            currentServerDb.setText(db + ":db0");
         } else {
-            currentServerDb.setText(source.getParent().getValue() + ":" + source.getValue());
+            currentServerDb.setText(alias + ":" + db);
         }
+
         openTab();
+    }
+
+    /**
+     * 粘贴 key value
+     */
+    private void handleRightClick(String alias, String db) {
+        // 检查剪贴板格式
+        String str = StrUtil.trim(ClipboardUtil.getStr());
+        String keyValueList = StrUtil.removePrefix(str, CommonConsts.KEY_VALUE_COPY_PREFIX);
+        List<RedisKeyValue> redisKeyValueList = new ArrayList<>();
+        try {
+            redisKeyValueList.addAll(JSON.parseArray(keyValueList, RedisKeyValue.class));
+        } catch (Exception e) {
+            log.debug("redis key value parse error, source: {}", str);
+        }
+        if (CollUtil.isEmpty(redisKeyValueList)) {
+            return;
+        }
+
+        int dbInt = NumberUtil.parseInt(StrUtil.removePrefix(db, "db"));
+        rightClickedRedisServer = new JedisUtils.RedisServer(alias, dbInt);
+        String header = StrUtil.format("将复制的键值数据粘贴到此数据库（{}: {}）？", alias, db);
+        FxDialogs.showDialog(header, null, new DialogWinnable<String>() {
+            @Override
+            public String convertResult() {
+                return "ok";
+            }
+
+            @Override
+            public void consumeResult(String result) {
+                if (StrUtil.isEmpty(result)) {
+                    return;
+                }
+                // 确定粘贴
+                RedisTabUtils.loadValueControllerOnly("粘贴到数据库失败！", controller -> redisKeyValueList.forEach(keyValue -> {
+                    controller.keyText.setText(keyValue.getKey());
+                    controller.valueText.setText(keyValue.getValue());
+                    controller.expireText.setText(String.valueOf(keyValue.getExpire()));
+
+                    // 赋值并写入缓存
+                    JedisUtils.KeyExplorer keyExplorer = new JedisUtils.KeyExplorer(rightClickedRedisServer,
+                            keyValue.getKey(), keyValue.getType());
+                    controller.setKeyExplorer(keyExplorer);
+                    controller.update();
+                }));
+            }
+        });
     }
 
     private void openTab() throws Exception {

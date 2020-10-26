@@ -7,8 +7,13 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import lombok.experimental.UtilityClass;
 import org.code4everything.boot.base.function.VoidFunction;
+import org.code4everything.wetool.plugin.devtool.redis.controller.MainController;
+import org.code4everything.wetool.plugin.devtool.redis.controller.ValueController;
+import org.code4everything.wetool.plugin.support.util.FxDialogs;
 
+import java.io.IOException;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * @author pantao
@@ -42,5 +47,19 @@ public class RedisTabUtils {
         // 选中TAB
         tabPane.getTabs().add(tab);
         tabPane.getSelectionModel().select(tabPane.getTabs().size() - 1);
+    }
+
+    public static void loadValueControllerOnly(String errMsg, Consumer<ValueController> consumer) {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(MainController.class.getResource("/ease/devtool/redis/Value.fxml"));
+        try {
+            fxmlLoader.load();
+        } catch (IOException e) {
+            //            FxDialogs.showError(errMsg);
+            FxDialogs.showException(errMsg, e);
+            return;
+        }
+        ValueController controller = fxmlLoader.getController();
+        consumer.accept(controller);
     }
 }

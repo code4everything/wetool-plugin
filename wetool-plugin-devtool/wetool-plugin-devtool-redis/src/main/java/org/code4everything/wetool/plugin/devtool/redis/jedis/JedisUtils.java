@@ -1,8 +1,9 @@
 package org.code4everything.wetool.plugin.devtool.redis.jedis;
 
 import cn.hutool.core.util.StrUtil;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.ReferenceUtils;
@@ -98,12 +99,14 @@ public class JedisUtils {
         return jedis;
     }
 
-    @Data
+    @Getter
+    @ToString
+    @EqualsAndHashCode
     public static class RedisServer {
 
-        private String alias;
+        private final String alias;
 
-        private int db;
+        private final int db;
 
         public RedisServer(String alias, int db) {
             this.alias = alias;
@@ -111,18 +114,19 @@ public class JedisUtils {
         }
     }
 
-    @Data
+    @Getter
+    @ToString
     @EqualsAndHashCode(callSuper = true)
     public static class KeyExplorer extends RedisServer {
 
-        private String key;
+        private final String key;
 
-        private String type;
+        private final String type;
 
-        private KeyExplorer(RedisServer redisServer, String key, String type) {
+        public KeyExplorer(RedisServer redisServer, String key, String type) {
             super(redisServer.getAlias(), redisServer.getDb());
             this.key = key;
-            this.type = type;
+            this.type = StrUtil.nullToEmpty(type);
         }
     }
 }
