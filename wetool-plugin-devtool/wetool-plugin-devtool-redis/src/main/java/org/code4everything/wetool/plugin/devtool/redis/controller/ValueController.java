@@ -66,6 +66,7 @@ public class ValueController {
     @Setter
     private JedisUtils.KeyExplorer keyExplorer;
 
+    @Setter
     private String key;
 
     @FXML
@@ -167,6 +168,10 @@ public class ValueController {
     }
 
     public void update() {
+        update(true);
+    }
+
+    public void update(boolean successTip) {
         if (StrUtil.isEmpty(keyText.getText())) {
             FxDialogs.showInformation("Key不能为空！", null);
             return;
@@ -203,7 +208,7 @@ public class ValueController {
         if (expire > 0) {
             jedis.expire(key, expire);
         }
-        if (result) {
+        if (successTip && result) {
             FxDialogs.showInformation("保存成功", null);
         }
     }
@@ -217,12 +222,7 @@ public class ValueController {
         RedisKeyValue redisKeyValue = new RedisKeyValue();
         redisKeyValue.setKey(keyText.getText());
         redisKeyValue.setValue(valueText.getText());
-
-        if (StrUtil.isBlank(expireText.getText())) {
-            redisKeyValue.setExpire(-1);
-        } else {
-            redisKeyValue.setExpire(NumberUtil.parseInt(expireText.getText()));
-        }
+        redisKeyValue.setExpire(NumberUtil.parseInt(expireText.getText()));
 
         if (typeHashRadio.isSelected()) {
             redisKeyValue.setType("hash");

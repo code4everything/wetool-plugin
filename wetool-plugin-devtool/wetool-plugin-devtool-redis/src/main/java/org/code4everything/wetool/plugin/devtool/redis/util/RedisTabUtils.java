@@ -1,11 +1,13 @@
 package org.code4everything.wetool.plugin.devtool.redis.util;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.function.VoidFunction;
 import org.code4everything.wetool.plugin.devtool.redis.controller.MainController;
 import org.code4everything.wetool.plugin.devtool.redis.controller.ValueController;
@@ -19,6 +21,7 @@ import java.util.function.Consumer;
  * @author pantao
  * @since 2019/11/14
  */
+@Slf4j
 @UtilityClass
 public class RedisTabUtils {
 
@@ -55,8 +58,8 @@ public class RedisTabUtils {
         try {
             fxmlLoader.load();
         } catch (IOException e) {
-            //            FxDialogs.showError(errMsg);
-            FxDialogs.showException(errMsg, e);
+            log.error(ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
+            FxDialogs.showError(errMsg);
             return;
         }
         ValueController controller = fxmlLoader.getController();

@@ -255,8 +255,7 @@ public class ExplorerController implements Comparator<JedisVO> {
         RedisTabUtils.loadValueControllerOnly("复制失败！", controller -> {
             List<RedisKeyValue> keyValueList = list.stream().map(jedisVO -> {
                 controller.keyText.setText(jedisVO.getKey());
-                controller.valueText.setText(jedisVO.getType());
-
+                controller.setKey(jedisVO.getKey());
                 JedisUtils.KeyExplorer keyExplorer = new JedisUtils.KeyExplorer(redisServer, jedisVO.getKey(),
                         jedisVO.getType());
                 controller.setKeyExplorer(keyExplorer);
@@ -266,6 +265,7 @@ public class ExplorerController implements Comparator<JedisVO> {
 
             String json = CommonConsts.KEY_VALUE_COPY_PREFIX + JSON.toJSONString(keyValueList);
             ClipboardUtil.setStr(json);
+            FxDialogs.showSuccess();
         });
     }
 

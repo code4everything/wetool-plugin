@@ -155,17 +155,21 @@ public class MainController implements BaseViewController {
                     return;
                 }
                 // 确定粘贴
-                RedisTabUtils.loadValueControllerOnly("粘贴到数据库失败！", controller -> redisKeyValueList.forEach(keyValue -> {
-                    controller.keyText.setText(keyValue.getKey());
-                    controller.valueText.setText(keyValue.getValue());
-                    controller.expireText.setText(String.valueOf(keyValue.getExpire()));
+                RedisTabUtils.loadValueControllerOnly("粘贴到数据库失败！", controller -> {
+                    redisKeyValueList.forEach(keyValue -> {
+                        controller.keyText.setText(keyValue.getKey());
+                        controller.valueText.setText(keyValue.getValue());
+                        controller.expireText.setText(String.valueOf(keyValue.getExpire()));
 
-                    // 赋值并写入缓存
-                    JedisUtils.KeyExplorer keyExplorer = new JedisUtils.KeyExplorer(rightClickedRedisServer,
-                            keyValue.getKey(), keyValue.getType());
-                    controller.setKeyExplorer(keyExplorer);
-                    controller.update();
-                }));
+                        // 赋值并写入缓存
+                        JedisUtils.KeyExplorer keyExplorer = new JedisUtils.KeyExplorer(rightClickedRedisServer,
+                                keyValue.getKey(), keyValue.getType());
+                        controller.setKeyExplorer(keyExplorer);
+                        controller.setKey(keyValue.getKey());
+                        controller.update(false);
+                    });
+                    FxDialogs.showSuccess();
+                });
             }
         });
     }
