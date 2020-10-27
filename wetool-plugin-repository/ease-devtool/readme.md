@@ -62,7 +62,7 @@
 
 #### [v1.2.0]()
 
-- Redis支持Key复制粘贴
+- Redis支持KeyValue复制粘贴
 
 #### [v1.1.2](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-devtool-1.1.2.zip)
 
