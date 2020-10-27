@@ -40,6 +40,8 @@ public class MainController implements BaseViewController {
 
     private final Pattern serverDbPattern = Pattern.compile(".+:db\\d+$");
 
+    private final TreeItem<String> rootTree = new TreeItem<>("Redis Servers");
+
     @FXML
     public TextField currentServerDb;
 
@@ -48,8 +50,6 @@ public class MainController implements BaseViewController {
 
     @FXML
     public TabPane redisExplorerTab;
-
-    private TreeItem<String> rootTree = new TreeItem<>("Redis Servers");
 
     /**
      * 右键点击的数据库
