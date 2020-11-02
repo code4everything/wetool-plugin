@@ -27,6 +27,11 @@ public class EventCenter {
     public static final String EVENT_SECONDS_TIMER = "wetool_timer_seconds";
 
     /**
+     * 注意这个事件没有 EventMessage 对象，订阅事件时可使用 {@link BaseNoMessageEventHandler}
+     */
+    public static final String EVENT_100_MS_TIMER = "wetool_timer_100_ms";
+
+    /**
      * 点击快启菜单，订阅事件时可使用 {@link BaseQuickStartClickedEventHandler}
      */
     public static final String EVENT_QUICK_START_CLICKED = "wetool_quick_start_clicked";
@@ -60,6 +65,8 @@ public class EventCenter {
      * 剪贴板变化事件（仅针对文本内容），订阅事件可使用 {@link BaseClipboardChangedEventHandler}
      */
     public static final String EVENT_CLIPBOARD_CHANGED = "event_clipboard_changed";
+
+    public static final String EVENT_MOUSE_CORNER_TRIGGER = "event_mouse_corner_trigger";
 
     private static final Map<String, EventMode> EVENT_MAP = new ConcurrentHashMap<>();
 
