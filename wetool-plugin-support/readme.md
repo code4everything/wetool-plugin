@@ -25,6 +25,19 @@ BeanFactory.register(String, Object);
 
 [更多方法请参考](src/main/java/org/code4everything/wetool/plugin/support/factory/BeanFactory.java)
 
+### 事件中心
+
+```java
+// 注册一个事件：自定义一个事件唯一KEY，事件的订阅模式（单订阅、多订阅）
+EventCenter.registerEvent(String eventKey, EventMode eventMode);
+
+// 发布一个事件
+EventCenter.publishEvent(String eventKey, Date eventTime);
+
+// 订阅一个事件
+EventCenter.subscribeEvent(String eventKey, EventHandler eventHandler);
+```
+
 ### 仅适用本插件库的特定工具类
 
 [WeUtils](src/main/java/org/code4everything/wetool/plugin/support/util/WeUtils.java)
