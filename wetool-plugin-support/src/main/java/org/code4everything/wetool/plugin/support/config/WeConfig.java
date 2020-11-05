@@ -13,6 +13,7 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.bean.BaseBean;
 import org.code4everything.boot.config.BootConfig;
+import org.code4everything.wetool.plugin.support.event.message.MouseCornerEventMessage;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.Serializable;
@@ -82,6 +83,8 @@ public class WeConfig implements BaseBean, Serializable {
      * 插件路径
      */
     private Set<String> pluginPaths = new HashSet<>();
+
+    private MouseCornerEventMessage.LocationTypeEnum winVirtualDesktopHotCorner;
 
     /**
      * 自定义重启脚本文件名，只能位于WeTool工作目录
