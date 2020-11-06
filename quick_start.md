@@ -98,7 +98,7 @@
     </build>
     ```
 
-3. 在`resources`目录下新建一个`Hello Word`视图，例如：`/ease/sample/Sample.fxml`，这里我们需要保证路径的唯一性，至少应该增加两个父级目录，第一级文件夹用`AuthorName`命名，第二级文件夹用`AppName`命名
+3. 在`resources`目录下新建一个`Hello Word`视图，例如：`/ease/sample/Sample.fxml`，这里我们需要保证路径的唯一性，至少应该增加两个父级目录，第一级文件夹用`AuthorName`命名，第二级文件夹用`AppName`命名（如果没有界面可跳过本步骤）
 
     ```xml
     <?xml version="1.0" encoding="UTF-8"?>
@@ -129,7 +129,7 @@
     </VBox>
     ```
 
-4. 新建视图中绑定的控制器，例如：`org.code4everything.wetool.plugin.sample.controller.SampleController`
+4. 新建视图中绑定的控制器（如果没有界面可跳过本步骤），例如：`org.code4everything.wetool.plugin.sample.controller.SampleController`
 
     实现`BaseViewController`并将其注册至`BeanFactory`，可以获取`WeTool`的一些能力，比如：用户点击了打开文件、保存文件等
     
