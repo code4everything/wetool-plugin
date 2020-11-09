@@ -18,7 +18,7 @@
         <junit.version>4.13.1</junit.version>
         <lombok.version>1.18.10</lombok.version>
         <boot.surface.version>1.1.6</boot.surface.version>
-        <wetool.version>1.1.2</wetool.version>
+        <wetool.version>1.2.0</wetool.version>
     </properties>
 
     <!--私有仓库-->

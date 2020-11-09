@@ -1,6 +1,6 @@
 package org.code4everything.wetool.plugin.thirdparty.downloader;
 
-import com.acgist.snail.gui.GuiHandler;
+import com.acgist.snail.gui.GuiManager;
 import com.acgist.snail.system.context.SystemContext;
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -44,7 +44,7 @@ public class WetoolSupporter implements WePluginSupporter {
             final boolean enable = SystemContext.listen();
             if (enable) {
                 SystemContext.init();
-                GuiHandler.getInstance().init((String[]) null);
+                GuiManager.getInstance().init((String[]) null);
             }
             initialized = true;
         }
