@@ -17,3 +17,13 @@
 2. 将插件`Jar`放置到WeTool工作目录的`plugins`目录下（没有的可以新建）
 
 3. 启动WeTool（或重启）
+
+## 插件列表
+
+|名称|作者|说明文档|
+|---|---|---|
+|开发工具集合（Redis客户端）|EASE|[文档](ease-devtool/readme.md)|
+|文件检索工具|EASE|[文档](ease-everywhere/readme.md)|
+|FTP客户端|EASE|[文档](ease-ftp-client/readme.md)|
+|FTP服务器|EASE|[文档](ease-ftp-server/readme.md)|
+|七牛对象存储管理|EASE|[文档](ease-qiniu/readme.md)|

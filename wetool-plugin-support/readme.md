@@ -38,6 +38,21 @@ EventCenter.publishEvent(String eventKey, Date eventTime);
 EventCenter.subscribeEvent(String eventKey, EventHandler eventHandler);
 ```
 
+内置事件
+
+|事件名称|EventKey|备注|
+|---|---|---|
+|秒钟定时器|wetool_timer_seconds||
+|100毫秒定时器|wetool_timer_100_ms||
+|清除视图缓存|wetool_clear_fxml_cache||
+|退出事件|wetool_exit||
+|重启事件|wetool_restart|注意：该事件包括退出事件|
+|主界面显示|wetool_show||
+|主界面隐藏|wetool_hidden||
+|剪贴板内容变化|event_clipboard_changed||
+|触发角事件|event_mouse_corner_trigger|LEFT_TOP, LEFT_BOTTOM, RIGHT_TOP, RIGHT_BOTTOM|
+
+
 ### 仅适用本插件库的特定工具类
 
 [WeUtils](src/main/java/org/code4everything/wetool/plugin/support/util/WeUtils.java)
