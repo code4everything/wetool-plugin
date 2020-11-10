@@ -119,6 +119,8 @@ public class FxDialogs {
     public static void showTextInput(String header, String content, Consumer<String> consumer) {
         Platform.runLater(() -> {
             TextInputDialog dialog = new TextInputDialog();
+            dialog.setWidth(500);
+            dialog.getDialogPane().setPrefWidth(500);
             dialog.setTitle(AppConsts.Title.APP_TITLE);
             dialog.setHeaderText(header);
             dialog.setContentText(content);

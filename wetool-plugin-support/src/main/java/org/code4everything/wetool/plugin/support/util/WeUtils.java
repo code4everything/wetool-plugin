@@ -37,6 +37,18 @@ public class WeUtils {
     private static int compressLen = 0;
 
     /**
+     * 获取插件目录
+     *
+     * @return 插件目录
+     *
+     * @since 1.2.0
+     */
+    public static File getPluginFolder() {
+        String pluginDir = FileUtils.currentWorkDir("plugins");
+        return FileUtil.mkdir(pluginDir);
+    }
+
+    /**
      * 解析文件路径
      *
      * @param filename 默认文件名
