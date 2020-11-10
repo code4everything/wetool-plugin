@@ -7,6 +7,7 @@ import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import lombok.*;
@@ -84,12 +85,22 @@ public class WeConfig implements BaseBean, Serializable {
      */
     private Set<String> pluginPaths = new HashSet<>();
 
+    /**
+     * windows虚拟桌面触发角
+     */
     private MouseCornerEventMessage.LocationTypeEnum winVirtualDesktopHotCorner;
 
     /**
      * 自定义重启脚本文件名，只能位于WeTool工作目录
      */
     private String restartBatch = "";
+
+    /**
+     * 数据库连接配置
+     * <p>
+     * 参考：https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8
+     */
+    private JSONArray dbConnections;
 
     // end--------------------------------------------------------------------------------------------------------------
 

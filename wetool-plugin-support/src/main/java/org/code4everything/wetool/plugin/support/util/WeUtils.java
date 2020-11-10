@@ -227,7 +227,7 @@ public class WeUtils {
      */
     public static void exitSystem() {
         EventCenter.publishEvent(EventCenter.EVENT_WETOOL_EXIT, DateUtil.date());
-        DruidSource.listAllDatasources().forEach(DruidDataSource::close);
+        DruidSource.listAllDataSources().forEach(DruidDataSource::close);
         log.info("wetool exited");
         System.exit(IntegerConsts.ZERO);
     }

@@ -18,7 +18,7 @@ public class DruidSource {
 
     private static final Map<String, DruidDataSource> MAP = new LinkedHashMap<>();
 
-    public static void configDatasource(Properties properties) {
+    public static void configDataSource(Properties properties) {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.configFromPropety(properties);
         try {
@@ -27,16 +27,19 @@ public class DruidSource {
             FxDialogs.showException("数据库连接失败", e);
             return;
         }
+        log.info("db connected: {}", properties);
         MAP.put(dataSource.getName(), dataSource);
     }
 
-
+    public static DruidDataSource getDruidDataSource(String name) {
+        return MAP.get(name);
+    }
 
     public static Set<String> listAllNames() {
         return MAP.keySet();
     }
 
-    public static Collection<DruidDataSource> listAllDatasources() {
+    public static Collection<DruidDataSource> listAllDataSources() {
         return MAP.values();
     }
 }
