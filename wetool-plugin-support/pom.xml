@@ -19,6 +19,8 @@
         <lombok.version>1.18.10</lombok.version>
         <boot.surface.version>1.1.6</boot.surface.version>
         <wetool.version>1.2.0</wetool.version>
+        <druid.version>1.2.3</druid.version>
+        <mysql.version>8.0.22</mysql.version>
     </properties>
 
     <!--私有仓库-->
@@ -38,6 +40,17 @@
     </distributionManagement>
 
     <dependencies>
+        <!--数据库连接-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>${druid.version}</version>
+        </dependency>
         <!--JavaFX支持库-->
         <dependency>
             <groupId>org.openjfx</groupId>

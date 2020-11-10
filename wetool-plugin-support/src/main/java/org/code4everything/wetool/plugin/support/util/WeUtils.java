@@ -8,12 +8,14 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.OsInfo;
 import cn.hutool.system.SystemUtil;
+import com.alibaba.druid.pool.DruidDataSource;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.FileUtils;
 import org.code4everything.boot.base.constant.IntegerConsts;
 import org.code4everything.boot.config.BootConfig;
 import org.code4everything.wetool.plugin.support.config.WeConfig;
+import org.code4everything.wetool.plugin.support.druid.DruidSource;
 import org.code4everything.wetool.plugin.support.event.EventCenter;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
@@ -225,6 +227,7 @@ public class WeUtils {
      */
     public static void exitSystem() {
         EventCenter.publishEvent(EventCenter.EVENT_WETOOL_EXIT, DateUtil.date());
+        DruidSource.listAllDatasources().forEach(DruidDataSource::close);
         log.info("wetool exited");
         System.exit(IntegerConsts.ZERO);
     }

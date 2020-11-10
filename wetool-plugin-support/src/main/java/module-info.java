@@ -39,6 +39,8 @@ module org.code4everything.wetool.plugin.support {
     requires fastjson;
     requires hutool.system;
     requires com.google.common;
+    requires druid;
+    requires mysql.connector.java;
 
     // 导出包
     exports org.code4everything.wetool.plugin.support;
