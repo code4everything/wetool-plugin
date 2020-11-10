@@ -1,7 +1,7 @@
 {
     "author": "ease",
     "name": "everywhere",
-    "version": "1.1.2",
-    "requireWetoolVersion": "1.1.2",
+    "version": "1.2.0",
+    "requireWetoolVersion": "1.2.0",
     "supportedClass": "org.code4everything.wetool.plugin.everywhere.WetoolSupporter"
 }
