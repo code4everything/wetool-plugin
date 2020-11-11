@@ -1,5 +1,8 @@
 package org.code4everything.wetool.plugin.dbops;
 
+import cn.hutool.core.lang.Console;
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.List;
 
 /**
@@ -8,7 +11,7 @@ import java.util.List;
  */
 public class ScriptExecutor {
 
-    public static void execute(List<List<String>> codeBlocks) {
-
+    public static void execute(List<List<String>> codeBlocks, JSONObject args) {
+        Console.log(codeBlocks);
     }
 }
