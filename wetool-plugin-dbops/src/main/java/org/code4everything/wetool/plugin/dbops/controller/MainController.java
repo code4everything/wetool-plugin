@@ -3,17 +3,16 @@ package org.code4everything.wetool.plugin.dbops.controller;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.Feature;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import org.code4everything.wetool.plugin.dbops.script.SqlScript;
 import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author pantao
@@ -25,7 +24,7 @@ public class MainController implements BaseViewController {
 
     public static final String TAB_NAME = "数据库小应用";
 
-    public static final List<SqlScript> SCRIPTS = new ArrayList<>();
+    private static final JSONObject SCRIPTS = new JSONObject(true);
 
     private static final String HOME_PATH = FileUtil.getUserHomePath();
 
@@ -49,12 +48,17 @@ public class MainController implements BaseViewController {
         if (FileUtil.exist(SCRIPT_JSON_FILE)) {
             SCRIPTS.clear();
             String json = FileUtil.readUtf8String(SCRIPT_JSON_FILE);
-            List<SqlScript> list = JSON.parseArray(StrUtil.blankToDefault(json, "[]"), SqlScript.class);
-            SCRIPTS.addAll(list);
+            JSONObject jsonObject = JSON.parseObject(StrUtil.blankToDefault(json, "{}"), Feature.OrderedField,
+                    Feature.AllowComment);
+            SCRIPTS.putAll(jsonObject);
         }
     }
 
     public void search() {
+
+    }
+
+    public void addScript() {
 
     }
 }

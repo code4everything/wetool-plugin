@@ -18,6 +18,11 @@ import java.util.List;
 public class SqlScript {
 
     /**
+     * 唯一标识，系统生成
+     */
+    private String uuid;
+
+    /**
      * 名称
      */
     private String name;
