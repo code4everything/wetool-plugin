@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -23,6 +24,7 @@ import org.code4everything.wetool.plugin.support.druid.DruidSource;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.DialogWinnable;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
+import org.code4everything.wetool.plugin.support.util.FxUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,28 +72,34 @@ public class MainController implements BaseViewController {
             SCRIPTS.putAll(jsonObject);
         }
 
-        renderScripts();
+        renderScripts(null);
     }
 
     public void search() {
-
+        renderScripts(searchText.getText());
     }
 
     public void addScript() {
         showSqlScriptEditDialog(null);
     }
 
-    private void renderScripts() {
+    private void renderScripts(String search) {
         parentPane.getChildren().clear();
 
         Insets bottom = new Insets(10, 0, 10, 0);
         Insets right = new Insets(0, 10, 0, 0);
         Insets top = new Insets(3, 0, 0, 0);
         for (String uuid : SCRIPTS.keySet()) {
+            SqlScript sqlScript = SCRIPTS.getObject(uuid, SqlScript.class);
+            if (StrUtil.isNotBlank(search)) {
+                if (!sqlScript.getName().contains(search) && !sqlScript.getComment().contains(search)) {
+                    continue;
+                }
+            }
+
             HBox hBox = new HBox();
             hBox.setId(uuid);
 
-            SqlScript sqlScript = SCRIPTS.getObject(uuid, SqlScript.class);
             Button action = new Button(sqlScript.getName());
             Button edit = new Button("编辑");
             Label label = new Label();
@@ -156,5 +164,9 @@ public class MainController implements BaseViewController {
                 ThreadUtil.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
             }
         });
+    }
+
+    public void searchIfEnter(KeyEvent keyEvent) {
+        FxUtils.enterDo(keyEvent, this::search);
     }
 }
