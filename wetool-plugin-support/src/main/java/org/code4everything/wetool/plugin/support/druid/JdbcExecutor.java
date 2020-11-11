@@ -10,6 +10,8 @@ import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -185,6 +187,22 @@ public class JdbcExecutor {
         query(sql, params, resultSet -> holder.set(new ArrayList<>(resultSet.getFetchSize())),
                 resultSet -> holder.get().add(mapClass(resultSet, clz, mapped)));
         return holder.get();
+    }
+
+    public JSONArray selectJsonArray(String sql, @Nullable List<Object> params) {
+        JSONArray array = new JSONArray();
+        query(sql, params, null, resultSet -> {
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            JSONObject jsonObject = new JSONObject();
+
+            for (int i = 1; i <= columnCount; i++) {
+                jsonObject.put(metaData.getColumnName(i), resultSet.getObject(i));
+            }
+
+            array.add(jsonObject);
+        });
+        return array;
     }
 
     public List<Map<String, Object>> select(String sql, @Nullable List<Object> params) {
