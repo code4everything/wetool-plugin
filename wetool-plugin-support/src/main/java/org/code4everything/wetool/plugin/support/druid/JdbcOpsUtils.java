@@ -177,6 +177,7 @@ public class JdbcOpsUtils {
      */
     public static void handleResult(ResultSet resultSet, @Nullable VoidFunc1<ResultSet> iter) throws Exception {
         if (Objects.isNull(iter)) {
+            return;
         }
         while (resultSet.next()) {
             iter.call(resultSet);
@@ -241,24 +242,15 @@ public class JdbcOpsUtils {
                 }
                 parserChain.doParse(resultSet, t, method, name);
 
-                // 当字段解析失败时，判断是否是boolean类型，并兼容子
+                // 当字段解析失败时，判断是否是boolean类型，并兼容之
                 if (LOCAL_UNPARSED.get().get(name)) {
                     Class<?>[] parameterTypes = method.getParameterTypes();
                     if (parameterTypes.length == 1 && Boolean.class.isAssignableFrom(parameterTypes[0])) {
                         name = "is_" + name;
                         parserChain.doParse(resultSet, t, method, name);
-                        // 不管解析是否，都更新方法对应的数据库字段名
+                        // 不管解析是否成功，都更新方法对应的数据库字段名
                         FIELD_CACHE.put(method, name);
                     }
-                }
-            }
-
-            // 映射version字段
-            if (!LOCAL_UNPARSED.get().get(VERSION)) {
-                try {
-                    ReflectUtil.setFieldValue(t, "version", resultSet.getLong(VERSION));
-                } catch (Exception e) {
-                    LOCAL_UNPARSED.get().put(VERSION, true);
                 }
             }
         }

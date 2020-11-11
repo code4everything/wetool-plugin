@@ -52,6 +52,11 @@ EventCenter.subscribeEvent(String eventKey, EventHandler eventHandler);
 |剪贴板内容变化|event_clipboard_changed||
 |触发角事件|event_mouse_corner_trigger|LEFT_TOP, LEFT_BOTTOM, RIGHT_TOP, RIGHT_BOTTOM|
 
+### 数据库操作
+
+数据源使用阿里巴巴 `Druid` 进行管理，调用类 `DruidSource` 获取用户配置的数据源
+
+类 `JdbcExecutor` 提供简单的ORM映射
 
 ### 仅适用本插件库的特定工具类
 

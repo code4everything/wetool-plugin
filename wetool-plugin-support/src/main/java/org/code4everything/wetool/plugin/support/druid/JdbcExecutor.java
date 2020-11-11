@@ -8,7 +8,7 @@ import cn.hutool.core.lang.func.VoidFunc1;
 import cn.hutool.core.map.TolerantMap;
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
+import com.alibaba.druid.pool.DruidDataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,9 +26,21 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class JdbcExecutor {
 
+    private static final Map<String, JdbcExecutor> MAP = new HashMap<>(4);
+
     private final Pattern existsSqlPatten = Pattern.compile("^\\s*?select count(.*)>0 from.*");
 
     private final DataSource dataSource;
+
+    public static JdbcExecutor getJdbcExecutor(String name) {
+        return getJdbcExecutor(DruidSource.getDruidDataSource(name));
+    }
+
+    public static JdbcExecutor getJdbcExecutor(DruidDataSource dataSource) {
+        Objects.requireNonNull(dataSource);
+        String name = dataSource.getName();
+        return MAP.computeIfAbsent(name, s -> new JdbcExecutor(dataSource));
+    }
 
     public boolean exists(String sql, @Nullable List<Object> params) {
         if (!existsSqlPatten.matcher(sql).matches()) {
@@ -220,10 +232,6 @@ public class JdbcExecutor {
      */
     public int update(String sql, List<Object> params) {
         Holder<Integer> holder = new Holder<>();
-        // 保存更新记录
-        if (StrUtil.trimStart(sql).startsWith("update")) {
-            sql = sql.replaceFirst(" set ", " set last_modified_date=now(),_version=_version+1,");
-        }
         executeWithPreparedStatementCall(sql, params, (statement, sqlHolder) -> {
             // 去掉预编译SQL的冗余前缀，方便打印
             String newSql = statement.toString().replaceFirst(".+?insert ", "insert ");
