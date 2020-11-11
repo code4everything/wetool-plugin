@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  */
 public class ScriptEditController {
 
-    private static final Map<String, String> TYPE_2_TIP = Map.of("HANDY", "手动触发", "EVENT", "事件触发");
+    public static final Map<String, String> TYPE_2_TIP = Map.of("HANDY", "手动触发", "EVENT", "事件触发");
 
     private static final Map<String, String> TIP_2_TYPE = Map.of("手动触发", "HANDY", "事件触发", "EVENT");
 
@@ -51,16 +51,51 @@ public class ScriptEditController {
     @FXML
     private void initialize() {
         typeBox.getItems().addAll(TIP_2_TYPE.keySet());
-        typeBox.getSelectionModel().selectFirst();
+        typeBox.getSelectionModel().selectLast();
 
         dbNameBox.getItems().add("");
         dbNameBox.getItems().addAll(DruidSource.listAllNames());
         dbNameBox.getSelectionModel().selectFirst();
+    }
 
+    public SqlScript getSqlScript() {
+        if (Objects.isNull(sqlScript)) {
+            sqlScript = new SqlScript().setUuid(IdUtil.simpleUUID());
+        }
+
+        sqlScript.setName(nameText.getText());
+        sqlScript.setComment(commentText.getText());
+        sqlScript.setType(ExecuteTypeEnum.valueOf(TIP_2_TYPE.get(typeBox.getValue())));
+        sqlScript.setEventKey(eventKeyText.getText());
+        sqlScript.setSpecifyDbName(dbNameBox.getValue());
+        sqlScript.setCodeBlocks(new ArrayList<>());
+
+        String[] lines = StrUtil.split(sqlScriptText.getText(), System.lineSeparator());
+        if (ArrayUtil.isEmpty(lines)) {
+            return sqlScript;
+        }
+
+        List<String> blockCodes = new ArrayList<>();
+        sqlScript.getCodeBlocks().add(blockCodes);
+        for (String line : lines) {
+            if (StrUtil.isBlank(line)) {
+                blockCodes = new ArrayList<>();
+                sqlScript.getCodeBlocks().add(blockCodes);
+            } else {
+                blockCodes.add(line);
+            }
+        }
+
+        sqlScript.setCodeBlocks(sqlScript.getCodeBlocks().stream().filter(CollUtil::isNotEmpty).collect(Collectors.toList()));
+        return sqlScript;
+    }
+
+    public void setSqlScript(SqlScript sqlScript) {
         if (Objects.isNull(sqlScript)) {
             return;
         }
 
+        this.sqlScript = sqlScript;
         typeBox.getSelectionModel().select(TYPE_2_TIP.get(sqlScript.getType().name()));
         dbNameBox.getSelectionModel().select(sqlScript.getSpecifyDbName());
 
@@ -80,36 +115,5 @@ public class ScriptEditController {
             });
             sqlScriptText.appendText(System.lineSeparator());
         });
-    }
-
-    public SqlScript getSqlScript() {
-        if (Objects.isNull(sqlScript)) {
-            sqlScript = new SqlScript().setUuid(IdUtil.simpleUUID());
-        }
-
-        sqlScript.setName(nameText.getText());
-        sqlScript.setComment(commentText.getText());
-        sqlScript.setType(ExecuteTypeEnum.valueOf(typeBox.getValue()));
-        sqlScript.setEventKey(eventKeyText.getText());
-        sqlScript.setSpecifyDbName(dbNameBox.getValue());
-        sqlScript.setCodeBlocks(new ArrayList<>());
-
-        String[] lines = StrUtil.split(sqlScriptText.getText(), System.lineSeparator());
-        if (ArrayUtil.isEmpty(lines)) {
-            return sqlScript;
-        }
-
-        List<String> blockCodes = new ArrayList<>();
-        for (String line : lines) {
-            if (StrUtil.isBlank(line)) {
-                blockCodes = new ArrayList<>();
-                sqlScript.getCodeBlocks().add(blockCodes);
-            } else {
-                blockCodes.add(line);
-            }
-        }
-
-        sqlScript.setCodeBlocks(sqlScript.getCodeBlocks().stream().filter(CollUtil::isNotEmpty).collect(Collectors.toList()));
-        return sqlScript;
     }
 }

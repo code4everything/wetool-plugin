@@ -96,7 +96,7 @@ public class WeConfig implements BaseBean, Serializable {
     private String restartBatch = "";
 
     /**
-     * 数据库连接配置
+     * 数据库连接配置，最好带上name属性
      * <p>
      * 参考：https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8
      */
