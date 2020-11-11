@@ -11,7 +11,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <wetool.version>1.2.0</wetool.version>
-        <junit.version>4.13-beta-3</junit.version>
+        <junit.version>4.13.1</junit.version>
         <mapstruct.version>1.3.1.Final</mapstruct.version>
     </properties>
 
