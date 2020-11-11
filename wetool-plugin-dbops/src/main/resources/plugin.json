@@ -1,0 +1,7 @@
+{
+    "author": "ease",
+    "name": "dbops",
+    "version": "1.2.0",
+    "requireWetoolVersion": "1.2.0",
+    "supportedClass": "org.code4everything.wetool.plugin.dbops.WetoolSupporter"
+}
