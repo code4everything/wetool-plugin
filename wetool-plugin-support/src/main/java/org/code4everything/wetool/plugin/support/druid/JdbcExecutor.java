@@ -9,10 +9,10 @@ import cn.hutool.core.map.TolerantMap;
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 import java.util.function.Predicate;
@@ -30,7 +30,7 @@ public class JdbcExecutor {
 
     private final Pattern existsSqlPatten = Pattern.compile("^\\s*?select count(.*)>0 from.*");
 
-    private final DataSource dataSource;
+    private final DruidDataSource dataSource;
 
     public static JdbcExecutor getJdbcExecutor(String name) {
         return getJdbcExecutor(DruidSource.getDruidDataSource(name));
@@ -187,6 +187,22 @@ public class JdbcExecutor {
         return holder.get();
     }
 
+    public List<Map<String, Object>> select(String sql, @Nullable List<Object> params) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        query(sql, params, null, resultSet -> {
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            Map<String, Object> map = new HashMap<>(columnCount, 1);
+
+            for (int i = 1; i <= columnCount; i++) {
+                map.put(metaData.getColumnName(i), resultSet.getObject(i));
+            }
+
+            list.add(map);
+        });
+        return list;
+    }
+
     /**
      * 查询
      *
@@ -251,7 +267,7 @@ public class JdbcExecutor {
      */
     private void executeWithConnCall(ExecutorCaller<Connection> caller) {
         long start = System.currentTimeMillis();
-        Connection connection;
+        DruidPooledConnection connection;
         try {
             connection = dataSource.getConnection();
         } catch (SQLException e) {
@@ -270,6 +286,11 @@ public class JdbcExecutor {
             log.error("execute sql failed [{}] \r\n{}", sqlHolder.get(), ExceptionUtil.stacktraceToString(e));
         } finally {
             // 释放连接
+            try {
+                connection.recycle();
+            } catch (SQLException e) {
+                log.error("release connection error: {}", ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
+            }
             JdbcOpsUtils.getLocalUnparsed().remove();
             JdbcOpsUtils.getParserChain().destroyMap();
         }

@@ -6,6 +6,7 @@ import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.system.SystemUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.config.BootConfig;
@@ -16,6 +17,7 @@ import org.code4everything.wetool.plugin.support.config.WeConfig;
 import org.code4everything.wetool.plugin.support.config.WeInitialize;
 import org.code4everything.wetool.plugin.support.config.WePluginInfo;
 import org.code4everything.wetool.plugin.support.config.WeTab;
+import org.code4everything.wetool.plugin.support.event.message.MouseCornerEventMessage;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
 import java.util.HashSet;
@@ -59,6 +61,7 @@ public class WetoolTester extends WeApplication {
         log.info("starting wetool on os: {}", SystemUtil.getOsInfo().getName());
         WetoolTester.info = info;
         BeanFactory.register(config);
+        WeApplication.initApp();
         launch(args);
     }
 
@@ -69,6 +72,8 @@ public class WetoolTester extends WeApplication {
         config.setFileFilter("^[^.].*$");
         config.setQuickStarts(new HashSet<>());
         config.setPluginDisables(new HashSet<>());
+        config.setDbConnections(new JSONArray());
+        config.setWinVirtualDesktopHotCorner(MouseCornerEventMessage.LocationTypeEnum.NONE);
 
         WeInitialize initialize = new WeInitialize();
         initialize.setFullscreen(false);
