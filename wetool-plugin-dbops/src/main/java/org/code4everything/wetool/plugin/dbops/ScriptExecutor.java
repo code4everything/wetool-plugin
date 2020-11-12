@@ -4,10 +4,15 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Console;
 import cn.hutool.core.lang.Holder;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ql.util.express.DefaultContext;
 import com.ql.util.express.ExpressRunner;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import lombok.SneakyThrows;
@@ -15,10 +20,7 @@ import lombok.experimental.UtilityClass;
 import org.code4everything.wetool.plugin.support.druid.JdbcExecutor;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author pantao
@@ -43,6 +45,8 @@ public class ScriptExecutor {
 
             try {
                 runner.addFunctionOfClassMethod("dialog", CLASS_NAME, "dialog", new Class[]{Object.class}, null);
+                runner.addFunctionOfClassMethod("list", CLASS_NAME, "list", new Class[]{Object[].class}, null);
+
                 Class<?>[] logParamTypes = {Object.class, Object[].class};
                 runner.addFunctionOfClassMethod("log", Console.class, "log", logParamTypes, null);
                 Class<?>[] formatParamTypes = {CharSequence.class, Object[].class};
@@ -68,7 +72,11 @@ public class ScriptExecutor {
         return holder.get();
     }
 
-    @SuppressWarnings("rawtypes")
+    public static List<Object> list(Object... args) {
+        return Arrays.asList(args);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static void dialog(Object object) {
         if (Objects.isNull(object)) {
             return;
@@ -78,22 +86,35 @@ public class ScriptExecutor {
             FxDialogs.showInformation(header, (String) object);
         } else if (object instanceof List) {
             List list = (List) object;
+            if (CollUtil.isNotEmpty(list)) {
+                list.removeIf(Objects::isNull);
+            }
             if (CollUtil.isEmpty(list)) {
                 return;
             }
 
-            Map map;
-            Object param = list.get(0);
-            if (object instanceof Map) {
-                map = (Map) param;
-            } else {
-                map = BeanUtil.beanToMap(param);
-            }
+            List<Map<String, Object>> tableList = new ArrayList<>();
+            list.forEach(e -> tableList.add(BeanUtil.beanToMap(e)));
+            Map<String, Object> map = tableList.get(0);
 
             VBox vBox = new VBox();
-            TableView<Map<String, String>> tableView = new TableView<>();
+            TableView<Map<String, Object>> tableView = new TableView<>();
+            map.forEach((k, v) -> {
+                TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>();
+                tableColumn.setText(ObjectUtil.toString(k));
+                tableColumn.setCellValueFactory(new PropertyValueFactory<>(null) {
+                    @Override
+                    @SneakyThrows
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<Map<String, Object>, String> param) {
+                        return new SimpleObjectProperty<>(ObjectUtil.toString(param.getValue().get(k)));
+                    }
+                });
+                tableView.getColumns().add(tableColumn);
+            });
 
+            tableView.getItems().addAll(list);
             VBox.setVgrow(tableView, Priority.ALWAYS);
+            vBox.getChildren().add(tableView);
             FxDialogs.showDialog(header, vBox);
         }
     }
