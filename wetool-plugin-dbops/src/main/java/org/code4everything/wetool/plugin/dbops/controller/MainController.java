@@ -150,7 +150,7 @@ public class MainController implements BaseViewController {
 
             String labelText = "触发机制：" + ScriptEditController.TYPE_2_TIP.get(qlScript.getType().name());
             if (qlScript.getType() == ExecuteTypeEnum.EVENT) {
-                labelText += "，事件订阅：" + qlScript.getEventKey();
+                labelText += "，订阅事件：" + qlScript.getEventKey();
                 eventSubscribe(qlScript.getEventKey(), uuid);
             }
             if (StrUtil.isNotBlank(qlScript.getSpecifyDbName())) {
