@@ -1,13 +1,11 @@
 package org.code4everything.wetool.plugin.dbops;
 
-import cn.hutool.core.collection.CollUtil;
 import com.ql.util.express.DynamicParamsUtil;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.dbops.controller.MainController;
 import org.code4everything.wetool.plugin.support.WePluginSupporter;
-import org.code4everything.wetool.plugin.support.druid.DruidSource;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
 /**
@@ -19,10 +17,6 @@ public class WetoolSupporter implements WePluginSupporter {
 
     @Override
     public boolean initialize() {
-        if (CollUtil.isEmpty(DruidSource.listAllNames())) {
-            log.info("database connection doesn't configured, could not load dbops plugin.");
-            return false;
-        }
         DynamicParamsUtil.supportDynamicParams = true;
         return true;
     }

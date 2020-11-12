@@ -21,6 +21,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.dbops.ScriptExecutor;
+import org.code4everything.wetool.plugin.dbops.WetoolSupporter;
 import org.code4everything.wetool.plugin.dbops.script.ExecuteTypeEnum;
 import org.code4everything.wetool.plugin.dbops.script.QlScript;
 import org.code4everything.wetool.plugin.support.BaseViewController;
@@ -180,6 +181,7 @@ public class MainController implements BaseViewController {
 
     private void showQlScriptEditDialog(QlScript qlScript) {
         FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setClassLoader(WetoolSupporter.class.getClassLoader());
         fxmlLoader.setLocation(MainController.class.getResource("/ease/dbops/ScriptEditView.fxml"));
 
         Node node;
