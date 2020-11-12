@@ -2,7 +2,6 @@ package org.code4everything.wetool.plugin.dbops;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ql.util.express.DefaultContext;
@@ -16,6 +15,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.support.druid.JdbcExecutor;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 
@@ -27,6 +27,7 @@ import java.util.concurrent.Future;
  * @author pantao
  * @since 2020/11/11
  */
+@Slf4j
 @UtilityClass
 public class ScriptExecutor {
 
@@ -54,8 +55,8 @@ public class ScriptExecutor {
                 runner.addFunctionOfClassMethod("list", CLASS_NAME, "list", new Class[]{Object[].class}, null);
                 runner.addFunctionOfClassMethod("input", CLASS_NAME, "input", new Class[]{String.class}, null);
 
-                Class<?>[] logParamTypes = {Object.class, Object[].class};
-                runner.addFunctionOfClassMethod("log", Console.class, "log", logParamTypes, null);
+                Class<?>[] logParamTypes = {String.class, Object[].class};
+                runner.addFunctionOfClassMethod("log", CLASS_NAME, "log", logParamTypes, null);
                 Class<?>[] formatParamTypes = {CharSequence.class, Object[].class};
                 runner.addFunctionOfClassMethod("format", StrUtil.class, "format", formatParamTypes, null);
 
@@ -70,6 +71,10 @@ public class ScriptExecutor {
             }
             return runner;
         });
+    }
+
+    public static void log(String msg, Object... param) {
+        log.info(msg, param);
     }
 
     public static String input(String tip) throws ExecutionException, InterruptedException {
