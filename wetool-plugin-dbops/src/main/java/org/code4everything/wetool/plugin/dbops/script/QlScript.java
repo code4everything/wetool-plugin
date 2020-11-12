@@ -5,8 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.List;
-
 /**
  * @author pantao
  * @since 2020/11/11
@@ -15,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class SqlScript {
+public class QlScript {
 
     /**
      * 唯一标识，系统生成
@@ -50,5 +48,5 @@ public class SqlScript {
     /**
      * 代码块
      */
-    private List<List<String>> codeBlocks;
+    private String codes;
 }

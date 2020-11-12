@@ -22,7 +22,7 @@ import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.dbops.ScriptExecutor;
 import org.code4everything.wetool.plugin.dbops.script.ExecuteTypeEnum;
-import org.code4everything.wetool.plugin.dbops.script.SqlScript;
+import org.code4everything.wetool.plugin.dbops.script.QlScript;
 import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.druid.DruidSource;
 import org.code4everything.wetool.plugin.support.event.EventCenter;
@@ -55,7 +55,7 @@ public class MainController implements BaseViewController {
 
     private static final File DB_OPS_PATH = FileUtil.file(HOME_PATH, "wetool", "wetool-plugin-dbops", ".dbops");
 
-    private static final File SCRIPT_JSON_FILE = FileUtil.file(DB_OPS_PATH, "sql-script.json");
+    private static final File SCRIPT_JSON_FILE = FileUtil.file(DB_OPS_PATH, "ql-script.json");
 
     private static final Map<String, Set<String>> EVENT_SCRIPT = new HashMap<>(8);
 
@@ -91,7 +91,7 @@ public class MainController implements BaseViewController {
     }
 
     public void addScript() {
-        showSqlScriptEditDialog(null);
+        showQlScriptEditDialog(null);
     }
 
     private void renderScripts(String search) {
@@ -104,24 +104,24 @@ public class MainController implements BaseViewController {
         EventHandler<ActionEvent> editHandler = actionEvent -> {
             Button button = (Button) actionEvent.getSource();
             String uuid = button.getParent().getId();
-            showSqlScriptEditDialog(SCRIPTS.getObject(uuid, SqlScript.class));
+            showQlScriptEditDialog(SCRIPTS.getObject(uuid, QlScript.class));
         };
         EventHandler<ActionEvent> actionHandler = actionEvent -> {
             Button button = (Button) actionEvent.getSource();
             String uuid = button.getParent().getId();
-            SqlScript sqlScript = SCRIPTS.getObject(uuid, SqlScript.class);
-            String dbName = StrUtil.blankToDefault(sqlScript.getSpecifyDbName(), dbNameBox.getValue());
+            QlScript qlScript = SCRIPTS.getObject(uuid, QlScript.class);
+            String dbName = StrUtil.blankToDefault(qlScript.getSpecifyDbName(), dbNameBox.getValue());
             try {
-                ScriptExecutor.execute(dbName, sqlScript.getCodeBlocks(), null);
+                ScriptExecutor.execute(dbName, qlScript.getCodes(), null);
             } catch (Exception e) {
                 FxDialogs.showException("执行脚本失败", e);
             }
         };
 
         for (String uuid : SCRIPTS.keySet()) {
-            SqlScript sqlScript = SCRIPTS.getObject(uuid, SqlScript.class);
+            QlScript qlScript = SCRIPTS.getObject(uuid, QlScript.class);
             if (StrUtil.isNotBlank(search)) {
-                if (!sqlScript.getName().contains(search) && !sqlScript.getComment().contains(search)) {
+                if (!qlScript.getName().contains(search) && !qlScript.getComment().contains(search)) {
                     continue;
                 }
             }
@@ -129,22 +129,22 @@ public class MainController implements BaseViewController {
             HBox hBox = new HBox();
             hBox.setId(uuid);
 
-            Button action = new Button(sqlScript.getName());
+            Button action = new Button(qlScript.getName());
             action.setOnAction(actionHandler);
             Button edit = new Button("编辑");
             edit.setOnAction(editHandler);
             Label label = new Label();
 
-            String labelText = "触发机制：" + ScriptEditController.TYPE_2_TIP.get(sqlScript.getType().name());
-            if (sqlScript.getType() == ExecuteTypeEnum.EVENT) {
-                labelText += "，事件订阅：" + sqlScript.getEventKey();
-                eventSubscribe(sqlScript.getEventKey(), uuid);
+            String labelText = "触发机制：" + ScriptEditController.TYPE_2_TIP.get(qlScript.getType().name());
+            if (qlScript.getType() == ExecuteTypeEnum.EVENT) {
+                labelText += "，事件订阅：" + qlScript.getEventKey();
+                eventSubscribe(qlScript.getEventKey(), uuid);
             }
-            if (StrUtil.isNotBlank(sqlScript.getSpecifyDbName())) {
-                labelText += "，指定数据源：" + sqlScript.getSpecifyDbName();
+            if (StrUtil.isNotBlank(qlScript.getSpecifyDbName())) {
+                labelText += "，指定数据源：" + qlScript.getSpecifyDbName();
             }
-            if (StrUtil.isNotBlank(sqlScript.getComment())) {
-                labelText += "，说明：" + sqlScript.getComment();
+            if (StrUtil.isNotBlank(qlScript.getComment())) {
+                labelText += "，说明：" + qlScript.getComment();
             }
             label.setText(labelText);
 
@@ -164,7 +164,7 @@ public class MainController implements BaseViewController {
         }
     }
 
-    private void showSqlScriptEditDialog(SqlScript sqlScript) {
+    private void showQlScriptEditDialog(QlScript qlScript) {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(MainController.class.getResource("/ease/dbops/ScriptEditView.fxml"));
 
@@ -178,8 +178,8 @@ public class MainController implements BaseViewController {
         }
 
         ScriptEditController controller = fxmlLoader.getController();
-        controller.setSqlScript(sqlScript);
-        FxDialogs.showDialog("编辑SQL脚本", node, new DialogWinnable<String>() {
+        controller.setQlScript(qlScript);
+        FxDialogs.showDialog("编辑QL脚本", node, new DialogWinnable<String>() {
 
             @Override
             public String convertResult() {
@@ -191,7 +191,7 @@ public class MainController implements BaseViewController {
                 if (StrUtil.isEmpty(result)) {
                     return;
                 }
-                SqlScript newScript = controller.getSqlScript();
+                QlScript newScript = controller.getQlScript();
                 SCRIPTS.put(newScript.getUuid(), newScript);
                 renderScripts(null);
                 ThreadUtil.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
@@ -215,13 +215,11 @@ public class MainController implements BaseViewController {
             if (CollUtil.isEmpty(set)) {
                 return;
             }
-            JSONObject args = new JSONObject();
-            args.put("eventMessage", eventMessage);
             set.forEach(e -> {
-                SqlScript sqlScript = SCRIPTS.getObject(uuid, SqlScript.class);
-                String dbName = StrUtil.blankToDefault(sqlScript.getSpecifyDbName(), dbNameBox.getValue());
+                QlScript qlScript = SCRIPTS.getObject(uuid, QlScript.class);
+                String dbName = StrUtil.blankToDefault(qlScript.getSpecifyDbName(), dbNameBox.getValue());
                 try {
-                    ScriptExecutor.execute(dbName, sqlScript.getCodeBlocks(), args);
+                    ScriptExecutor.execute(dbName, qlScript.getCodes(), Map.of("eventMessage", eventMessage));
                 } catch (Exception x) {
                     log.error("execute event script error: {}", ExceptionUtil.stacktraceToString(x, Integer.MAX_VALUE));
                 }

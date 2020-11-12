@@ -1,17 +1,18 @@
 package org.code4everything.wetool.plugin.dbops;
 
 import cn.hutool.core.lang.Console;
-import com.alibaba.fastjson.JSONObject;
+import lombok.experimental.UtilityClass;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author pantao
  * @since 2020/11/11
  */
+@UtilityClass
 public class ScriptExecutor {
 
-    public static void execute(String dbName, List<List<String>> codeBlocks, JSONObject args) {
-        Console.log(codeBlocks);
+    public static void execute(String dbName, String codes, Map<String, Object> args) {
+        Console.log(codes);
     }
 }

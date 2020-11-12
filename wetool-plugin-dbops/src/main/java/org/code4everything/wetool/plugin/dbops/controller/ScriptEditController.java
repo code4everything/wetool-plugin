@@ -1,23 +1,17 @@
 package org.code4everything.wetool.plugin.dbops.controller;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.StrUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.code4everything.wetool.plugin.dbops.script.ExecuteTypeEnum;
-import org.code4everything.wetool.plugin.dbops.script.SqlScript;
+import org.code4everything.wetool.plugin.dbops.script.QlScript;
 import org.code4everything.wetool.plugin.support.druid.DruidSource;
 import org.code4everything.wetool.plugin.support.event.EventCenter;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @author pantao
@@ -42,12 +36,12 @@ public class ScriptEditController {
     public ComboBox<String> dbNameBox;
 
     @FXML
-    public TextArea sqlScriptText;
+    public TextArea qlScriptText;
 
     @FXML
     public ComboBox<String> eventKeyBox;
 
-    private SqlScript sqlScript;
+    private QlScript qlScript;
 
     @FXML
     private void initialize() {
@@ -61,62 +55,33 @@ public class ScriptEditController {
         eventKeyBox.getItems().addAll(EventCenter.listEventKeys());
     }
 
-    public SqlScript getSqlScript() {
-        if (Objects.isNull(sqlScript)) {
-            sqlScript = new SqlScript().setUuid(IdUtil.simpleUUID());
+    public QlScript getQlScript() {
+        if (Objects.isNull(qlScript)) {
+            qlScript = new QlScript().setUuid(IdUtil.simpleUUID());
         }
 
-        sqlScript.setName(nameText.getText());
-        sqlScript.setComment(commentText.getText());
-        sqlScript.setType(ExecuteTypeEnum.valueOf(TIP_2_TYPE.get(typeBox.getValue())));
-        sqlScript.setEventKey(eventKeyBox.getValue());
-        sqlScript.setSpecifyDbName(dbNameBox.getValue());
-        sqlScript.setCodeBlocks(new ArrayList<>());
+        qlScript.setName(nameText.getText());
+        qlScript.setComment(commentText.getText());
+        qlScript.setType(ExecuteTypeEnum.valueOf(TIP_2_TYPE.get(typeBox.getValue())));
+        qlScript.setEventKey(eventKeyBox.getValue());
+        qlScript.setSpecifyDbName(dbNameBox.getValue());
+        qlScript.setCodes(qlScriptText.getText());
 
-        String[] lines = StrUtil.split(sqlScriptText.getText(), System.lineSeparator());
-        if (ArrayUtil.isEmpty(lines)) {
-            return sqlScript;
-        }
-
-        List<String> blockCodes = new ArrayList<>();
-        sqlScript.getCodeBlocks().add(blockCodes);
-        for (String line : lines) {
-            if (StrUtil.isBlank(line)) {
-                blockCodes = new ArrayList<>();
-                sqlScript.getCodeBlocks().add(blockCodes);
-            } else {
-                blockCodes.add(line);
-            }
-        }
-
-        sqlScript.setCodeBlocks(sqlScript.getCodeBlocks().stream().filter(CollUtil::isNotEmpty).collect(Collectors.toList()));
-        return sqlScript;
+        return qlScript;
     }
 
-    public void setSqlScript(SqlScript sqlScript) {
-        if (Objects.isNull(sqlScript)) {
+    public void setQlScript(QlScript qlScript) {
+        if (Objects.isNull(qlScript)) {
             return;
         }
 
-        this.sqlScript = sqlScript;
-        typeBox.getSelectionModel().select(TYPE_2_TIP.get(sqlScript.getType().name()));
-        dbNameBox.getSelectionModel().select(sqlScript.getSpecifyDbName());
+        this.qlScript = qlScript;
+        typeBox.getSelectionModel().select(TYPE_2_TIP.get(qlScript.getType().name()));
+        dbNameBox.getSelectionModel().select(qlScript.getSpecifyDbName());
 
-        nameText.setText(sqlScript.getName());
-        commentText.setText(sqlScript.getComment());
-        eventKeyBox.setValue(sqlScript.getEventKey());
-
-        List<List<String>> codeBlocks = sqlScript.getCodeBlocks();
-        if (CollUtil.isEmpty(codeBlocks)) {
-            return;
-        }
-
-        codeBlocks.forEach(block -> {
-            block.forEach(line -> {
-                sqlScriptText.appendText(line);
-                sqlScriptText.appendText(System.lineSeparator());
-            });
-            sqlScriptText.appendText(System.lineSeparator());
-        });
+        nameText.setText(qlScript.getName());
+        commentText.setText(qlScript.getComment());
+        eventKeyBox.setValue(qlScript.getEventKey());
+        qlScriptText.setText(qlScript.getCodes());
     }
 }

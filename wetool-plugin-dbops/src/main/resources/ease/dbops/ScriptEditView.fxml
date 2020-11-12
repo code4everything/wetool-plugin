@@ -64,5 +64,5 @@
             <Insets bottom="10.0" top="10.0"/>
         </VBox.margin>
     </Separator>
-    <TextArea fx:id="sqlScriptText" prefHeight="200.0" prefWidth="200.0" promptText="SQL脚本" VBox.vgrow="ALWAYS"/>
+    <TextArea fx:id="qlScriptText" prefHeight="200.0" prefWidth="200.0" promptText="QL脚本" VBox.vgrow="ALWAYS"/>
 </VBox>
