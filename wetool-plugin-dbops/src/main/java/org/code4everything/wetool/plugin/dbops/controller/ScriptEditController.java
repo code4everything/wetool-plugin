@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import org.code4everything.wetool.plugin.dbops.script.ExecuteTypeEnum;
 import org.code4everything.wetool.plugin.dbops.script.SqlScript;
 import org.code4everything.wetool.plugin.support.druid.DruidSource;
+import org.code4everything.wetool.plugin.support.event.EventCenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +42,10 @@ public class ScriptEditController {
     public ComboBox<String> dbNameBox;
 
     @FXML
-    public TextField eventKeyText;
+    public TextArea sqlScriptText;
 
     @FXML
-    public TextArea sqlScriptText;
+    public ComboBox<String> eventKeyBox;
 
     private SqlScript sqlScript;
 
@@ -56,6 +57,8 @@ public class ScriptEditController {
         dbNameBox.getItems().add("");
         dbNameBox.getItems().addAll(DruidSource.listAllNames());
         dbNameBox.getSelectionModel().selectFirst();
+
+        eventKeyBox.getItems().addAll(EventCenter.listEventKeys());
     }
 
     public SqlScript getSqlScript() {
@@ -66,7 +69,7 @@ public class ScriptEditController {
         sqlScript.setName(nameText.getText());
         sqlScript.setComment(commentText.getText());
         sqlScript.setType(ExecuteTypeEnum.valueOf(TIP_2_TYPE.get(typeBox.getValue())));
-        sqlScript.setEventKey(eventKeyText.getText());
+        sqlScript.setEventKey(eventKeyBox.getValue());
         sqlScript.setSpecifyDbName(dbNameBox.getValue());
         sqlScript.setCodeBlocks(new ArrayList<>());
 
@@ -101,7 +104,7 @@ public class ScriptEditController {
 
         nameText.setText(sqlScript.getName());
         commentText.setText(sqlScript.getComment());
-        eventKeyText.setText(sqlScript.getEventKey());
+        eventKeyBox.setValue(sqlScript.getEventKey());
 
         List<List<String>> codeBlocks = sqlScript.getCodeBlocks();
         if (CollUtil.isEmpty(codeBlocks)) {

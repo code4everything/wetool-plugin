@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class ScriptExecutor {
 
-    public static void execute(List<List<String>> codeBlocks, JSONObject args) {
+    public static void execute(String dbName, List<List<String>> codeBlocks, JSONObject args) {
         Console.log(codeBlocks);
     }
 }

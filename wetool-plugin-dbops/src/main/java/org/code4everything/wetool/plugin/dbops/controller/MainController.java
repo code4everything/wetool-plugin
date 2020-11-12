@@ -109,9 +109,10 @@ public class MainController implements BaseViewController {
         EventHandler<ActionEvent> actionHandler = actionEvent -> {
             Button button = (Button) actionEvent.getSource();
             String uuid = button.getParent().getId();
-
+            SqlScript sqlScript = SCRIPTS.getObject(uuid, SqlScript.class);
+            String dbName = StrUtil.blankToDefault(sqlScript.getSpecifyDbName(), dbNameBox.getValue());
             try {
-                ScriptExecutor.execute(SCRIPTS.getObject(uuid, SqlScript.class).getCodeBlocks(), null);
+                ScriptExecutor.execute(dbName, sqlScript.getCodeBlocks(), null);
             } catch (Exception e) {
                 FxDialogs.showException("执行脚本失败", e);
             }
@@ -217,8 +218,10 @@ public class MainController implements BaseViewController {
             JSONObject args = new JSONObject();
             args.put("eventMessage", eventMessage);
             set.forEach(e -> {
+                SqlScript sqlScript = SCRIPTS.getObject(uuid, SqlScript.class);
+                String dbName = StrUtil.blankToDefault(sqlScript.getSpecifyDbName(), dbNameBox.getValue());
                 try {
-                    ScriptExecutor.execute(SCRIPTS.getObject(e, SqlScript.class).getCodeBlocks(), args);
+                    ScriptExecutor.execute(dbName, sqlScript.getCodeBlocks(), args);
                 } catch (Exception x) {
                     log.error("execute event script error: {}", ExceptionUtil.stacktraceToString(x, Integer.MAX_VALUE));
                 }

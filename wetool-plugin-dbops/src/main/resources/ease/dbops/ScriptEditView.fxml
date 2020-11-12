@@ -3,8 +3,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
-      xmlns:fx="http://javafx.com/fxml/1"
+<VBox prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.code4everything.wetool.plugin.dbops.controller.ScriptEditController">
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
@@ -58,7 +57,7 @@
                 <Insets top="3.0"/>
             </HBox.margin>
         </Label>
-        <TextField fx:id="eventKeyText" HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="eventKeyBox" editable="true" HBox.hgrow="ALWAYS"/>
     </HBox>
     <Separator prefWidth="200.0" VBox.vgrow="NEVER">
         <VBox.margin>

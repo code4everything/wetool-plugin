@@ -73,6 +73,15 @@ public class EventCenter {
     private static final Map<String, List<EventHandler>> HANDLER_MAP = new ConcurrentHashMap<>();
 
     /**
+     * 获取所有注册时事件KEY
+     *
+     * @return 事件KEY列表
+     */
+    public static Set<String> listEventKeys() {
+        return EVENT_MAP.keySet();
+    }
+
+    /**
      * 注册一个事件，你在发布一个事件之前需要先注册他
      *
      * @param eventKey 事件KEY，不可重复
