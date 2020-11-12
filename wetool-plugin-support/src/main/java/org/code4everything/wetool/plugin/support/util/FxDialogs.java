@@ -15,6 +15,8 @@ import org.code4everything.wetool.plugin.support.constant.AppConsts;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.function.Consumer;
 
 /**
@@ -118,18 +120,38 @@ public class FxDialogs {
      */
     public static void showTextInput(String header, String content, Consumer<String> consumer) {
         Platform.runLater(() -> {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setWidth(500);
-            dialog.getDialogPane().setPrefWidth(500);
-            dialog.setTitle(AppConsts.Title.APP_TITLE);
-            dialog.setHeaderText(header);
-            dialog.setContentText(content);
-            dialog.setResizable(true);
+            TextInputDialog dialog = getTextInputDialog(header, content);
             Optional<String> result = dialog.showAndWait();
             if (ObjectUtil.isNotNull(consumer)) {
                 consumer.accept(result.orElse(""));
             }
         });
+    }
+
+    /**
+     * 弹出文本输入框
+     *
+     * @param header 头部，可为Null
+     * @param content 提示内容，可为Null
+     */
+    public static Future<String> showTextInput(String header, String content) {
+        FutureTask<String> future = new FutureTask<>(() -> {
+            TextInputDialog dialog = getTextInputDialog(header, content);
+            return dialog.showAndWait().orElse("");
+        });
+        Platform.runLater(future);
+        return future;
+    }
+
+    public static TextInputDialog getTextInputDialog(String header, String content) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setWidth(500);
+        dialog.getDialogPane().setPrefWidth(500);
+        dialog.setTitle(AppConsts.Title.APP_TITLE);
+        dialog.setHeaderText(header);
+        dialog.setContentText(content);
+        dialog.setResizable(true);
+        return dialog;
     }
 
     public static void showSuccess() {

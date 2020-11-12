@@ -106,16 +106,26 @@ public class MainController implements BaseViewController {
             String uuid = button.getParent().getId();
             showQlScriptEditDialog(SCRIPTS.getObject(uuid, QlScript.class));
         };
+        EventHandler<ActionEvent> removeHandler = actionEvent -> {
+            Button button = (Button) actionEvent.getSource();
+            String uuid = button.getParent().getId();
+            SCRIPTS.remove(uuid);
+            ThreadUtil.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
+            renderScripts(null);
+        };
         EventHandler<ActionEvent> actionHandler = actionEvent -> {
             Button button = (Button) actionEvent.getSource();
             String uuid = button.getParent().getId();
             QlScript qlScript = SCRIPTS.getObject(uuid, QlScript.class);
             String dbName = StrUtil.blankToDefault(qlScript.getSpecifyDbName(), dbNameBox.getValue());
-            try {
-                ScriptExecutor.execute(dbName, qlScript.getCodes(), null);
-            } catch (Exception e) {
-                FxDialogs.showException("执行脚本失败", e);
-            }
+
+            ThreadUtil.execute(() -> {
+                try {
+                    ScriptExecutor.execute(dbName, qlScript.getCodes(), null);
+                } catch (Exception e) {
+                    FxDialogs.showException("执行脚本失败", e);
+                }
+            });
         };
 
         for (String uuid : SCRIPTS.keySet()) {
@@ -133,6 +143,8 @@ public class MainController implements BaseViewController {
             action.setOnAction(actionHandler);
             Button edit = new Button("编辑");
             edit.setOnAction(editHandler);
+            Button remove = new Button("删除");
+            remove.setOnAction(removeHandler);
             Label label = new Label();
 
             String labelText = "触发机制：" + ScriptEditController.TYPE_2_TIP.get(qlScript.getType().name());
@@ -150,11 +162,13 @@ public class MainController implements BaseViewController {
 
             HBox.setHgrow(action, Priority.NEVER);
             HBox.setHgrow(edit, Priority.NEVER);
+            HBox.setHgrow(remove, Priority.NEVER);
             HBox.setHgrow(label, Priority.ALWAYS);
             HBox.setMargin(action, right);
             HBox.setMargin(edit, right);
+            HBox.setMargin(remove, right);
             HBox.setMargin(label, top);
-            hBox.getChildren().addAll(action, edit, label);
+            hBox.getChildren().addAll(action, edit, remove, label);
 
             VBox.setVgrow(hBox, Priority.NEVER);
             Separator separator = new Separator();

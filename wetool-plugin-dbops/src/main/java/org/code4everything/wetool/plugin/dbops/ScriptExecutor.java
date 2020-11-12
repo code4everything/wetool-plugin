@@ -3,7 +3,6 @@ package org.code4everything.wetool.plugin.dbops;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Console;
-import cn.hutool.core.lang.Holder;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ql.util.express.DefaultContext;
@@ -21,6 +20,8 @@ import org.code4everything.wetool.plugin.support.druid.JdbcExecutor;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * @author pantao
@@ -46,6 +47,7 @@ public class ScriptExecutor {
             try {
                 runner.addFunctionOfClassMethod("dialog", CLASS_NAME, "dialog", new Class[]{Object.class}, null);
                 runner.addFunctionOfClassMethod("list", CLASS_NAME, "list", new Class[]{Object[].class}, null);
+                runner.addFunctionOfClassMethod("input", CLASS_NAME, "input", new Class[]{String.class}, null);
 
                 Class<?>[] logParamTypes = {Object.class, Object[].class};
                 runner.addFunctionOfClassMethod("log", Console.class, "log", logParamTypes, null);
@@ -66,10 +68,9 @@ public class ScriptExecutor {
         expressRunner.execute(codes, context, null, true, false);
     }
 
-    public static String input(String tip) {
-        Holder<String> holder = new Holder<>();
-        FxDialogs.showTextInput("请输入", tip, holder::set);
-        return holder.get();
+    public static String input(String tip) throws ExecutionException, InterruptedException {
+        Future<String> future = FxDialogs.showTextInput("请输入", tip);
+        return future.get();
     }
 
     public static List<Object> list(Object... args) {
