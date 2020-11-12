@@ -1,10 +1,14 @@
 package org.code4everything.wetool.plugin.dbops;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.StrUtil;
 import com.ql.util.express.DefaultContext;
 import com.ql.util.express.ExpressRunner;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.code4everything.wetool.plugin.support.druid.JdbcExecutor;
@@ -44,6 +48,7 @@ public class ScriptExecutor {
         runner.execute(codes, context, null, true, false);
     }
 
+    @SuppressWarnings("rawtypes")
     public static void dialog(Object object) {
         if (Objects.isNull(object)) {
             return;
@@ -51,6 +56,25 @@ public class ScriptExecutor {
         String header = "结果";
         if (object instanceof String) {
             FxDialogs.showInformation(header, (String) object);
+        } else if (object instanceof List) {
+            List list = (List) object;
+            if (CollUtil.isEmpty(list)) {
+                return;
+            }
+
+            Map map;
+            Object param = list.get(0);
+            if (object instanceof Map) {
+                map = (Map) param;
+            } else {
+                map = BeanUtil.beanToMap(param);
+            }
+
+            VBox vBox = new VBox();
+            TableView<Map<String, String>> tableView = new TableView<>();
+
+            VBox.setVgrow(tableView, Priority.ALWAYS);
+            FxDialogs.showDialog(header, vBox);
         }
     }
 }

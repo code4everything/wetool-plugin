@@ -18,7 +18,8 @@
                 <Insets left="10.0"/>
             </HBox.margin>
         </Button>
-        <TextField fx:id="searchText" prefWidth="300.0" promptText="搜索" HBox.hgrow="NEVER" onKeyReleased="#searchIfEnter">
+        <TextField fx:id="searchText" prefWidth="300.0" promptText="搜索" HBox.hgrow="NEVER"
+                   onKeyReleased="#searchIfEnter">
             <HBox.margin>
                 <Insets left="10.0"/>
             </HBox.margin>
