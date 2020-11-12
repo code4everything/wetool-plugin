@@ -32,6 +32,11 @@
         </VBox.margin>
     </Separator>
     <HBox layoutX="20.0" layoutY="20.0" prefWidth="200.0">
+        <Button mnemonicParsing="false" onAction="#testScript" text="测试脚本" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets right="10.0"/>
+            </HBox.margin>
+        </Button>
         <Label text="触发类型：" HBox.hgrow="NEVER">
             <HBox.margin>
                 <Insets top="3.0"/>

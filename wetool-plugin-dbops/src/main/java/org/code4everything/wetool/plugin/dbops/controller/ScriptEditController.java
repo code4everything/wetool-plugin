@@ -5,10 +5,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import org.code4everything.wetool.plugin.dbops.ScriptExecutor;
 import org.code4everything.wetool.plugin.dbops.script.ExecuteTypeEnum;
 import org.code4everything.wetool.plugin.dbops.script.QlScript;
 import org.code4everything.wetool.plugin.support.druid.DruidSource;
 import org.code4everything.wetool.plugin.support.event.EventCenter;
+import org.code4everything.wetool.plugin.support.util.FxDialogs;
 
 import java.util.Map;
 import java.util.Objects;
@@ -83,5 +85,16 @@ public class ScriptEditController {
         commentText.setText(qlScript.getComment());
         eventKeyBox.setValue(qlScript.getEventKey());
         qlScriptText.setText(qlScript.getCodes());
+    }
+
+    public void testScript() {
+        String text = qlScriptText.getText();
+        try {
+            ScriptExecutor.getExpressRunner("").parseInstructionSet(text);
+        } catch (Exception e) {
+            FxDialogs.showException("脚本错误，注：本测试未注入事件参数", e);
+            return;
+        }
+        FxDialogs.showInformation(null, "测试通过");
     }
 }

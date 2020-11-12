@@ -41,9 +41,14 @@ public class ScriptExecutor {
             context.putAll(args);
         }
 
-        ExpressRunner expressRunner = RUNNER_MAP.computeIfAbsent(dbName, name -> {
-            ExpressRunner runner = new ExpressRunner();
+        ExpressRunner expressRunner = getExpressRunner(dbName);
+        expressRunner.execute(codes, context, null, true, false);
+    }
 
+    public static ExpressRunner getExpressRunner(String dbName) {
+        dbName = StrUtil.blankToDefault(dbName, "");
+        return RUNNER_MAP.computeIfAbsent(dbName, name -> {
+            ExpressRunner runner = new ExpressRunner();
             try {
                 runner.addFunctionOfClassMethod("dialog", CLASS_NAME, "dialog", new Class[]{Object.class}, null);
                 runner.addFunctionOfClassMethod("list", CLASS_NAME, "list", new Class[]{Object[].class}, null);
@@ -54,18 +59,17 @@ public class ScriptExecutor {
                 Class<?>[] formatParamTypes = {CharSequence.class, Object[].class};
                 runner.addFunctionOfClassMethod("format", StrUtil.class, "format", formatParamTypes, null);
 
-                JdbcExecutor jdbcExecutor = JdbcExecutor.getJdbcExecutor(dbName);
-                Class<?>[] sqlParamTypes = {String.class, List.class};
-                runner.addFunctionOfServiceMethod("query", jdbcExecutor, "select", sqlParamTypes, null);
-                runner.addFunctionOfServiceMethod("update", jdbcExecutor, "update", sqlParamTypes, null);
+                if (StrUtil.isNotEmpty(name)) {
+                    JdbcExecutor jdbcExecutor = JdbcExecutor.getJdbcExecutor(name);
+                    Class<?>[] sqlParamTypes = {String.class, List.class};
+                    runner.addFunctionOfServiceMethod("query", jdbcExecutor, "select", sqlParamTypes, null);
+                    runner.addFunctionOfServiceMethod("update", jdbcExecutor, "update", sqlParamTypes, null);
+                }
             } catch (Exception e) {
                 FxDialogs.showException("注入脚本方法发生错误", e);
             }
-
             return runner;
         });
-
-        expressRunner.execute(codes, context, null, true, false);
     }
 
     public static String input(String tip) throws ExecutionException, InterruptedException {
