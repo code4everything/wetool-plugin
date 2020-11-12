@@ -14,6 +14,7 @@ plugin_list = ['./wetool-plugin-devtool/wetool-plugin-devtool-java',
                './wetool-plugin-ftpclient',
                './wetool-plugin-ftpserver',
                './wetool-plugin-qiniu',
+               './wetool-plugin-dbops',
                './wetool-plugin-thirdparty/wetool-plugin-thirdparty-downloader']
 
 # 切换目录，拉取代码
