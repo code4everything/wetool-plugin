@@ -70,6 +70,8 @@
 
 - [Everywhere文件检索工具](wetool-plugin-repository/ease-everywhere/readme.md)
 
+- [数据库小应用](wetool-plugin-repository/ease-dbops/readme.md)
+
 ### 参与贡献
 
 欢迎提Issue、Pull Request，参与开发，如果觉得项目还不错，欢迎Star哦~

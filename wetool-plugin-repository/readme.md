@@ -22,8 +22,9 @@
 
 |名称|作者|说明文档|
 |---|---|---|
-|开发工具集合（Redis客户端）|EASE|[文档](ease-devtool/readme.md)|
+|开发工具集合（含Redis客户端）|EASE|[文档](ease-devtool/readme.md)|
 |文件检索工具|EASE|[文档](ease-everywhere/readme.md)|
 |FTP客户端|EASE|[文档](ease-ftp-client/readme.md)|
 |FTP服务器|EASE|[文档](ease-ftp-server/readme.md)|
 |七牛对象存储管理|EASE|[文档](ease-qiniu/readme.md)|
+|数据库小应用|EASE|[文档](ease-dbops/readme.md)|
