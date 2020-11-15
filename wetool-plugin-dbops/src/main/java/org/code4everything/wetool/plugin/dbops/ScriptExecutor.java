@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.code4everything.wetool.plugin.support.control.cell.UnmodifiableTextFieldTableCell;
 import org.code4everything.wetool.plugin.support.druid.JdbcExecutor;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 
@@ -100,6 +101,7 @@ public class ScriptExecutor {
                 list.removeIf(Objects::isNull);
             }
             if (CollUtil.isEmpty(list)) {
+                dialog("结果为空！");
                 return;
             }
 
@@ -111,7 +113,9 @@ public class ScriptExecutor {
             TableView<Map<String, Object>> tableView = new TableView<>();
             map.forEach((k, v) -> {
                 TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>();
+                tableColumn.setEditable(true);
                 tableColumn.setText(ObjectUtil.toString(k));
+                tableColumn.setCellFactory(UnmodifiableTextFieldTableCell.forTableColumn());
                 tableColumn.setCellValueFactory(new PropertyValueFactory<>(null) {
                     @Override
                     @SneakyThrows
@@ -122,9 +126,11 @@ public class ScriptExecutor {
                 tableView.getColumns().add(tableColumn);
             });
 
+            tableView.setEditable(true);
             tableView.getItems().addAll(list);
             VBox.setVgrow(tableView, Priority.ALWAYS);
             vBox.getChildren().add(tableView);
+            vBox.setPrefWidth(1000);
             FxDialogs.showDialog(header, vBox);
         }
     }
