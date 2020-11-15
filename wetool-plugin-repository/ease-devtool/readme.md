@@ -1,6 +1,6 @@
 ### 开发工具
 
-最新下载地址：[wetool-plugin-devtool-1.1.2.zip](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-devtool-1.1.2.zip)
+最新下载地址：[wetool-plugin-devtool-1.2.0.zip](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-devtool-1.2.0.zip)
 
 #### 1. Java工具
 
@@ -60,7 +60,7 @@
 
 ### 更新历史
 
-#### [v1.2.0]()
+#### [v1.2.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-devtool-1.2.0.zip)
 
 - Redis支持KeyValue复制粘贴
 

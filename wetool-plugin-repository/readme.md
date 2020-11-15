@@ -28,3 +28,9 @@
 |FTP服务器|EASE|[文档](ease-ftp-server/readme.md)|
 |七牛对象存储管理|EASE|[文档](ease-qiniu/readme.md)|
 |数据库小应用|EASE|[文档](ease-dbops/readme.md)|
+
+### 其他工具封装
+
+|名称|原作者|项目地址|插件下载地址|
+|---|---|---|---|
+|蜗牛下载工具|ACGIST|[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)|[最新插件下载](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-thirdparty-downloader-1.2.0.jar)|

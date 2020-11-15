@@ -4,7 +4,7 @@ dbops，中文名为数据库小应用，那这是干嘛用的？我们将一系
 
 为什么叫数据库小应用？因为原本这款插件就是为了将一系列SQL操作封装成小应用而设计的，而考虑到执行这一系列的SQL可能会用到参数的注入，变量的定义，绑定方法，那这一系列操作肯定会绕道脚本的执行上去，那自然就不仅限于SQL了，只要符合语法的脚本都是可以执行的。
 
-最新版下载地址：[wetool-plugin-dbops]()
+最新版下载地址：[wetool-plugin-dbops](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.2.0.jar)
 
 > 本插件使用的脚本解析库 [QLExpress](https://github.com/alibaba/QLExpress), 语法基本和java一致，几乎没有学习成本，了解语法点击链接即可。
 
@@ -92,7 +92,7 @@ dialog(result);
 
 ### 更新历史
 
-#### [v1.2.0]()
+#### [v1.2.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.2.0.jar)
 
 - 支持订阅事件
 - 支持QLExpress脚本
