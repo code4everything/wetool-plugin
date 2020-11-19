@@ -1,6 +1,6 @@
 ## WeTool插件支持
 
-这是一个 [WeTool](/code4everything/wetool) 插件支持库，开发极简单，简单几步即可实现插件的快速开发。
+这是一个 [WeTool](https://gitee.com/code4everything/wetool) 插件支持库，开发极简单，简单几步即可实现插件的快速开发。
 
 ### 仓库说明
 
