@@ -18,6 +18,8 @@ public class WetoolSupporter implements WePluginSupporter {
     @Override
     public boolean initialize() {
         DynamicParamsUtil.supportDynamicParams = true;
+        // 初始化时加载视图，让监听事件的脚本可以后台运行
+        FxUtils.loadFxml(WetoolSupporter.class, "/ease/dbops/MainView.fxml", true);
         return true;
     }
 
