@@ -29,7 +29,7 @@
 |七牛对象存储管理|EASE|[文档](ease-qiniu/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-qiniu-1.2.0.jar)|
 |数据库小应用|EASE|[文档](ease-dbops/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.2.0.jar)|
 
-### 其他工具封装
+### 第三方工具封装
 
 |名称|原作者|项目地址|插件下载地址|
 |---|---|---|---|
