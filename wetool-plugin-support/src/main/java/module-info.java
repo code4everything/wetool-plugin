@@ -41,6 +41,7 @@ module org.code4everything.wetool.plugin.support {
     requires com.google.common;
     requires druid;
     requires mysql.connector.java;
+    requires jnativehook;
 
     // 导出包
     exports org.code4everything.wetool.plugin.support;
