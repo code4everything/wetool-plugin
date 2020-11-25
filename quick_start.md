@@ -10,7 +10,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <wetool.version>1.2.0</wetool.version>
+        <wetool.version>1.3.0</wetool.version>
         <junit.version>4.13.1</junit.version>
         <mapstruct.version>1.3.1.Final</mapstruct.version>
     </properties>
@@ -232,8 +232,8 @@
     {
         "author": "ease",
         "name": "sample",
-        "version": "1.2.0",
-        "requireWetoolVersion": "1.2.0",
+        "version": "1.3.0",
+        "requireWetoolVersion": "1.3.0",
         "supportedClass": "org.code4everything.wetool.plugin.sample.WetoolSupporter"
     }
     ```

@@ -3,10 +3,12 @@ package org.code4everything.wetool.plugin.dbops.controller;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.parser.Feature;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -34,10 +36,7 @@ import org.code4everything.wetool.plugin.support.util.FxUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author pantao
@@ -76,15 +75,20 @@ public class MainController implements BaseViewController {
 
         FileUtil.mkdir(DB_OPS_PATH);
         BeanFactory.registerView(TAB_ID, TAB_NAME, this);
-        if (FileUtil.exist(SCRIPT_JSON_FILE)) {
-            SCRIPTS.clear();
-            String json = FileUtil.readUtf8String(SCRIPT_JSON_FILE);
-            JSONObject jsonObject = JSON.parseObject(StrUtil.blankToDefault(json, "{}"), Feature.OrderedField,
-                    Feature.AllowComment);
-            SCRIPTS.putAll(jsonObject);
-        }
 
+        readScript();
         renderScripts(null);
+    }
+
+    private void readScript() {
+        if (!FileUtil.exist(SCRIPT_JSON_FILE)) {
+            return;
+        }
+        SCRIPTS.clear();
+        String json = FileUtil.readUtf8String(SCRIPT_JSON_FILE);
+        JSONObject jsonObject = JSON.parseObject(StrUtil.blankToDefault(json, "{}"), Feature.OrderedField,
+                Feature.AllowComment);
+        SCRIPTS.putAll(jsonObject);
     }
 
     public void search() {
@@ -245,5 +249,63 @@ public class MainController implements BaseViewController {
 
     public void searchIfEnter(KeyEvent keyEvent) {
         FxUtils.enterDo(keyEvent, this::search);
+    }
+
+    public void importQl() {
+        boolean success = importQl(ClipboardUtil.getStr());
+        if (success) {
+            ThreadUtil.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
+            renderScripts(null);
+        } else {
+            FxUtils.chooseFile(this::openFile);
+        }
+    }
+
+    private boolean importQl(String str) {
+        try {
+            QlScript qlScript = JSON.parseObject(str, QlScript.class);
+            if (StrUtil.isNotBlank(qlScript.getUuid())) {
+                SCRIPTS.put(qlScript.getUuid(), qlScript);
+                return true;
+            }
+        } catch (Exception e) {
+            try {
+                LinkedHashMap<String, QlScript> map = JSON.parseObject(str, new TypeReference<>() {},
+                        Feature.AllowComment);
+                map.forEach((k, v) -> {
+                    if (StrUtil.isNotBlank(k)) {
+                        SCRIPTS.put(k, v);
+                    }
+                });
+                return true;
+            } catch (Exception e1) {
+                FxDialogs.showError("内容格式不合法，导入失败");
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public void export() {
+        FxUtils.saveFile(this::saveFile);
+    }
+
+    @Override
+    public String getSavingContent() {
+        return JSON.toJSONString(SCRIPTS, true);
+    }
+
+    @Override
+    public void setFileContent(String content) {
+        boolean success = importQl(content);
+        if (success) {
+            ThreadUtil.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
+            renderScripts(null);
+        }
+    }
+
+    public void reload() {
+        readScript();
+        renderScripts(null);
     }
 }

@@ -92,6 +92,10 @@ dialog(result);
 
 ### 更新历史
 
+#### [v1.3.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.3.0.jar)
+
+- 支持导入导出
+
 #### [v1.2.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.2.0.jar)
 
 - 支持订阅事件

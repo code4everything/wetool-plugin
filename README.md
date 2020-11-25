@@ -33,7 +33,7 @@
 <dependency>
     <groupId>org.code4everything</groupId>
     <artifactId>wetool-plugin-support</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
@@ -43,7 +43,7 @@
 <dependency>
     <groupId>org.code4everything</groupId>
     <artifactId>wetool-plugin-test</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
     <scope>test</scope>
 </dependency>
 ```

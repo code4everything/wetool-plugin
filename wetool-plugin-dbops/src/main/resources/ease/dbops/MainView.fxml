@@ -29,6 +29,26 @@
                 <Insets left="10.0"/>
             </HBox.margin>
         </Button>
+        <Separator orientation="VERTICAL" VBox.vgrow="NEVER">
+            <VBox.margin>
+                <Insets left="10.0"/>
+            </VBox.margin>
+        </Separator>
+        <Button mnemonicParsing="false" onAction="#reload" text="重载配置文件" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </Button>
+        <Button mnemonicParsing="false" onAction="#export" text="导出" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </Button>
+        <Button mnemonicParsing="false" onAction="#importQl" text="导入" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </Button>
     </HBox>
     <Separator prefWidth="200.0" VBox.vgrow="NEVER">
         <VBox.margin>
