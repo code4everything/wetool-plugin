@@ -23,11 +23,11 @@
 |名称|作者|说明文档|下载地址|
 |---|---|---|---|
 |开发工具集合（含Redis客户端）|EASE|[文档](ease-devtool/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-devtool-1.2.0.zip)|
-|文件检索工具|EASE|[文档](ease-everywhere/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-everywhere-1.2.0.zip)|
-|FTP客户端|EASE|[文档](ease-ftp-client/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-ftpclient-1.2.0.zip)|
-|FTP服务器|EASE|[文档](ease-ftp-server/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-ftpserver-1.2.0.zip)|
-|七牛对象存储管理|EASE|[文档](ease-qiniu/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-qiniu-1.2.0.zip)|
-|数据库小应用|EASE|[文档](ease-dbops/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.2.0.zip)|
+|文件检索工具|EASE|[文档](ease-everywhere/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-everywhere-1.2.0.jar)|
+|FTP客户端|EASE|[文档](ease-ftp-client/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-ftpclient-1.2.0.jar)|
+|FTP服务器|EASE|[文档](ease-ftp-server/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-ftpserver-1.2.0.jar)|
+|七牛对象存储管理|EASE|[文档](ease-qiniu/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-qiniu-1.2.0.jar)|
+|数据库小应用|EASE|[文档](ease-dbops/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.2.0.jar)|
 
 ### 其他工具封装
 
