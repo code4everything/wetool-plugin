@@ -10,7 +10,7 @@ import org.code4everything.wetool.plugin.support.event.message.MouseCornerEventM
 public abstract class BaseMouseCornerEventHandler extends BaseEventHandler<MouseCornerEventMessage> {
 
     @Override
-    public boolean shouldHandle(EventMessage eventMessage) {
+    public final boolean shouldHandle(EventMessage eventMessage) {
         return eventMessage instanceof MouseCornerEventMessage;
     }
 }

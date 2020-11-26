@@ -6,9 +6,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.code4everything.wetool.plugin.support.event.handler.BaseClipboardChangedEventHandler;
-import org.code4everything.wetool.plugin.support.event.handler.BaseNoMessageEventHandler;
-import org.code4everything.wetool.plugin.support.event.handler.BaseQuickStartClickedEventHandler;
+import org.code4everything.wetool.plugin.support.event.handler.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -66,7 +64,20 @@ public class EventCenter {
      */
     public static final String EVENT_CLIPBOARD_CHANGED = "event_clipboard_changed";
 
+    /**
+     * 触发角事件，订阅事件可使用 {@link BaseMouseCornerEventHandler}
+     */
     public static final String EVENT_MOUSE_CORNER_TRIGGER = "event_mouse_corner_trigger";
+
+    /**
+     * 键盘按下事件，订阅事件可使用 {@link BaseKeyboardEventHandler}
+     */
+    public static final String EVENT_KEYBOARD_PRESSED = "event_keyboard_pressed";
+
+    /**
+     * 键盘弹起事件，订阅事件可使用 {@link BaseKeyboardEventHandler}
+     */
+    public static final String EVENT_KEYBOARD_RELEASED = "event_keyboard_released";
 
     private static final Map<String, EventMode> EVENT_MAP = new ConcurrentHashMap<>();
 

@@ -12,7 +12,7 @@ import java.util.Date;
 public abstract class BaseNoMessageEventHandler implements EventHandler {
 
     @Override
-    public void handleEvent(String eventKey, Date eventTime, EventMessage eventMessage) {
+    public final void handleEvent(String eventKey, Date eventTime, EventMessage eventMessage) {
         handleEvent0(eventKey, eventTime);
     }
 
