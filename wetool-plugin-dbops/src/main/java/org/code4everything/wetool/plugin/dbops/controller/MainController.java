@@ -3,6 +3,7 @@ package org.code4everything.wetool.plugin.dbops.controller;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Holder;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
@@ -262,28 +263,20 @@ public class MainController implements BaseViewController {
     }
 
     private boolean importQl(String str) {
-        try {
-            QlScript qlScript = JSON.parseObject(str, QlScript.class);
-            if (StrUtil.isNotBlank(qlScript.getUuid())) {
-                SCRIPTS.put(qlScript.getUuid(), qlScript);
-                return true;
-            }
-        } catch (Exception e) {
-            try {
-                LinkedHashMap<String, QlScript> map = JSON.parseObject(str, new TypeReference<>() {},
-                        Feature.AllowComment);
-                map.forEach((k, v) -> {
-                    if (StrUtil.isNotBlank(k)) {
-                        SCRIPTS.put(k, v);
-                    }
-                });
-                return true;
-            } catch (Exception e1) {
-                FxDialogs.showError("内容格式不合法，导入失败");
-                return false;
-            }
+        QlScript qlScript = JSON.parseObject(str, QlScript.class);
+        if (StrUtil.isNotBlank(qlScript.getUuid())) {
+            SCRIPTS.put(qlScript.getUuid(), qlScript);
+            return true;
         }
-        return false;
+        LinkedHashMap<String, QlScript> map = JSON.parseObject(str, new TypeReference<>() {}, Feature.AllowComment);
+        Holder<Boolean> holder = new Holder<>(false);
+        map.forEach((k, v) -> {
+            if (StrUtil.isNotBlank(k)) {
+                SCRIPTS.put(k, v);
+                holder.set(true);
+            }
+        });
+        return holder.get();
     }
 
     public void export() {

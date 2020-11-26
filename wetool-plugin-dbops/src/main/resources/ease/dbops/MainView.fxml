@@ -30,9 +30,9 @@
             </HBox.margin>
         </Button>
         <Separator orientation="VERTICAL" VBox.vgrow="NEVER">
-            <VBox.margin>
+            <HBox.margin>
                 <Insets left="10.0"/>
-            </VBox.margin>
+            </HBox.margin>
         </Separator>
         <Button mnemonicParsing="false" onAction="#reload" text="重载配置文件" HBox.hgrow="NEVER">
             <HBox.margin>
