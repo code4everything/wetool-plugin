@@ -263,20 +263,25 @@ public class MainController implements BaseViewController {
     }
 
     private boolean importQl(String str) {
-        QlScript qlScript = JSON.parseObject(str, QlScript.class);
-        if (StrUtil.isNotBlank(qlScript.getUuid())) {
-            SCRIPTS.put(qlScript.getUuid(), qlScript);
-            return true;
-        }
-        LinkedHashMap<String, QlScript> map = JSON.parseObject(str, new TypeReference<>() {}, Feature.AllowComment);
-        Holder<Boolean> holder = new Holder<>(false);
-        map.forEach((k, v) -> {
-            if (StrUtil.isNotBlank(k)) {
-                SCRIPTS.put(k, v);
-                holder.set(true);
+        try {
+            QlScript qlScript = JSON.parseObject(str, QlScript.class);
+            if (StrUtil.isNotBlank(qlScript.getUuid())) {
+                SCRIPTS.put(qlScript.getUuid(), qlScript);
+                return true;
             }
-        });
-        return holder.get();
+            LinkedHashMap<String, QlScript> map = JSON.parseObject(str, new TypeReference<>() {}, Feature.AllowComment);
+            Holder<Boolean> holder = new Holder<>(false);
+            map.forEach((k, v) -> {
+                if (StrUtil.isNotBlank(k)) {
+                    SCRIPTS.put(k, v);
+                    holder.set(true);
+                }
+            });
+            return holder.get();
+        } catch (Exception e) {
+            log.error(ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
+        }
+        return false;
     }
 
     public void export() {
