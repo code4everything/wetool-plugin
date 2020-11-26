@@ -47,7 +47,6 @@ public class MouseMotionListener implements NativeMouseMotionListener {
         if (lastPosX == posX && lastPosY == posY) {
             return;
         }
-        log.debug("mouse location, x: {}, y: {}", posX, posY);
 
         lastPosX = posX;
         lastPosY = posY;
