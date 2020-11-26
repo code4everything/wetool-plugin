@@ -51,7 +51,6 @@ public class ScriptExecutor {
         dbName = StrUtil.blankToDefault(dbName, "");
         return RUNNER_MAP.computeIfAbsent(dbName, name -> {
             ExpressRunner runner = new ExpressRunner();
-            runner.addSystemFunctions();
             try {
                 runner.addFunctionOfClassMethod("dialog", CLASS_NAME, "dialog", new Class[]{Object.class}, null);
                 runner.addFunctionOfClassMethod("list", CLASS_NAME, "list", new Class[]{Object[].class}, null);
