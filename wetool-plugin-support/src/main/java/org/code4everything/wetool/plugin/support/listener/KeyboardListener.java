@@ -22,14 +22,12 @@ public class KeyboardListener implements NativeKeyListener {
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
         KeyboardListenerEventMessage message = KeyboardListenerEventMessage.of(e);
-        log.debug("key pressed: {}", message.toKeyText());
         EventCenter.publishEvent(EventCenter.EVENT_KEYBOARD_PRESSED, DateUtil.date(), message);
     }
 
     @Override
     public void nativeKeyReleased(NativeKeyEvent e) {
         KeyboardListenerEventMessage message = KeyboardListenerEventMessage.of(e);
-        log.debug("key released: {}", message.toKeyText());
         EventCenter.publishEvent(EventCenter.EVENT_KEYBOARD_RELEASED, DateUtil.date(), message);
     }
 }
