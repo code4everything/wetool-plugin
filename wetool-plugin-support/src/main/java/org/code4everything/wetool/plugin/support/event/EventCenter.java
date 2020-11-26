@@ -1,8 +1,6 @@
 package org.code4everything.wetool.plugin.support.event;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -146,7 +144,6 @@ public class EventCenter {
 
         List<EventHandler> list = HANDLER_MAP.get(eventKey);
         if (CollUtil.isEmpty(list)) {
-            log.debug("event '{}' no any subscriber!", eventKey);
             return true;
         }
 
@@ -158,8 +155,6 @@ public class EventCenter {
             }
         });
 
-        String time = DateUtil.format(eventTime, DatePattern.NORM_DATETIME_MS_FORMAT);
-        log.debug("publish event '{}' success, event time: {}", eventKey, time);
         return true;
     }
 

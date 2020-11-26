@@ -16,4 +16,12 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 public class KeyboardListenerEventMessage implements EventMessage {
 
     private NativeKeyEvent keyEvent;
+
+    public static KeyboardListenerEventMessage of(NativeKeyEvent keyEvent) {
+        return new KeyboardListenerEventMessage(keyEvent);
+    }
+
+    public String toKeyText() {
+        return NativeKeyEvent.getKeyText(keyEvent.getKeyCode());
+    }
 }
