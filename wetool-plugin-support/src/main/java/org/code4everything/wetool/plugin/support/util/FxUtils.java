@@ -10,6 +10,7 @@ import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.SystemUtil;
 import com.google.common.base.Preconditions;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -222,6 +223,26 @@ public class FxUtils {
      */
     public static Stage getStage() {
         return BeanFactory.get(Stage.class);
+    }
+
+    /**
+     * 显示主界面
+     *
+     * @since 1.3.0
+     */
+    public static void showStage() {
+        EventCenter.publishEvent(EventCenter.EVENT_WETOOL_SHOW, DateUtil.date());
+        Platform.runLater(() -> getStage().show());
+    }
+
+    /**
+     * 隐藏主界面
+     *
+     * @since 1.3.0
+     */
+    public static void hideStage() {
+        EventCenter.publishEvent(EventCenter.EVENT_WETOOL_HIDDEN, DateUtil.date());
+        Platform.runLater(() -> getStage().hide());
     }
 
     /**
