@@ -62,7 +62,7 @@ public class WeUtils {
      *
      * @since 1.3.0
      */
-    public static <V> Future<V> execute(Callable<V> callable) {
+    public static <V> Future<V> executeAsync(Callable<V> callable) {
         return GlobalThreadPool.submit(callable);
     }
 
