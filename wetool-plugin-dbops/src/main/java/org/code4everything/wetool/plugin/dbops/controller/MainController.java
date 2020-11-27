@@ -238,6 +238,9 @@ public class MainController implements BaseViewController {
             }
             set.forEach(e -> {
                 QlScript qlScript = SCRIPTS.getObject(uuid, QlScript.class);
+                if (qlScript.getType() != ExecuteTypeEnum.EVENT) {
+                    return;
+                }
                 String dbName = StrUtil.blankToDefault(qlScript.getSpecifyDbName(), dbNameBox.getValue());
                 try {
                     ScriptExecutor.execute(dbName, qlScript.getCodes(), Map.of("eventMessage", eventMessage));
