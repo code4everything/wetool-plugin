@@ -2,7 +2,6 @@ package org.code4everything.wetool.plugin.qiniu.util;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Validator;
-import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
@@ -13,6 +12,7 @@ import org.code4everything.boot.base.constant.IntegerConsts;
 import org.code4everything.boot.base.constant.StringConsts;
 import org.code4everything.wetool.plugin.qiniu.constant.QiniuConsts;
 import org.code4everything.wetool.plugin.qiniu.model.ConfigBean;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -152,7 +152,7 @@ public class QiniuUtils {
         }
         final String dest = ConfigBean.getConfig().getStoragePath();
         // 下载文件
-        ThreadUtil.execute(() -> HttpUtil.downloadFile(url, dest));
+        WeUtils.execute(() -> HttpUtil.downloadFile(url, dest));
     }
 
     /**

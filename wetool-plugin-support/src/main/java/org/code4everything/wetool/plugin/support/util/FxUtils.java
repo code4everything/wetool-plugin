@@ -3,7 +3,6 @@ package org.code4everything.wetool.plugin.support.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RuntimeUtil;
@@ -444,7 +443,7 @@ public class FxUtils {
     private static void restartHelper(String cmd) {
         log.info("restart use cmd: " + cmd);
         if (SystemUtil.getOsInfo().isWindows()) {
-            ThreadUtil.execute(() -> RuntimeUtil.execForStr(cmd));
+            WeUtils.execute(() -> RuntimeUtil.execForStr(cmd));
         } else {
             RuntimeUtil.execForStr(cmd);
         }

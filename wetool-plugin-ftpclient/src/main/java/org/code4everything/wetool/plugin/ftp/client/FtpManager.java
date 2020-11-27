@@ -23,6 +23,7 @@ import org.code4everything.wetool.plugin.ftp.client.model.FtpUpload;
 import org.code4everything.wetool.plugin.ftp.client.model.LastUsedInfo;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.File;
 import java.util.*;
@@ -84,7 +85,7 @@ public class FtpManager {
         FtpController controller = BeanFactory.getViewObject(FtpConsts.TAB_ID + FtpConsts.TAB_NAME);
         if (shouldExe) {
             // 异步下载
-            ThreadUtil.execute(() -> {
+            WeUtils.execute(() -> {
                 while (!DOWNLOAD_QUEUE.isEmpty()) {
                     FtpDownload ftp = DOWNLOAD_QUEUE.poll();
                     String absPath = ftp.getPath().getAbsolutePath();
@@ -161,7 +162,7 @@ public class FtpManager {
         FtpController controller = BeanFactory.get(FtpController.class);
         if (shouldExe) {
             // 异步上传
-            ThreadUtil.execute(() -> {
+            WeUtils.execute(() -> {
                 while (!UPLOAD_QUEUE.isEmpty()) {
                     FtpUpload ftp = UPLOAD_QUEUE.poll();
                     String absPath = ftp.getFile().getAbsolutePath();

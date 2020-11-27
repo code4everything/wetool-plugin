@@ -2,7 +2,6 @@ package org.code4everything.wetool.plugin.everywhere.util;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ObjectUtil;
 import javafx.application.Platform;
 import lombok.experimental.UtilityClass;
@@ -12,6 +11,7 @@ import org.code4everything.wetool.plugin.everywhere.lucene.LuceneIndexer;
 import org.code4everything.wetool.plugin.everywhere.lucene.LuceneSearcher;
 import org.code4everything.wetool.plugin.everywhere.model.FileInfo;
 import org.code4everything.wetool.plugin.support.util.Callable;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,7 +46,7 @@ public class LuceneUtils {
             return;
         }
         SEARCHING.set(true);
-        ThreadUtil.execute(() -> {
+        WeUtils.execute(() -> {
             try {
                 List<FileInfo> list = getSearcher().search(word, folder, file, content, filterPattern);
                 if (ObjectUtil.isNotNull(searchNotification)) {
@@ -64,7 +64,7 @@ public class LuceneUtils {
             return;
         }
         INDEXING.set(true);
-        ThreadUtil.execute(() -> {
+        WeUtils.execute(() -> {
             try {
                 if (force) {
                     FileUtil.del(CommonConsts.INDEX_PATH);

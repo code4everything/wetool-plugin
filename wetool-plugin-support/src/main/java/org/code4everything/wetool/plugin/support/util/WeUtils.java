@@ -2,8 +2,10 @@ package org.code4everything.wetool.plugin.support.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Console;
+import cn.hutool.core.thread.GlobalThreadPool;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.OsInfo;
@@ -23,6 +25,8 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 /**
  * @author pantao
@@ -36,7 +40,31 @@ public class WeUtils {
 
     private static final String DATE_VARIABLE = "%(DATE|date)%";
 
+    private static final Thread.UncaughtExceptionHandler UNCAUGHT_EXCEPTION_HANDLER =
+            (t, e) -> ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE);
+
     private static int compressLen = 0;
+
+    /**
+     * 异步执行
+     *
+     * @since 1.3.0
+     */
+    public static void execute(Runnable runnable) {
+        GlobalThreadPool.execute(() -> {
+            Thread.currentThread().setUncaughtExceptionHandler(UNCAUGHT_EXCEPTION_HANDLER);
+            runnable.run();
+        });
+    }
+
+    /**
+     * 异步执行
+     *
+     * @since 1.3.0
+     */
+    public static <V> Future<V> execute(Callable<V> callable) {
+        return GlobalThreadPool.submit(callable);
+    }
 
     /**
      * 获取插件目录

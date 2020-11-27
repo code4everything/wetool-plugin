@@ -5,7 +5,6 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Holder;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
-import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -34,6 +33,7 @@ import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.DialogWinnable;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,7 +116,7 @@ public class MainController implements BaseViewController {
             Button button = (Button) actionEvent.getSource();
             String uuid = button.getParent().getId();
             SCRIPTS.remove(uuid);
-            ThreadUtil.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
+            WeUtils.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
             renderScripts(null);
         };
         EventHandler<ActionEvent> actionHandler = actionEvent -> {
@@ -125,7 +125,7 @@ public class MainController implements BaseViewController {
             QlScript qlScript = SCRIPTS.getObject(uuid, QlScript.class);
             String dbName = StrUtil.blankToDefault(qlScript.getSpecifyDbName(), dbNameBox.getValue());
 
-            ThreadUtil.execute(() -> {
+            WeUtils.execute(() -> {
                 try {
                     ScriptExecutor.execute(dbName, qlScript.getCodes(), null);
                 } catch (Exception e) {
@@ -215,7 +215,7 @@ public class MainController implements BaseViewController {
                 QlScript newScript = controller.getQlScript();
                 SCRIPTS.put(newScript.getUuid(), newScript);
                 renderScripts(null);
-                ThreadUtil.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
+                WeUtils.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
             }
         });
     }
@@ -258,7 +258,7 @@ public class MainController implements BaseViewController {
     public void importQl() {
         boolean success = importQl(ClipboardUtil.getStr());
         if (success) {
-            ThreadUtil.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
+            WeUtils.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
             renderScripts(null);
         } else {
             FxUtils.chooseFile(this::openFile);
@@ -300,7 +300,7 @@ public class MainController implements BaseViewController {
     public void setFileContent(String content) {
         boolean success = importQl(content);
         if (success) {
-            ThreadUtil.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
+            WeUtils.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
             renderScripts(null);
         }
     }

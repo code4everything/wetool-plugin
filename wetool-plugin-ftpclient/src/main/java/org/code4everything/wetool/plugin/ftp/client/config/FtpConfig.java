@@ -1,7 +1,6 @@
 package org.code4everything.wetool.plugin.ftp.client.config;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import lombok.*;
@@ -65,7 +64,7 @@ public class FtpConfig implements BaseBean, Serializable {
             BeanFactory.register(FtpManager.generateConfigKey(ftpInfo.getName()), ftpInfo);
             // 是否进行初始化连接
             if (ftpInfo.isInitConnect()) {
-                ThreadUtil.execute(() -> FtpManager.getFtp(ftpInfo.getName()));
+                WeUtils.execute(() -> FtpManager.getFtp(ftpInfo.getName()));
             }
         }
         return ftpConfig;

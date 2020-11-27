@@ -1,10 +1,10 @@
 package org.code4everything.wetool.plugin.support.event;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.thread.ThreadUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.support.event.handler.*;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -147,11 +147,11 @@ public class EventCenter {
             return true;
         }
 
-        ThreadUtil.execute(() -> {
+        WeUtils.execute(() -> {
             if (list.size() == 1) {
                 list.get(0).handleEvent(eventKey, eventTime, eventMessage);
             } else {
-                list.forEach(e -> ThreadUtil.execute(() -> e.handleEvent(eventKey, eventTime, eventMessage)));
+                list.forEach(e -> WeUtils.execute(() -> e.handleEvent(eventKey, eventTime, eventMessage)));
             }
         });
 

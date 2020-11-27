@@ -5,7 +5,6 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
-import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -38,6 +37,7 @@ import org.code4everything.wetool.plugin.qiniu.util.QiniuDialog;
 import org.code4everything.wetool.plugin.qiniu.util.QiniuUtils;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.awt.*;
 import java.io.File;
@@ -233,7 +233,7 @@ public class MainController extends BaseQiniuController {
             } else {
                 domainTF.setText(QiniuConsts.DOMAIN_CONFIG_ERROR);
             }
-            ThreadUtil.execute(() -> {
+            WeUtils.execute(() -> {
                 if (SdkConfigurer.configUploadEnv(ConfigBean.getConfig().getZone(newValue), newValue)) {
                     // 加载文件列表
                     mapResourceData();
@@ -496,7 +496,7 @@ public class MainController extends BaseQiniuController {
      * 将从存储空间获取的文件列表映射到表中
      */
     private void mapResourceData() {
-        ThreadUtil.execute(() -> {
+        WeUtils.execute(() -> {
             // 列出资源文件
             service.listFile();
             Platform.runLater(() -> {
@@ -600,7 +600,7 @@ public class MainController extends BaseQiniuController {
             return;
         }
         // 新建一个线程上传文件的线程
-        ThreadUtil.execute(() -> {
+        WeUtils.execute(() -> {
             Platform.runLater(() -> uploadStatusTA.insertText(0, QiniuConsts.CONFIG_UPLOAD_ENVIRONMENT));
             String bucket = bucketCB.getValue();
             // 默认不指定KEY的情况下，以文件内容的哈希值作为文件名
