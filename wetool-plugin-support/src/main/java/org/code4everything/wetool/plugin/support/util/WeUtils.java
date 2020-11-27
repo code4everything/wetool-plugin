@@ -41,7 +41,7 @@ public class WeUtils {
     private static final String DATE_VARIABLE = "%(DATE|date)%";
 
     private static final Thread.UncaughtExceptionHandler UNCAUGHT_EXCEPTION_HANDLER =
-            (t, e) -> ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE);
+            (t, e) -> log.error(ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
 
     private static int compressLen = 0;
 
