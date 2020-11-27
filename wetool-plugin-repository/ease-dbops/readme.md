@@ -95,6 +95,7 @@ dialog(result);
 #### [v1.3.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.3.0.jar)
 
 - 支持导入导出
+- 修复了一些已知问题
 
 #### [v1.2.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.2.0.jar)
 
