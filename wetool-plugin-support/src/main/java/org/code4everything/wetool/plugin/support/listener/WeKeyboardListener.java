@@ -12,7 +12,7 @@ import org.jnativehook.keyboard.NativeKeyListener;
  * @since 2020/11/26
  */
 @Slf4j
-public class KeyboardListener implements NativeKeyListener {
+public class WeKeyboardListener implements NativeKeyListener {
 
     @Override
     public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {

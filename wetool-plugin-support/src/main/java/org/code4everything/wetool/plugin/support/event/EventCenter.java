@@ -101,6 +101,27 @@ public class EventCenter {
      */
     public static final String EVENT_KEYBOARD_RELEASED = "event_keyboard_released";
 
+    /**
+     * 鼠标移动事件，订阅事件可使用 {@link BaseMouseEventHandler}
+     *
+     * @since 1.3.0
+     */
+    public static final String EVENT_MOUSE_MOTION = "event_mouse_motion";
+
+    /**
+     * 鼠标按下事件，订阅事件可使用 {@link BaseMouseEventHandler}
+     *
+     * @since 1.3.0
+     */
+    public static final String EVENT_MOUSE_PRESSED = "event_mouse_pressed";
+
+    /**
+     * 鼠标释放事件，订阅事件可使用 {@link BaseMouseEventHandler}
+     *
+     * @since 1.3.0
+     */
+    public static final String EVENT_MOUSE_RELEASED = "event_mouse_released";
+
     private static final Map<String, EventMode> EVENT_MAP = new ConcurrentHashMap<>();
 
     private static final Map<String, List<EventHandler>> HANDLER_MAP = new ConcurrentHashMap<>();

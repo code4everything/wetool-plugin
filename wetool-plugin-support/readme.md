@@ -53,6 +53,9 @@ EventCenter.subscribeEvent(String eventKey, EventHandler eventHandler);
 |触发角事件|event_mouse_corner_trigger|MouseCornerEventMessage|LEFT_TOP, LEFT_BOTTOM, RIGHT_TOP, RIGHT_BOTTOM|
 |键盘按下事件|event_keyboard_pressed|KeyboardListenerEventMessage|-|
 |键盘弹起事件|event_keyboard_released|KeyboardListenerEventMessage|-|
+|鼠标移动事件|event_mouse_motion|MouseListenerEventMessage|-|
+|鼠标按下事件|event_mouse_pressed|MouseListenerEventMessage|-|
+|鼠标释放事件|event_mouse_released|MouseListenerEventMessage|-|
 
 ### 数据库操作
 
