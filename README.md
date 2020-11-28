@@ -2,7 +2,17 @@
 
 这是一个 [WeTool](https://gitee.com/code4everything/wetool) 插件支持库，开发极简单，简单几步即可实现插件的快速开发。
 
-### 仓库说明
+### [插件仓库](wetool-plugin-repository)
+
+- [插件仓库](wetool-plugin-repository)
+- [简易FTP客户端](wetool-plugin-repository/ease-ftp-client/readme.md)
+- [七牛云对象存储管理工具](wetool-plugin-repository/ease-qiniu/readme.md)
+- [简易FTP服务器](wetool-plugin-repository/ease-ftp-server/readme.md)
+- [开发工具](wetool-plugin-repository/ease-devtool/readme.md)
+- [Everywhere文件检索工具](wetool-plugin-repository/ease-everywhere/readme.md)
+- [数据库小应用](wetool-plugin-repository/ease-dbops/readme.md)
+
+### 本仓库说明
 
 - 插件基础支持库：[wetool-plugin-support](wetool-plugin-support)
 - 插件开发测试支持库：[wetool-plugin-test](wetool-plugin-test)
@@ -55,22 +65,6 @@
 - [参考文档](wetool-plugin-support/readme.md)
 
 - [插件提交](wetool-plugin-repository/readme.md)
-
-### 插件仓库
-
-- [插件仓库](wetool-plugin-repository)
-
-- [简易FTP客户端](wetool-plugin-repository/ease-ftp-client/readme.md)
-
-- [七牛云对象存储管理工具](wetool-plugin-repository/ease-qiniu/readme.md)
-
-- [简易FTP服务器](wetool-plugin-repository/ease-ftp-server/readme.md)
-
-- [开发工具](wetool-plugin-repository/ease-devtool/readme.md)
-
-- [Everywhere文件检索工具](wetool-plugin-repository/ease-everywhere/readme.md)
-
-- [数据库小应用](wetool-plugin-repository/ease-dbops/readme.md)
 
 ### 参与贡献
 
