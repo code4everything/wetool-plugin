@@ -19,61 +19,85 @@ public class EventCenter {
 
     /**
      * 注意这个事件没有 EventMessage 对象，订阅事件时可使用 {@link BaseNoMessageEventHandler}
+     *
+     * @since 1.2.0
      */
     public static final String EVENT_SECONDS_TIMER = "wetool_timer_seconds";
 
     /**
      * 注意这个事件没有 EventMessage 对象，订阅事件时可使用 {@link BaseNoMessageEventHandler}
+     *
+     * @since 1.2.0
      */
     public static final String EVENT_100_MS_TIMER = "wetool_timer_100_ms";
 
     /**
      * 点击快启菜单，订阅事件时可使用 {@link BaseQuickStartClickedEventHandler}
+     *
+     * @since 1.2.0
      */
     public static final String EVENT_QUICK_START_CLICKED = "wetool_quick_start_clicked";
 
     /**
      * 清楚所有缓存事件，订阅事件可使用 {@link BaseNoMessageEventHandler}
+     *
+     * @since 1.2.0
      */
     public static final String EVENT_CLEAR_FXML_CACHE = "wetool_clear_fxml_cache";
 
     /**
      * WeTool重启事件，该事件包括推出事件，订阅事件可使用 {@link BaseNoMessageEventHandler}
+     *
+     * @since 1.2.0
      */
     public static final String EVENT_WETOOL_RESTART = "wetool_restart";
 
     /**
      * WeTool退出事件，订阅事件可使用 {@link BaseNoMessageEventHandler}
+     *
+     * @since 1.2.0
      */
     public static final String EVENT_WETOOL_EXIT = "wetool_exit";
 
     /**
      * WeTool界面显示事件，订阅事件可使用 {@link BaseNoMessageEventHandler}
+     *
+     * @since 1.2.0
      */
     public static final String EVENT_WETOOL_SHOW = "wetool_show";
 
     /**
      * WeTool界面隐藏事件，订阅事件可使用 {@link BaseNoMessageEventHandler}
+     *
+     * @since 1.2.0
      */
     public static final String EVENT_WETOOL_HIDDEN = "wetool_hidden";
 
     /**
      * 剪贴板变化事件（仅针对文本内容），订阅事件可使用 {@link BaseClipboardChangedEventHandler}
+     *
+     * @since 1.2.0
      */
     public static final String EVENT_CLIPBOARD_CHANGED = "event_clipboard_changed";
 
     /**
      * 触发角事件，订阅事件可使用 {@link BaseMouseCornerEventHandler}
+     *
+     * @since 1.2.0
      */
     public static final String EVENT_MOUSE_CORNER_TRIGGER = "event_mouse_corner_trigger";
 
     /**
      * 键盘按下事件，订阅事件可使用 {@link BaseKeyboardEventHandler}
+     *
+     * @since 1.3.0
      */
     public static final String EVENT_KEYBOARD_PRESSED = "event_keyboard_pressed";
 
     /**
      * 键盘弹起事件，订阅事件可使用 {@link BaseKeyboardEventHandler}
+     *
+     * @since 1.3.0
      */
     public static final String EVENT_KEYBOARD_RELEASED = "event_keyboard_released";
 
