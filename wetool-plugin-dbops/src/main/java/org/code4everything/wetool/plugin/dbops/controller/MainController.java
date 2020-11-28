@@ -224,31 +224,32 @@ public class MainController implements BaseViewController {
         if (StrUtil.isBlank(eventKey) || StrUtil.isBlank(uuid)) {
             return;
         }
+
         Set<String> scripts = EVENT_SCRIPT.computeIfAbsent(eventKey, s -> new HashSet<>());
-        if (scripts.contains(uuid)) {
-            // 已订阅
-            return;
-        }
-        EVENT_SCRIPT.forEach((k, v) -> v.remove(uuid));
-        scripts.add(uuid);
-        EventCenter.subscribeEvent(eventKey, (key, date, eventMessage) -> {
-            Set<String> set = EVENT_SCRIPT.get(eventKey);
-            if (CollUtil.isEmpty(set)) {
-                return;
-            }
-            set.forEach(e -> {
-                QlScript qlScript = SCRIPTS.getObject(uuid, QlScript.class);
-                if (qlScript.getType() != ExecuteTypeEnum.EVENT) {
+        if (CollUtil.isEmpty(scripts)) {
+            // 为空说明eventKey还未订阅事件
+            EventCenter.subscribeEvent(eventKey, (key, date, eventMessage) -> {
+                Set<String> set = EVENT_SCRIPT.get(key);
+                if (CollUtil.isEmpty(set)) {
                     return;
                 }
-                String dbName = StrUtil.blankToDefault(qlScript.getSpecifyDbName(), dbNameBox.getValue());
-                try {
-                    ScriptExecutor.execute(dbName, qlScript.getCodes(), Map.of("eventMessage", eventMessage));
-                } catch (Exception x) {
-                    log.error("execute event script error: {}", ExceptionUtil.stacktraceToString(x, Integer.MAX_VALUE));
-                }
+                set.forEach(e -> {
+                    QlScript qlScript = SCRIPTS.getObject(e, QlScript.class);
+                    if (qlScript.getType() != ExecuteTypeEnum.EVENT || !key.equals(qlScript.getEventKey())) {
+                        return;
+                    }
+                    String dbName = StrUtil.blankToDefault(qlScript.getSpecifyDbName(), dbNameBox.getValue());
+                    try {
+                        ScriptExecutor.execute(dbName, qlScript.getCodes(), Map.of("eventMessage", eventMessage));
+                    } catch (Exception x) {
+                        log.error("execute event script error: {}", ExceptionUtil.stacktraceToString(x,
+                                Integer.MAX_VALUE));
+                    }
+                });
             });
-        });
+        }
+
+        scripts.add(uuid);
     }
 
     public void searchIfEnter(KeyEvent keyEvent) {
