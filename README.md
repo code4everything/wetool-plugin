@@ -18,6 +18,12 @@
 - 插件开发测试支持库：[wetool-plugin-test](wetool-plugin-test)
 - 插件开发示例：[wetool-plugin-sample](wetool-plugin-sample)
 
+### 插件开发
+
+- [快速开始](quick_start.md)
+- [参考文档](wetool-plugin-support/readme.md)
+- [插件提交](wetool-plugin-repository/readme.md)
+
 ### 开发须知
 
 - 安装有Java11及以上版本
@@ -57,14 +63,6 @@
     <scope>test</scope>
 </dependency>
 ```
-
-### 插件开发
-
-- [快速开始](quick_start.md)
-
-- [参考文档](wetool-plugin-support/readme.md)
-
-- [插件提交](wetool-plugin-repository/readme.md)
 
 ### 参与贡献
 
