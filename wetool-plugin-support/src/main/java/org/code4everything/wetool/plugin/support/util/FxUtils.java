@@ -65,6 +65,8 @@ public class FxUtils {
 
     private static final List<Pair<List<Integer>, Runnable>> SHORTCUT_ACTION = new ArrayList<>();
 
+    private static final List<Pair<List<Integer>, Runnable>> GLOBAL_SHORTCUT_ACTION = new ArrayList<>();
+
     /**
      * 清空文本输入框
      *
@@ -91,6 +93,18 @@ public class FxUtils {
     }
 
     /**
+     * 注册全局快捷键
+     *
+     * @since 1.3.0
+     */
+    public static synchronized void registerGlobalShortcuts(List<Integer> shortcutKeyCodes, Runnable runnable) {
+        if (ArrayUtil.isEmpty(shortcutKeyCodes) || Objects.isNull(runnable)) {
+            return;
+        }
+        GLOBAL_SHORTCUT_ACTION.add(new Pair<>(shortcutKeyCodes, runnable));
+    }
+
+    /**
      * 内部调用
      *
      * @since 1.3.0
@@ -105,13 +119,11 @@ public class FxUtils {
             public void handleEvent0(String eventKey, Date eventTime, KeyboardListenerEventMessage eventMessage) {
                 PRESSING_KEY_CODE.add(eventMessage.getKeyEvent().getKeyCode());
 
-                SHORTCUT_ACTION.forEach(pair -> {
-                    if (pair.getKey().size() == PRESSING_KEY_CODE.size() && CollUtil.containsAll(PRESSING_KEY_CODE,
-                            pair.getKey())) {
-                        // 触发快捷键
-                        Platform.runLater(pair.getValue());
-                    }
-                });
+                GLOBAL_SHORTCUT_ACTION.forEach(FxUtils::handleShortcuts);
+
+                if (getStage().isShowing()) {
+                    SHORTCUT_ACTION.forEach(FxUtils::handleShortcuts);
+                }
             }
         });
         EventCenter.subscribeEvent(EventCenter.EVENT_KEYBOARD_RELEASED, new BaseKeyboardEventHandler() {
@@ -120,6 +132,14 @@ public class FxUtils {
                 PRESSING_KEY_CODE.remove(eventMessage.getKeyEvent().getKeyCode());
             }
         });
+    }
+
+    private static void handleShortcuts(Pair<List<Integer>, Runnable> pair) {
+        if (pair.getKey().size() == PRESSING_KEY_CODE.size() && CollUtil.containsAll(PRESSING_KEY_CODE,
+                pair.getKey())) {
+            // 触发快捷键
+            Platform.runLater(pair.getValue());
+        }
     }
 
     /**

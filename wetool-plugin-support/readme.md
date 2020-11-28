@@ -93,6 +93,7 @@ FxUtils.hideStage();
 
 // 注册快捷键，keyCode 通过类 NativeKeyEvent 获取
 FxUtils.registerShortcuts(List<Integer> shortcutKeyCodes, Runnable runnable);
+FxUtils.registerGlobalShortcuts(List<Integer> shortcutKeyCodes, Runnable runnable);
 ```
   
 [FxDialogs](src/main/java/org/code4everything/wetool/plugin/support/util/FxDialogs.java)
