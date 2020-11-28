@@ -6,7 +6,7 @@ dbops，中文名为数据库小应用，我们可以将一系列的脚本封装
 
 最新版下载地址：[wetool-plugin-dbops](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.3.0.jar)
 
-> 本插件使用的脚本解析库 [QLExpress](https://github.com/alibaba/QLExpress), 语法基本和java一致，几乎没有学习成本，了解语法点击链接即可。
+> 如需配置数据库，[请点击此处查看](https://gitee.com/code4everything/wetool) 。本插件使用的脚本解析库 [QLExpress](https://github.com/alibaba/QLExpress), 语法基本和java一致，几乎没有学习成本，了解语法点击链接即可。
 
 ### 运行截图
 
@@ -30,16 +30,14 @@ dbops，中文名为数据库小应用，我们可以将一系列的脚本封装
 
 事件发布的消息会随一个被定义为 `eventMessage` 的变量一起注入到脚本中。
 
-### 两个小例子
-
-将剪贴板内容保存到数据库中，并添加一个查询小应用。
+### 例子1：存储剪贴板历史并添加查询按钮
 
 首先，我们需要创建用于存储剪贴板内容的数据表
 
 ```sql
 create table clipboard_history (
     id bigint auto_increment not null primary key,
-    created_date datetime not null,
+    created_date datetime(6) not null,
     clip_string text not null
 ) comment '剪贴板历史';
 
@@ -53,7 +51,7 @@ create index clipboard_history_date_index on clipboard_history (created_date des
 ```java
 import cn.hutool.core.util.StrUtil;
 
-sql="insert into clipboard_history(created_date, clip_string) values(now(),?)";
+sql="insert into clipboard_history(created_date, clip_string) values(now(6),?)";
 clip=eventMessage.getClipboardText();
 
 if(StrUtil.isNotBlank(clip)){
@@ -84,11 +82,39 @@ dialog(result);
 
 > 这里注意有个小坑：使用return结束执行时一定要有返回值，否则语法会报错。
 
-效果
-
 ![image](images/search_clipboard_input.png)
 
 ![image](images/search_clipboard_result.png)
+
+### 例子2：保存键盘敲击记录
+
+创建表结构
+
+```sql
+create table keyboard_history (
+    id bigint auto_increment primary key,
+    created_date datetime(6) not null,
+    key_text varchar(32) not null,
+    key_code int not null,
+    raw_code int not null
+) comment '键盘敲击历史记录';
+```
+
+添加存储脚本
+
+![image](images/key_board_history.png)
+
+```java
+sql="insert into keyboard_history(created_date, key_text, key_code, raw_code) values(now(6),?,?,?)";
+
+keyText=eventMessage.toKeyText();
+keyCode=eventMessage.getKeyEvent().getKeyCode();
+rawCode=eventMessage.getKeyEvent().getRawCode();
+
+update(sql,list(keyText,keyCode,rawCode));
+```
+
+大功告成，任何键盘敲击行为都会记录到数据库，我们可以根据这些数据来分析我们每天的活动行为。
 
 ### 更新历史
 
