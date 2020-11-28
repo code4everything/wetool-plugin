@@ -121,7 +121,8 @@ public class FxUtils {
 
                 GLOBAL_SHORTCUT_ACTION.forEach(FxUtils::handleShortcuts);
 
-                if (getStage().isShowing()) {
+                Stage stage = getStage();
+                if (stage.isShowing() && stage.isFocused()) {
                     SHORTCUT_ACTION.forEach(FxUtils::handleShortcuts);
                 }
             }
