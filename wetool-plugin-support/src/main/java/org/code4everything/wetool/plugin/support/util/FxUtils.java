@@ -309,6 +309,19 @@ public class FxUtils {
     }
 
     /**
+     * 显示或隐藏主界面
+     *
+     * @since 1.3.0
+     */
+    public static void toggleStage() {
+        if (getStage().isShowing()) {
+            hideStage();
+        } else {
+            showStage();
+        }
+    }
+
+    /**
      * 隐藏主界面
      *
      * @since 1.3.0
