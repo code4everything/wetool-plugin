@@ -98,6 +98,9 @@ create table keyboard_history (
     key_code int not null,
     raw_code int not null
 ) comment '键盘敲击历史记录';
+
+create index keyboard_history_key_code_index on keyboard_history (key_code);
+create index keyboard_history_key_text_index on keyboard_history (key_text);
 ```
 
 添加存储脚本
