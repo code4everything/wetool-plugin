@@ -119,6 +119,38 @@ update(sql,list(keyText,keyCode,rawCode));
 
 大功告成，任何键盘敲击行为都会记录到数据库，我们可以根据这些数据来分析我们每天的活动行为。
 
+### 例子3：鼠标点击记录
+
+创建数据表结构
+
+```sql
+create table mouse_click_history (
+    id bigint auto_increment not null primary key,
+    created_date datetime(6) not null,
+    button int not null,
+    click_count int not null,
+    pos_x int not null,
+    pos_y int not null
+) comment '鼠标点击历史记录';
+```
+
+添加存储脚本
+
+![image](images/mouse_click_histor.png)
+
+```java
+sql="insert into mouse_click_history(created_date, button, click_count, pos_x, pos_y) values(now(6),?,?,?,?)";
+
+button=eventMessage.getMouseEvent().getButton();
+clickCount=eventMessage.getMouseEvent().getClickCount();
+posX=eventMessage.getMouseEvent().getX();
+posY=eventMessage.getMouseEvent().getY();
+
+update(sql,list(button,clickCount,posX,posY));
+```
+
+Enjoy this...
+
 ### 更新历史
 
 #### [v1.3.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.3.0.jar)
