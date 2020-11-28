@@ -1,6 +1,7 @@
 package org.code4everything.wetool.plugin.support.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -22,6 +23,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.FileUtils;
@@ -29,6 +31,8 @@ import org.code4everything.boot.base.function.VoidFunction;
 import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.constant.AppConsts;
 import org.code4everything.wetool.plugin.support.event.EventCenter;
+import org.code4everything.wetool.plugin.support.event.handler.BaseKeyboardEventHandler;
+import org.code4everything.wetool.plugin.support.event.message.KeyboardListenerEventMessage;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
 import java.awt.*;
@@ -39,9 +43,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author pantao
@@ -55,6 +59,12 @@ public class FxUtils {
 
     private static final Map<String, Menu> MENU_MAP = new ConcurrentHashMap<>(4);
 
+    private static final Set<Integer> PRESSING_KEY_CODE = new ConcurrentHashSet<>();
+
+    private static final AtomicBoolean KEY_EVENT_SUBSCRIBED = new AtomicBoolean(false);
+
+    private static final List<Pair<List<Integer>, Runnable>> SHORTCUT_ACTION = new ArrayList<>();
+
     /**
      * 清空文本输入框
      *
@@ -66,6 +76,50 @@ public class FxUtils {
                 tic.clear();
             }
         }
+    }
+
+    /**
+     * 注册快捷键
+     *
+     * @since 1.3.0
+     */
+    public static synchronized void registerShortcuts(List<Integer> shortcutKeyCodes, Runnable runnable) {
+        if (ArrayUtil.isEmpty(shortcutKeyCodes) || Objects.isNull(runnable)) {
+            return;
+        }
+        SHORTCUT_ACTION.add(new Pair<>(shortcutKeyCodes, runnable));
+    }
+
+    /**
+     * 内部调用
+     *
+     * @since 1.3.0
+     */
+    public static void listenKeyEvent() {
+        if (KEY_EVENT_SUBSCRIBED.get()) {
+            return;
+        }
+        KEY_EVENT_SUBSCRIBED.set(true);
+        EventCenter.subscribeEvent(EventCenter.EVENT_KEYBOARD_PRESSED, new BaseKeyboardEventHandler() {
+            @Override
+            public void handleEvent0(String eventKey, Date eventTime, KeyboardListenerEventMessage eventMessage) {
+                PRESSING_KEY_CODE.add(eventMessage.getKeyEvent().getKeyCode());
+
+                SHORTCUT_ACTION.forEach(pair -> {
+                    if (pair.getKey().size() == PRESSING_KEY_CODE.size() && CollUtil.containsAll(PRESSING_KEY_CODE,
+                            pair.getKey())) {
+                        // 触发快捷键
+                        Platform.runLater(pair.getValue());
+                    }
+                });
+            }
+        });
+        EventCenter.subscribeEvent(EventCenter.EVENT_KEYBOARD_RELEASED, new BaseKeyboardEventHandler() {
+            @Override
+            public void handleEvent0(String eventKey, Date eventTime, KeyboardListenerEventMessage eventMessage) {
+                PRESSING_KEY_CODE.remove(eventMessage.getKeyEvent().getKeyCode());
+            }
+        });
     }
 
     /**
