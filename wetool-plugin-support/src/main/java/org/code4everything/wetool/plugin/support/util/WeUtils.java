@@ -256,6 +256,7 @@ public class WeUtils {
     public static void exitSystem() {
         EventCenter.publishEvent(EventCenter.EVENT_WETOOL_EXIT, DateUtil.date());
         DruidSource.listAllDataSources().forEach(DruidDataSource::close);
+        GlobalThreadPool.shutdown(false);
         log.info("wetool exited");
         System.exit(IntegerConsts.ZERO);
     }
