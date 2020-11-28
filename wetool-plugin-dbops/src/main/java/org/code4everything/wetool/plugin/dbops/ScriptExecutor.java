@@ -47,7 +47,7 @@ public class ScriptExecutor {
         expressRunner.execute(codes, context, null, true, false);
     }
 
-    public static ExpressRunner getExpressRunner(String dbName) {
+    public static synchronized ExpressRunner getExpressRunner(String dbName) {
         dbName = StrUtil.blankToDefault(dbName, "");
         return RUNNER_MAP.computeIfAbsent(dbName, name -> {
             ExpressRunner runner = new ExpressRunner();
