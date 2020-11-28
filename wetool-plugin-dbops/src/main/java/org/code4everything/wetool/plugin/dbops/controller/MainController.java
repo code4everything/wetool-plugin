@@ -242,8 +242,8 @@ public class MainController implements BaseViewController {
                     try {
                         ScriptExecutor.execute(dbName, qlScript.getCodes(), Map.of("eventMessage", eventMessage));
                     } catch (Exception x) {
-                        log.error("execute event script error: {}", ExceptionUtil.stacktraceToString(x,
-                                Integer.MAX_VALUE));
+                        String errMsg = "execute event script error: {}";
+                        log.error(errMsg, ExceptionUtil.stacktraceToString(x, Integer.MAX_VALUE));
                     }
                 });
             });
