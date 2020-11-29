@@ -22,6 +22,7 @@
         <druid.version>1.2.3</druid.version>
         <mysql.version>8.0.22</mysql.version>
         <pinyin4j.version>2.5.1</pinyin4j.version>
+        <oshi.version>5.3.6</oshi.version>
     </properties>
 
     <!--私有仓库-->
@@ -131,6 +132,11 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-system</artifactId>
             <version>${hutool.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.oshi</groupId>
+            <artifactId>oshi-core</artifactId>
+            <version>${oshi.version}</version>
         </dependency>
         <!--快速开发工具-->
         <dependency>

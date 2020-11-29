@@ -23,6 +23,7 @@ dbops，中文名为数据库小应用，我们可以将一系列的脚本封装
 |format(String str, Object... params)|String|格式化字符串，与hutool的StrUtil.format保持一致|
 |query(String sql, List params)|List\<Map\<String, Object\>\>|执行SQL查询语句，需连接数据库|
 |update(String sql, List params)|long|执行SQL更新语句，需连接数据库，返回影响的行数|
+|processes(String name)|List\<OSProcess\>|模糊匹配进程名称|
 
 ### 事件订阅
 

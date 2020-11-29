@@ -56,9 +56,9 @@ public class MainController implements BaseViewController {
 
     private static final File DB_OPS_PATH = FileUtil.file(HOME_PATH, "wetool", "wetool-plugin-dbops", ".dbops");
 
-    private static final File SCRIPT_JSON_FILE = FileUtil.file(DB_OPS_PATH, "ql-script.json");
-
     private static final Map<String, Set<String>> EVENT_SCRIPT = new HashMap<>(8);
+
+    public static File scriptJsonFile = FileUtil.file(DB_OPS_PATH, "ql-script.json");
 
     @FXML
     public ComboBox<String> dbNameBox;
@@ -82,11 +82,11 @@ public class MainController implements BaseViewController {
     }
 
     private void readScript() {
-        if (!FileUtil.exist(SCRIPT_JSON_FILE)) {
+        if (!FileUtil.exist(scriptJsonFile)) {
             return;
         }
         SCRIPTS.clear();
-        String json = FileUtil.readUtf8String(SCRIPT_JSON_FILE);
+        String json = FileUtil.readUtf8String(scriptJsonFile);
         JSONObject jsonObject = JSON.parseObject(StrUtil.blankToDefault(json, "{}"), Feature.OrderedField,
                 Feature.AllowComment);
         SCRIPTS.putAll(jsonObject);
@@ -116,7 +116,7 @@ public class MainController implements BaseViewController {
             Button button = (Button) actionEvent.getSource();
             String uuid = button.getParent().getId();
             SCRIPTS.remove(uuid);
-            WeUtils.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
+            WeUtils.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), scriptJsonFile));
             renderScripts(null);
         };
         EventHandler<ActionEvent> actionHandler = actionEvent -> {
@@ -215,7 +215,7 @@ public class MainController implements BaseViewController {
                 QlScript newScript = controller.getQlScript();
                 SCRIPTS.put(newScript.getUuid(), newScript);
                 renderScripts(null);
-                WeUtils.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
+                WeUtils.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), scriptJsonFile));
             }
         });
     }
@@ -235,12 +235,14 @@ public class MainController implements BaseViewController {
                 }
                 set.forEach(e -> {
                     QlScript qlScript = SCRIPTS.getObject(e, QlScript.class);
-                    if (qlScript.getType() != ExecuteTypeEnum.EVENT || !key.equals(qlScript.getEventKey())) {
+                    if (Objects.isNull(qlScript) || qlScript.getType() != ExecuteTypeEnum.EVENT || !key.equals(qlScript.getEventKey())) {
                         return;
                     }
                     String dbName = StrUtil.blankToDefault(qlScript.getSpecifyDbName(), dbNameBox.getValue());
+                    Map<String, Object> args = Objects.isNull(eventMessage) ? null : Map.of("eventMessage",
+                            eventMessage);
                     try {
-                        ScriptExecutor.execute(dbName, qlScript.getCodes(), Map.of("eventMessage", eventMessage));
+                        ScriptExecutor.execute(dbName, qlScript.getCodes(), args);
                     } catch (Exception x) {
                         String errMsg = "execute event script error: {}";
                         log.error(errMsg, ExceptionUtil.stacktraceToString(x, Integer.MAX_VALUE));
@@ -259,7 +261,7 @@ public class MainController implements BaseViewController {
     public void importQl() {
         boolean success = importQl(ClipboardUtil.getStr());
         if (success) {
-            WeUtils.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
+            WeUtils.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), scriptJsonFile));
             renderScripts(null);
         } else {
             FxUtils.chooseFile(this::openFile);
@@ -301,7 +303,7 @@ public class MainController implements BaseViewController {
     public void setFileContent(String content) {
         boolean success = importQl(content);
         if (success) {
-            WeUtils.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), SCRIPT_JSON_FILE));
+            WeUtils.execute(() -> FileUtil.writeUtf8String(JSON.toJSONString(SCRIPTS, true), scriptJsonFile));
             renderScripts(null);
         }
     }

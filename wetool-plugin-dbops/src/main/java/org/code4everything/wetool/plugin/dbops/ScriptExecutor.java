@@ -2,8 +2,10 @@ package org.code4everything.wetool.plugin.dbops;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.system.oshi.OshiUtil;
 import com.ql.util.express.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 import javafx.beans.property.SimpleObjectProperty;
@@ -19,10 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.support.control.cell.UnmodifiableTextFieldTableCell;
 import org.code4everything.wetool.plugin.support.druid.JdbcExecutor;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
+import oshi.software.os.OSProcess;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * @author pantao
@@ -38,8 +42,12 @@ public class ScriptExecutor {
 
     @SneakyThrows
     public static void execute(String dbName, String codes, Map<String, Object> args) {
+        if (StrUtil.isBlank(codes)) {
+            return;
+        }
+
         DefaultContext<String, Object> context = new DefaultContext<>();
-        if (CollUtil.isNotEmpty(args)) {
+        if (MapUtil.isNotEmpty(args)) {
             context.putAll(args);
         }
 
@@ -55,6 +63,7 @@ public class ScriptExecutor {
                 runner.addFunctionOfClassMethod("dialog", CLASS_NAME, "dialog", new Class[]{Object.class}, null);
                 runner.addFunctionOfClassMethod("list", CLASS_NAME, "list", new Class[]{Object[].class}, null);
                 runner.addFunctionOfClassMethod("input", CLASS_NAME, "input", new Class[]{String.class}, null);
+                runner.addFunctionOfClassMethod("processes", CLASS_NAME, "processes", new Class[]{String.class}, null);
 
                 Class<?>[] logParamTypes = {String.class, Object[].class};
                 runner.addFunctionOfClassMethod("log", CLASS_NAME, "log", logParamTypes, null);
@@ -72,6 +81,14 @@ public class ScriptExecutor {
             }
             return runner;
         });
+    }
+
+    public static List<OSProcess> processes(String name) {
+        List<OSProcess> processes = OshiUtil.getOs().getProcesses();
+        if (StrUtil.isEmpty(name)) {
+            return processes;
+        }
+        return processes.stream().filter(process -> StrUtil.containsIgnoreCase(process.getName(), name)).collect(Collectors.toList());
     }
 
     public static void log(String msg, Object... param) {
