@@ -7,9 +7,11 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpUtil;
 import cn.hutool.system.oshi.OshiUtil;
 import com.ql.util.express.DefaultContext;
 import com.ql.util.express.ExpressRunner;
+import com.ql.util.express.parse.ExpressPackage;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn;
@@ -64,12 +66,28 @@ public class ScriptExecutor {
         dbName = StrUtil.blankToDefault(dbName, "");
         return RUNNER_MAP.computeIfAbsent(dbName, name -> {
             ExpressRunner runner = new ExpressRunner();
+            ExpressPackage expressPackage = runner.getRootExpressPackage();
+            expressPackage.addPackage("org.code4everything.wetool.plugin.support.util");
+            expressPackage.addPackage("org.code4everything.wetool.plugin.support.factory");
+            expressPackage.addPackage("cn.hutool.core.util");
+            expressPackage.addPackage("cn.hutool.core.collection");
+            expressPackage.addPackage("cn.hutool.core.date");
+            expressPackage.addPackage("cn.hutool.core.io");
+            expressPackage.addPackage("cn.hutool.core.lang");
+            expressPackage.addPackage("cn.hutool.core.map");
+
             try {
+                Class<?>[] stringParamType = {String.class};
+
                 runner.addFunctionOfClassMethod("dialog", CLASS_NAME, "dialog", new Class[]{Object.class}, null);
                 runner.addFunctionOfClassMethod("list", CLASS_NAME, "list", new Class[]{Object[].class}, null);
-                runner.addFunctionOfClassMethod("input", CLASS_NAME, "input", new Class[]{String.class}, null);
-                runner.addFunctionOfClassMethod("processes", CLASS_NAME, "processes", new Class[]{String.class}, null);
-                runner.addFunctionOfClassMethod("run", CLASS_NAME, "run", new Class[]{String.class}, null);
+                runner.addFunctionOfClassMethod("input", CLASS_NAME, "input", stringParamType, null);
+                runner.addFunctionOfClassMethod("processes", CLASS_NAME, "processes", stringParamType, null);
+
+                runner.addFunctionOfClassMethod("get", HttpUtil.class, "get", stringParamType, null);
+                runner.addFunctionOfClassMethod("run", RuntimeUtil.class, "execForStr", stringParamType, null);
+                Class<?>[] postTypes = {String.class, String.class};
+                runner.addFunctionOfClassMethod("post", HttpUtil.class, "post", postTypes, null);
 
                 Class<?>[] logParamTypes = {String.class, Object[].class};
                 runner.addFunctionOfClassMethod("log", CLASS_NAME, "log", logParamTypes, null);
@@ -87,10 +105,6 @@ public class ScriptExecutor {
             }
             return runner;
         });
-    }
-
-    public static String run(String cmd) {
-        return RuntimeUtil.execForStr(cmd);
     }
 
     public static List<OSProcess> processes(String name) {
@@ -120,9 +134,7 @@ public class ScriptExecutor {
             return;
         }
         String header = "结果";
-        if (object instanceof String) {
-            FxDialogs.showInformation(header, (String) object);
-        } else if (object instanceof List) {
+        if (object instanceof List) {
             List list = (List) object;
             if (CollUtil.isNotEmpty(list)) {
                 list.removeIf(Objects::isNull);
@@ -159,6 +171,8 @@ public class ScriptExecutor {
             vBox.getChildren().add(tableView);
             vBox.setPrefWidth(1000);
             FxDialogs.showDialog(header, vBox);
+        } else {
+            FxDialogs.showInformation(header, ObjectUtil.toString(object));
         }
     }
 }
