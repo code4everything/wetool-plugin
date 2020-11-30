@@ -24,6 +24,13 @@ dbops，中文名为数据库小应用，我们可以将一系列的脚本封装
 |query(String sql, List params)|List\<Map\<String, Object\>\>|执行SQL查询语句，需连接数据库|
 |update(String sql, List params)|long|执行SQL更新语句，需连接数据库，返回影响的行数|
 |processes(String name)|List\<OSProcess\>|模糊匹配进程名称|
+|run|String|执行命令，返回执行结果|
+
+### 内置变量
+
+|变量名|类型|说明|
+|---|---|---|
+|now|Date|触发脚本执行的时间|
 
 ### 事件订阅
 

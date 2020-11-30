@@ -2,8 +2,10 @@ package org.code4everything.wetool.plugin.dbops;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.oshi.OshiUtil;
 import com.ql.util.express.DefaultContext;
@@ -51,6 +53,9 @@ public class ScriptExecutor {
             context.putAll(args);
         }
 
+        // 内置变量
+        context.put("now", DateUtil.date());
+
         ExpressRunner expressRunner = getExpressRunner(dbName);
         expressRunner.execute(codes, context, null, true, false);
     }
@@ -64,6 +69,7 @@ public class ScriptExecutor {
                 runner.addFunctionOfClassMethod("list", CLASS_NAME, "list", new Class[]{Object[].class}, null);
                 runner.addFunctionOfClassMethod("input", CLASS_NAME, "input", new Class[]{String.class}, null);
                 runner.addFunctionOfClassMethod("processes", CLASS_NAME, "processes", new Class[]{String.class}, null);
+                runner.addFunctionOfClassMethod("run", CLASS_NAME, "run", new Class[]{String.class}, null);
 
                 Class<?>[] logParamTypes = {String.class, Object[].class};
                 runner.addFunctionOfClassMethod("log", CLASS_NAME, "log", logParamTypes, null);
@@ -81,6 +87,10 @@ public class ScriptExecutor {
             }
             return runner;
         });
+    }
+
+    public static String run(String cmd) {
+        return RuntimeUtil.execForStr(cmd);
     }
 
     public static List<OSProcess> processes(String name) {
