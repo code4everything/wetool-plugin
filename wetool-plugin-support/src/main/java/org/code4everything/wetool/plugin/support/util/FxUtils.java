@@ -521,18 +521,39 @@ public class FxUtils {
      * 重启本工具库
      */
     public static void restart() {
+        restart(null);
+    }
+
+    /**
+     * 重启本工具库
+     *
+     * @since 1.3.0
+     */
+    public static void restart(String jarName) {
         EventCenter.publishEvent(EventCenter.EVENT_WETOOL_RESTART, DateUtil.date());
         String batchFile = WeUtils.getConfig().getRestartBatch();
         if (StrUtil.isEmpty(batchFile)) {
-            // 获取当前程序运行路径
-            final String jarPath = System.getProperty("java.class.path");
-            // 文件名的截取索引
-            final int idx = Math.max(jarPath.lastIndexOf('/'), jarPath.lastIndexOf('\\')) + 1;
-            restartHelper("java -jar ./" + jarPath.substring(idx));
+            if (StrUtil.isEmpty(jarName)) {
+                jarName = getWetoolJarName();
+            }
+            restartHelper("java -jar ./" + jarName);
         } else {
             restartHelper(FileUtils.currentWorkDir(batchFile));
         }
         WeUtils.exitSystem();
+    }
+
+    /**
+     * 获取当前运行的jar名称
+     *
+     * @since 1.3.0
+     */
+    public static String getWetoolJarName() {
+        // 获取当前程序运行路径
+        String jarPath = System.getProperty("java.class.path");
+        // 文件名的截取索引
+        int idx = Math.max(jarPath.lastIndexOf('/'), jarPath.lastIndexOf('\\')) + 1;
+        return jarPath.substring(idx);
     }
 
     private static void restartHelper(String cmd) {
