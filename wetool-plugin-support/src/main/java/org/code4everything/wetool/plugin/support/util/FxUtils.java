@@ -32,6 +32,7 @@ import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.constant.AppConsts;
 import org.code4everything.wetool.plugin.support.event.EventCenter;
 import org.code4everything.wetool.plugin.support.event.handler.BaseKeyboardEventHandler;
+import org.code4everything.wetool.plugin.support.event.handler.BaseNoMessageEventHandler;
 import org.code4everything.wetool.plugin.support.event.message.KeyboardListenerEventMessage;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
@@ -131,6 +132,12 @@ public class FxUtils {
             @Override
             public void handleEvent0(String eventKey, Date eventTime, KeyboardListenerEventMessage eventMessage) {
                 PRESSING_KEY_CODE.remove(eventMessage.getKeyEvent().getKeyCode());
+            }
+        });
+        EventCenter.subscribeEvent(EventCenter.EVENT_WETOOL_SHOW, new BaseNoMessageEventHandler() {
+            @Override
+            public void handleEvent0(String eventKey, Date eventTime) {
+                PRESSING_KEY_CODE.clear();
             }
         });
     }
