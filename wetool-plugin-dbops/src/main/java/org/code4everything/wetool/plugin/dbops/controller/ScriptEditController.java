@@ -1,6 +1,8 @@
 package org.code4everything.wetool.plugin.dbops.controller;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
+import com.alibaba.fastjson.JSON;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -11,6 +13,7 @@ import org.code4everything.wetool.plugin.dbops.script.QlScript;
 import org.code4everything.wetool.plugin.support.druid.DruidSource;
 import org.code4everything.wetool.plugin.support.event.EventCenter;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
+import org.code4everything.wetool.plugin.support.util.FxUtils;
 
 import java.util.Map;
 import java.util.Objects;
@@ -96,5 +99,9 @@ public class ScriptEditController {
             return;
         }
         FxDialogs.showInformation(null, "测试通过");
+    }
+
+    public void exportScript() {
+        FxUtils.saveFile(file -> FileUtil.writeUtf8String(JSON.toJSONString(getQlScript(), true), file));
     }
 }
