@@ -20,14 +20,22 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerExpectContinueHandler;
+import lombok.RequiredArgsConstructor;
 
-public class HttpHelloWorldServerInitializer extends ChannelInitializer<SocketChannel> {
+/**
+ * @author pantao
+ * @since 2020/12/5
+ */
+@RequiredArgsConstructor
+public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
+
+    private final int port;
 
     @Override
     public void initChannel(SocketChannel ch) {
         ChannelPipeline p = ch.pipeline();
         p.addLast(new HttpServerCodec());
         p.addLast(new HttpServerExpectContinueHandler());
-        p.addLast(new HttpHelloWorldServerHandler());
+        p.addLast(new HttpHelloWorldServerHandler(port));
     }
 }

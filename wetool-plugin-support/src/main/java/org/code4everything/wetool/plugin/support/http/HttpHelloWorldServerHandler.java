@@ -15,20 +15,29 @@
  */
 package org.code4everything.wetool.plugin.support.http;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
+import com.alibaba.fastjson.JSON;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-import static io.netty.handler.codec.http.HttpHeaderNames.*;
-import static io.netty.handler.codec.http.HttpHeaderValues.KEEP_ALIVE;
-import static io.netty.handler.codec.http.HttpHeaderValues.*;
-import static io.netty.handler.codec.http.HttpResponseStatus.OK;
+import java.util.Objects;
 
+/**
+ * @author pantao
+ * @since 2020/12/5
+ */
+@Slf4j
+@RequiredArgsConstructor
 public class HttpHelloWorldServerHandler extends SimpleChannelInboundHandler<HttpObject> {
-    private static final byte[] CONTENT = { 'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd' };
+
+    private final int port;
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
@@ -40,21 +49,23 @@ public class HttpHelloWorldServerHandler extends SimpleChannelInboundHandler<Htt
         if (msg instanceof HttpRequest) {
             HttpRequest req = (HttpRequest) msg;
 
-            System.out.println(req.uri());
+            String uri = req.uri();
+            int idx = uri.indexOf("?");
+            String api = req.method().name().toLowerCase() + " " + (idx > 0 ? uri.substring(0, idx) : uri);
+
+            // TODO: 2020/12/6 解析参数和body
+
+            FullHttpResponse response = getResponse(req, api);
+
             boolean keepAlive = HttpUtil.isKeepAlive(req);
-            FullHttpResponse response = new DefaultFullHttpResponse(req.protocolVersion(), OK,
-                                                                    Unpooled.wrappedBuffer(CONTENT));
-            response.headers()
-                    .set(CONTENT_TYPE, TEXT_PLAIN)
-                    .setInt(CONTENT_LENGTH, response.content().readableBytes());
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON).setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
 
             if (keepAlive) {
                 if (!req.protocolVersion().isKeepAliveDefault()) {
-                    response.headers().set(CONNECTION, KEEP_ALIVE);
+                    response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
                 }
             } else {
-                // Tell the client we're going to close the connection.
-                response.headers().set(CONNECTION, CLOSE);
+                response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
             }
 
             ChannelFuture f = ctx.write(response);
@@ -65,9 +76,38 @@ public class HttpHelloWorldServerHandler extends SimpleChannelInboundHandler<Htt
         }
     }
 
+    private FullHttpResponse getResponse(HttpRequest req, String api) {
+        HttpVersion httpVersion = req.protocolVersion();
+        HttpApiHandler apiHandler = HttpService.HTTP_SERVICE.get(port).get(api);
+
+        FullHttpResponse response;
+
+        if (Objects.isNull(apiHandler)) {
+            response = new DefaultFullHttpResponse(httpVersion, HttpResponseStatus.NOT_FOUND,
+                    Unpooled.wrappedBuffer(new byte[0]));
+        } else {
+            response = new WeFullHttpResponse(httpVersion, HttpResponseStatus.OK);
+            try {
+                Object responseObject = apiHandler.handleApi(req, response, null, null);
+                if (Objects.nonNull(responseObject)) {
+                    String responseJson = JSON.toJSONString(responseObject);
+                    ((WeFullHttpResponse) response).setContent(Unpooled.wrappedBuffer(responseJson.getBytes()));
+                }
+            } catch (Exception e) {
+                String errMsg = ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE);
+                log.error(errMsg);
+                ByteBuf content = Unpooled.wrappedBuffer(errMsg.getBytes());
+                HttpResponseStatus serverError = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+                response = new DefaultFullHttpResponse(httpVersion, serverError, content);
+            }
+        }
+
+        return response;
+    }
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        log.error(ExceptionUtil.stacktraceToString(cause, Integer.MAX_VALUE));
         ctx.close();
     }
 }
