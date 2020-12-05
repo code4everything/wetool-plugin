@@ -42,6 +42,13 @@ module org.code4everything.wetool.plugin.support {
     requires druid;
     requires mysql.connector.java;
     requires jnativehook;
+    requires io.netty.common;
+    requires io.netty.buffer;
+    requires io.netty.codec;
+    requires io.netty.codec.http;
+    requires io.netty.transport;
+    requires io.netty.handler;
+    requires org.mapstruct.processor;
 
     // 导出包
     exports org.code4everything.wetool.plugin.support;
