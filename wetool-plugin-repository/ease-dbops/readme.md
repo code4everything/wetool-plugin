@@ -168,6 +168,8 @@ Enjoy this...
 
 - 支持导入导出
 - 修复了一些已知问题
+- 支持子脚本
+- 支持暴露http服务
 
 #### [v1.2.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.2.0.jar)
 

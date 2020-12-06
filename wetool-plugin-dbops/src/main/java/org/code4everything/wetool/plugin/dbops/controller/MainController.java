@@ -19,6 +19,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
@@ -86,6 +87,14 @@ public class MainController implements BaseViewController {
     private void readScript() {
         if (!FileUtil.exist(scriptJsonFile)) {
             return;
+        }
+        if (FileUtil.exist(subScriptFile)) {
+            try {
+                String subScript = FileUtil.readUtf8String(subScriptFile);
+                ScriptExecutor.GLOBAL_VARS.putAll(JSON.parseObject(subScript));
+            } catch (Exception e) {
+                FxDialogs.showException("加载子脚本失败", e);
+            }
         }
         SCRIPTS.clear();
         String json = FileUtil.readUtf8String(scriptJsonFile);
@@ -313,5 +322,10 @@ public class MainController implements BaseViewController {
     public void reload() {
         readScript();
         renderScripts(null);
+    }
+
+    public void listSubScripts() {
+        Pane pane = FxUtils.loadFxml(WetoolSupporter.class, "/ease/dbops/SubScript.fxml", false);
+        FxDialogs.showDialog("子脚本（回调脚本）", pane);
     }
 }

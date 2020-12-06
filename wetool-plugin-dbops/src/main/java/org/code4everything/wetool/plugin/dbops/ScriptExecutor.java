@@ -42,11 +42,11 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class ScriptExecutor {
 
+    public static final Map<String, Object> GLOBAL_VARS = new ConcurrentHashMap<>(8);
+
     private static final String CLASS_NAME = ScriptExecutor.class.getName();
 
     private static final Map<String, ExpressRunner> RUNNER_MAP = new ConcurrentHashMap<>(4);
-
-    private static final Map<String, Object> GLOBAL_VARS = new ConcurrentHashMap<>(8);
 
     private static final ThreadLocal<Map<String, Object>> TEMP_VARS = new ThreadLocal<>();
 
