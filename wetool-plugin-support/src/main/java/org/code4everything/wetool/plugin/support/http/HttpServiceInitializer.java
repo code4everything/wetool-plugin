@@ -18,6 +18,7 @@ package org.code4everything.wetool.plugin.support.http;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerExpectContinueHandler;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ import lombok.RequiredArgsConstructor;
  * @since 2020/12/5
  */
 @RequiredArgsConstructor
-public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
+public class HttpServiceInitializer extends ChannelInitializer<SocketChannel> {
 
     private final int port;
 
@@ -35,7 +36,8 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
     public void initChannel(SocketChannel ch) {
         ChannelPipeline p = ch.pipeline();
         p.addLast(new HttpServerCodec());
+        p.addLast(new HttpObjectAggregator(Integer.MAX_VALUE));
         p.addLast(new HttpServerExpectContinueHandler());
-        p.addLast(new HttpHelloWorldServerHandler(port));
+        p.addLast(new HttpServiceHandler(port));
     }
 }

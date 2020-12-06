@@ -16,7 +16,11 @@
 package org.code4everything.wetool.plugin.support.http;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -26,8 +30,10 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.code4everything.wetool.plugin.support.exception.HttpBadReqException;
 
 import java.util.Objects;
+import java.util.StringTokenizer;
 
 /**
  * @author pantao
@@ -35,7 +41,7 @@ import java.util.Objects;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class HttpHelloWorldServerHandler extends SimpleChannelInboundHandler<HttpObject> {
+public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> {
 
     private final int port;
 
@@ -48,14 +54,12 @@ public class HttpHelloWorldServerHandler extends SimpleChannelInboundHandler<Htt
     public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) {
         if (msg instanceof HttpRequest) {
             HttpRequest req = (HttpRequest) msg;
+            QueryStringDecoder decoder = new QueryStringDecoder(req.uri());
 
-            String uri = req.uri();
-            int idx = uri.indexOf("?");
-            String api = req.method().name().toLowerCase() + " " + (idx > 0 ? uri.substring(0, idx) : uri);
-
-            // TODO: 2020/12/6 解析参数和body
-
-            FullHttpResponse response = getResponse(req, api);
+            JSONObject params = parseParams(decoder.rawQuery());
+            JSONObject body = parseReqBody(req);
+            String api = req.method().name().toLowerCase() + " " + decoder.path();
+            FullHttpResponse response = getResponse(req, api, params, body);
 
             boolean keepAlive = HttpUtil.isKeepAlive(req);
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON).setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
@@ -76,7 +80,38 @@ public class HttpHelloWorldServerHandler extends SimpleChannelInboundHandler<Htt
         }
     }
 
-    private FullHttpResponse getResponse(HttpRequest req, String api) {
+    private JSONObject parseReqBody(HttpRequest request) {
+        if (request instanceof FullHttpRequest) {
+            ByteBuf content = ((FullHttpRequest) request).content();
+            if (content.isReadable()) {
+                String json = content.toString(CharsetUtil.CHARSET_UTF_8);
+                try {
+                    return JSON.parseObject(json);
+                } catch (Exception e) {
+                    log.error("parse request body error: {}", ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
+                }
+            }
+        }
+        return new JSONObject();
+    }
+
+    private JSONObject parseParams(String queryString) {
+        JSONObject jsonObject = new JSONObject();
+        if (StrUtil.isEmpty(queryString)) {
+            return jsonObject;
+        }
+
+        StringTokenizer tokenizer = new StringTokenizer(queryString, "&");
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken();
+            String[] keyValue = token.split("=");
+            jsonObject.put(keyValue[0], keyValue.length > 1 ? keyValue[1] : null);
+        }
+
+        return jsonObject;
+    }
+
+    private FullHttpResponse getResponse(HttpRequest req, String api, JSONObject params, JSONObject body) {
         HttpVersion httpVersion = req.protocolVersion();
         HttpApiHandler apiHandler = HttpService.HTTP_SERVICE.get(port).get(api);
 
@@ -88,17 +123,29 @@ public class HttpHelloWorldServerHandler extends SimpleChannelInboundHandler<Htt
         } else {
             response = new WeFullHttpResponse(httpVersion, HttpResponseStatus.OK);
             try {
-                Object responseObject = apiHandler.handleApi(req, response, null, null);
+                Object responseObject = apiHandler.handleApi(req, response, params, body);
                 if (Objects.nonNull(responseObject)) {
-                    String responseJson = JSON.toJSONString(responseObject);
+                    String responseJson = JSON.toJSONString(responseObject, SerializerFeature.QuoteFieldNames,
+                            SerializerFeature.WriteMapNullValue, SerializerFeature.WriteEnumUsingToString,
+                            SerializerFeature.WriteNullListAsEmpty, SerializerFeature.WriteNullStringAsEmpty,
+                            SerializerFeature.WriteNullNumberAsZero, SerializerFeature.WriteNullBooleanAsFalse,
+                            SerializerFeature.SkipTransientField, SerializerFeature.WriteNonStringKeyAsString);
                     ((WeFullHttpResponse) response).setContent(Unpooled.wrappedBuffer(responseJson.getBytes()));
                 }
             } catch (Exception e) {
-                String errMsg = ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE);
-                log.error(errMsg);
+                HttpResponseStatus status;
+                String errMsg;
+                if (e instanceof HttpBadReqException) {
+                    status = HttpResponseStatus.BAD_REQUEST;
+                    errMsg = e.getMessage();
+                } else {
+                    status = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+                    errMsg = ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE);
+                    log.error("[{}] api service error, request api: {}, error: {}", port, api, errMsg);
+                }
+
                 ByteBuf content = Unpooled.wrappedBuffer(errMsg.getBytes());
-                HttpResponseStatus serverError = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-                response = new DefaultFullHttpResponse(httpVersion, serverError, content);
+                response = new DefaultFullHttpResponse(httpVersion, status, content);
             }
         }
 

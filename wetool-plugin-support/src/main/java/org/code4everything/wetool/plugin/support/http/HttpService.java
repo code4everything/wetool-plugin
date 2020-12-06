@@ -17,10 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.support.event.EventCenter;
 import org.code4everything.wetool.plugin.support.event.handler.BaseNoMessageEventHandler;
 import org.code4everything.wetool.plugin.support.exception.HttpExportException;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author pantao
@@ -30,7 +31,7 @@ import java.util.Map;
 @UtilityClass
 public class HttpService {
 
-    static final Map<Integer, Map<String, HttpApiHandler>> HTTP_SERVICE = new HashMap<>(8);
+    static final Map<Integer, Map<String, HttpApiHandler>> HTTP_SERVICE = new ConcurrentHashMap<>(8);
 
     /**
      * 暴露http服务
@@ -67,10 +68,10 @@ public class HttpService {
                 throw new HttpExportException(StrUtil.format("port[{}] is already in used", port));
             }
 
-            runHttpService(port);
+            WeUtils.execute(() -> runHttpService(port));
         }
 
-        Map<String, HttpApiHandler> apiMap = HTTP_SERVICE.get(port);
+        Map<String, HttpApiHandler> apiMap = HTTP_SERVICE.computeIfAbsent(port, p -> new ConcurrentHashMap<>(32));
 
         if (apiMap.containsKey(api)) {
             throw new HttpExportException(StrUtil.format("api[{}] is already mapped", api));
@@ -86,10 +87,9 @@ public class HttpService {
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.option(ChannelOption.SO_BACKLOG, 1024);
-            b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).handler(new LoggingHandler(LogLevel.INFO)).childHandler(new HttpServerInitializer(port));
+            b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).handler(new LoggingHandler(LogLevel.INFO)).childHandler(new HttpServiceInitializer(port));
 
             Channel ch = b.bind(port).sync().channel();
-            HTTP_SERVICE.put(port, new HashMap<>(32));
             EventCenter.subscribeEvent(EventCenter.EVENT_WETOOL_EXIT, new BaseNoMessageEventHandler() {
                 @Override
                 public void handleEvent0(String eventKey, Date eventTime) {
@@ -98,6 +98,7 @@ public class HttpService {
                     workerGroup.shutdownGracefully();
                 }
             });
+
             log.info("export http service: http://127.0.0.1:{}", port);
             ch.closeFuture().sync();
         } finally {

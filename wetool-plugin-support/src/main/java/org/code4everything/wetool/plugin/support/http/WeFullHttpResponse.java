@@ -22,4 +22,9 @@ public class WeFullHttpResponse extends DefaultFullHttpResponse {
     public WeFullHttpResponse(HttpVersion version, HttpResponseStatus status) {
         super(version, status);
     }
+
+    @Override
+    public ByteBuf content() {
+        return getContent();
+    }
 }
