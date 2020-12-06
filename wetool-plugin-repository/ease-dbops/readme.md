@@ -43,7 +43,7 @@ import cn.hutool.core.map;
 |run(String... cmds)|String|执行命令，返回执行结果|
 |global(String key, Object value)|void|声明全局变量，自动注入到脚本中|
 |exec(String key)|Object|执行脚本，参数为全局变量名称，脚本内容取全局变量对应的值，返回执行结果|
-|http0(String api, String varKey)|boolean|暴露http服务，api格式：get /api/hello，varKey为回调脚本（子脚本）的名称|
+|http0(String api, String varKey)|boolean|暴露http服务，api格式：get/api/hello，varKey为回调脚本（子脚本）的名称|
 |http1(int port, String api, String varKey)|boolean|暴露http服务|
 
 ### 内置变量

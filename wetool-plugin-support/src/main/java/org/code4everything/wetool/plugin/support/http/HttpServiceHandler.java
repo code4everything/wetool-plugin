@@ -57,7 +57,7 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
             HttpRequest req = (HttpRequest) msg;
             QueryStringDecoder decoder = new QueryStringDecoder(req.uri());
 
-            String api = req.method().name().toLowerCase() + " " + decoder.path();
+            String api = req.method().name().toLowerCase() + decoder.path();
             FullHttpResponse response = getResponse(req, api, decoder);
 
             boolean keepAlive = HttpUtil.isKeepAlive(req);

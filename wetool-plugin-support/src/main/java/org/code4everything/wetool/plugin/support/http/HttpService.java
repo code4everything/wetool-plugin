@@ -53,7 +53,7 @@ public class HttpService {
      * 暴露http服务
      *
      * @param port 端口
-     * @param api 请求接口，包含请求方法（小写），例如：get /api/hello, post /api/register
+     * @param api 请求接口，包含请求方法（小写），例如：get/api/hello, post/api/register
      * @param handler 请求处理回调
      *
      * @since 1.3.0
