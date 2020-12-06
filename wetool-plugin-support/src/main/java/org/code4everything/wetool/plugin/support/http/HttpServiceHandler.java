@@ -53,13 +53,12 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) {
         if (msg instanceof HttpRequest) {
+            long start = System.currentTimeMillis();
             HttpRequest req = (HttpRequest) msg;
             QueryStringDecoder decoder = new QueryStringDecoder(req.uri());
 
-            JSONObject params = parseParams(decoder.rawQuery());
-            JSONObject body = parseReqBody(req);
             String api = req.method().name().toLowerCase() + " " + decoder.path();
-            FullHttpResponse response = getResponse(req, api, params, body);
+            FullHttpResponse response = getResponse(req, api, decoder);
 
             boolean keepAlive = HttpUtil.isKeepAlive(req);
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON).setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
@@ -74,6 +73,8 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
 
             ChannelFuture f = ctx.write(response);
 
+            long runTime = System.currentTimeMillis() - start;
+            log.info("request api: {}, status: {}, run time: {}ms", api, response.status().code(), runTime);
             if (!keepAlive) {
                 f.addListener(ChannelFutureListener.CLOSE);
             }
@@ -111,7 +112,7 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
         return jsonObject;
     }
 
-    private FullHttpResponse getResponse(HttpRequest req, String api, JSONObject params, JSONObject body) {
+    private FullHttpResponse getResponse(HttpRequest req, String api, QueryStringDecoder decoder) {
         HttpVersion httpVersion = req.protocolVersion();
         HttpApiHandler apiHandler = HttpService.HTTP_SERVICE.get(port).get(api);
 
@@ -121,7 +122,10 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
             response = new DefaultFullHttpResponse(httpVersion, HttpResponseStatus.NOT_FOUND,
                     Unpooled.wrappedBuffer(new byte[0]));
         } else {
+            JSONObject params = parseParams(decoder.rawQuery());
+            JSONObject body = parseReqBody(req);
             response = new WeFullHttpResponse(httpVersion, HttpResponseStatus.OK);
+
             try {
                 Object responseObject = apiHandler.handleApi(req, response, params, body);
                 if (Objects.nonNull(responseObject)) {

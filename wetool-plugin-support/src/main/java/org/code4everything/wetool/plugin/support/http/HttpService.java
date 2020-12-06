@@ -31,6 +31,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @UtilityClass
 public class HttpService {
 
+    public static final int DEFAULT_PORT = 8189;
+
     static final Map<Integer, Map<String, HttpApiHandler>> HTTP_SERVICE = new ConcurrentHashMap<>(8);
 
     /**
