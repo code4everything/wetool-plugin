@@ -26,6 +26,7 @@ import org.code4everything.wetool.plugin.support.control.cell.UnmodifiableTextFi
 import org.code4everything.wetool.plugin.support.druid.JdbcExecutor;
 import org.code4everything.wetool.plugin.support.http.HttpService;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 import oshi.software.os.OSProcess;
 
 import java.util.*;
@@ -73,7 +74,6 @@ public class ScriptExecutor {
         Map<String, Object> tempMap = new HashMap<>(8);
         tempMap.put("dbName", StrUtil.nullToEmpty(dbName));
         TEMP_VARS.set(tempMap);
-        // FIXME: 2020/12/7 脚本传递执行，局部变量的处理
         try {
             return expressRunner.execute(codes, context, null, true, false);
         } finally {
@@ -140,11 +140,11 @@ public class ScriptExecutor {
     }
 
     public static boolean http1(int port, String api, String varKey) {
-        String dbName = ObjectUtil.toString(TEMP_VARS.get().get("dbName"));
         try {
             HttpService.exportHttp(port, api, (req, resp, params, body) -> {
                 Map<String, Object> args = Map.of("req", req, "resp", resp, "params", params, "body", body);
-                return execute(dbName, ObjectUtil.toString(GLOBAL_VARS.get(varKey)), args);
+                TEMP_VARS.get().putAll(args);
+                return exec(varKey);
             });
             return true;
         } catch (Exception e) {
@@ -161,9 +161,13 @@ public class ScriptExecutor {
         TEMP_VARS.get().put(key, value);
     }
 
+    @SneakyThrows
     public static Object exec(String varKey) {
-        String dbName = ObjectUtil.toString(TEMP_VARS.get().get("dbName"));
-        return execute(dbName, ObjectUtil.toString(GLOBAL_VARS.get(varKey)), TEMP_VARS.get());
+        Map<String, Object> args = TEMP_VARS.get();
+        String dbName = ObjectUtil.toString(args.get("dbName"));
+        String codes = ObjectUtil.toString(GLOBAL_VARS.get(varKey));
+        Future<Object> future = WeUtils.executeAsync(() -> execute(dbName, codes, args));
+        return future.get();
     }
 
     public static List<OSProcess> processes(String name) {
