@@ -73,6 +73,7 @@ public class ScriptExecutor {
         Map<String, Object> tempMap = new HashMap<>(8);
         tempMap.put("dbName", StrUtil.nullToEmpty(dbName));
         TEMP_VARS.set(tempMap);
+        // FIXME: 2020/12/7 脚本传递执行，局部变量的处理
         try {
             return expressRunner.execute(codes, context, null, true, false);
         } finally {
