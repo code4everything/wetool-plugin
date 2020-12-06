@@ -80,6 +80,7 @@ public class HttpService {
         }
 
         apiMap.put(api, handler);
+        log.info("export api[{}] on port[{}] success", api, port);
     }
 
     @SneakyThrows
