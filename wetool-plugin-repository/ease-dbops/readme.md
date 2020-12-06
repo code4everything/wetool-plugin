@@ -14,18 +14,21 @@ dbops，中文名为数据库小应用，我们可以将一系列的脚本封装
 
 ### 自动导包
 
-程序自动导入一下包
+程序自动导入一下类
 
 ```java
-import org.code4everything.wetool.plugin.support.util;
-import org.code4everything.wetool.plugin.support.factory;
-import org.code4everything.wetool.plugin.support.http;
-import cn.hutool.core.util;
-import cn.hutool.core.collection;
-import cn.hutool.core.date;
-import cn.hutool.core.io;
-import cn.hutool.core.lang;
-import cn.hutool.core.map;
+import java.lang.*;
+import java.util.*;
+
+import org.code4everything.wetool.plugin.support.util.*;
+import org.code4everything.wetool.plugin.support.factory.*;
+import org.code4everything.wetool.plugin.support.http.*;
+import cn.hutool.core.util.*;
+import cn.hutool.core.collection.*;
+import cn.hutool.core.date.*;
+import cn.hutool.core.io.*;
+import cn.hutool.core.lang.*;
+import cn.hutool.core.map.*;
 ```
 
 ### 内置方法
@@ -41,6 +44,7 @@ import cn.hutool.core.map;
 |update(String sql, List params)|long|执行SQL更新语句，需连接数据库，返回影响的行数|
 |processes(String name)|List\<OSProcess\>|模糊匹配进程名称|
 |run(String... cmds)|String|执行命令，返回执行结果|
+|put(String key, Object value)|void|设置局部变量，可传递到子脚本中|
 |global(String key, Object value)|void|声明全局变量，自动注入到脚本中|
 |exec(String key)|Object|执行脚本，参数为全局变量名称，脚本内容取全局变量对应的值，返回执行结果|
 |http0(String api, String varKey)|boolean|暴露http服务，api格式：get/api/hello，varKey为回调脚本（子脚本）的名称|

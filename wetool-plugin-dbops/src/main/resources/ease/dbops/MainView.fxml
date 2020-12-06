@@ -39,6 +39,11 @@
                 <Insets left="10.0"/>
             </HBox.margin>
         </Separator>
+        <Button mnemonicParsing="false" onAction="#openDoc" text="文档" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </Button>
         <Button mnemonicParsing="false" onAction="#reload" text="重载配置文件" HBox.hgrow="NEVER">
             <HBox.margin>
                 <Insets left="10.0"/>

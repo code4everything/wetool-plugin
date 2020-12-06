@@ -57,11 +57,11 @@ public class ScriptExecutor {
         }
 
         DefaultContext<String, Object> context = new DefaultContext<>();
-        if (MapUtil.isNotEmpty(args)) {
-            context.putAll(args);
-        }
         if (MapUtil.isNotEmpty(GLOBAL_VARS)) {
             context.putAll(GLOBAL_VARS);
+        }
+        if (MapUtil.isNotEmpty(args)) {
+            context.putAll(args);
         }
 
         // 内置变量
@@ -70,7 +70,9 @@ public class ScriptExecutor {
 
         ExpressRunner expressRunner = getExpressRunner(dbName);
 
-        TEMP_VARS.set(Map.of("dbName", StrUtil.nullToEmpty(dbName)));
+        Map<String, Object> tempMap = new HashMap<>(8);
+        tempMap.put("dbName", StrUtil.nullToEmpty(dbName));
+        TEMP_VARS.set(tempMap);
         try {
             return expressRunner.execute(codes, context, null, true, false);
         } finally {
@@ -154,9 +156,13 @@ public class ScriptExecutor {
         GLOBAL_VARS.put(key, value);
     }
 
+    public static void put(String key, Object value) {
+        TEMP_VARS.get().put(key, value);
+    }
+
     public static Object exec(String varKey) {
         String dbName = ObjectUtil.toString(TEMP_VARS.get().get("dbName"));
-        return execute(dbName, ObjectUtil.toString(GLOBAL_VARS.get(varKey)), null);
+        return execute(dbName, ObjectUtil.toString(GLOBAL_VARS.get(varKey)), TEMP_VARS.get());
     }
 
     public static List<OSProcess> processes(String name) {

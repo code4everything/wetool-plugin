@@ -328,4 +328,10 @@ public class MainController implements BaseViewController {
         Pane pane = FxUtils.loadFxml(WetoolSupporter.class, "/ease/dbops/SubScript.fxml", false);
         FxDialogs.showDialog("子脚本（回调脚本）", pane);
     }
+
+    public void openDoc() {
+        // @formatter:off
+        FxUtils.openLink("https://gitee.com/code4everything/wetool-plugin/blob/master/wetool-plugin-repository/ease-dbops/readme.md");
+        // @formatter:on
+    }
 }
