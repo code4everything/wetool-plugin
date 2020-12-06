@@ -60,6 +60,8 @@ public class MainController implements BaseViewController {
 
     public static File scriptJsonFile = FileUtil.file(DB_OPS_PATH, "ql-script.json");
 
+    public static File subScriptFile = FileUtil.file(DB_OPS_PATH, "sub-script.json");
+
     @FXML
     public ComboBox<String> dbNameBox;
 

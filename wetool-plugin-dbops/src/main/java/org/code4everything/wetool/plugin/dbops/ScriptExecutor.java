@@ -24,10 +24,12 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.support.control.cell.UnmodifiableTextFieldTableCell;
 import org.code4everything.wetool.plugin.support.druid.JdbcExecutor;
+import org.code4everything.wetool.plugin.support.http.HttpService;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import oshi.software.os.OSProcess;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -42,33 +44,48 @@ public class ScriptExecutor {
 
     private static final String CLASS_NAME = ScriptExecutor.class.getName();
 
-    private static final Map<String, ExpressRunner> RUNNER_MAP = new HashMap<>(4);
+    private static final Map<String, ExpressRunner> RUNNER_MAP = new ConcurrentHashMap<>(4);
+
+    private static final Map<String, Object> GLOBAL_VARS = new ConcurrentHashMap<>(8);
+
+    private static final ThreadLocal<Map<String, Object>> TEMP_VARS = new ThreadLocal<>();
 
     @SneakyThrows
-    public static void execute(String dbName, String codes, Map<String, Object> args) {
+    public static Object execute(String dbName, String codes, Map<String, Object> args) {
         if (StrUtil.isBlank(codes)) {
-            return;
+            return null;
         }
 
         DefaultContext<String, Object> context = new DefaultContext<>();
         if (MapUtil.isNotEmpty(args)) {
             context.putAll(args);
         }
+        if (MapUtil.isNotEmpty(GLOBAL_VARS)) {
+            context.putAll(GLOBAL_VARS);
+        }
 
         // 内置变量
         context.put("now", DateUtil.date());
+        context.put("dbName", dbName);
 
         ExpressRunner expressRunner = getExpressRunner(dbName);
-        expressRunner.execute(codes, context, null, true, false);
+
+        TEMP_VARS.set(Map.of("dbName", StrUtil.nullToEmpty(dbName)));
+        try {
+            return expressRunner.execute(codes, context, null, true, false);
+        } finally {
+            TEMP_VARS.remove();
+        }
     }
 
-    public static synchronized ExpressRunner getExpressRunner(String dbName) {
+    public static ExpressRunner getExpressRunner(String dbName) {
         dbName = StrUtil.blankToDefault(dbName, "");
         return RUNNER_MAP.computeIfAbsent(dbName, name -> {
             ExpressRunner runner = new ExpressRunner();
             ExpressPackage expressPackage = runner.getRootExpressPackage();
             expressPackage.addPackage("org.code4everything.wetool.plugin.support.util");
             expressPackage.addPackage("org.code4everything.wetool.plugin.support.factory");
+            expressPackage.addPackage("org.code4everything.wetool.plugin.support.http");
             expressPackage.addPackage("cn.hutool.core.util");
             expressPackage.addPackage("cn.hutool.core.collection");
             expressPackage.addPackage("cn.hutool.core.date");
@@ -81,11 +98,19 @@ public class ScriptExecutor {
 
                 runner.addFunctionOfClassMethod("dialog", CLASS_NAME, "dialog", new Class[]{Object.class}, null);
                 runner.addFunctionOfClassMethod("list", CLASS_NAME, "list", new Class[]{Object[].class}, null);
+                runner.addFunctionOfClassMethod("exec", CLASS_NAME, "exec", new Class[]{String.class}, null);
                 runner.addFunctionOfClassMethod("input", CLASS_NAME, "input", stringParamType, null);
                 runner.addFunctionOfClassMethod("processes", CLASS_NAME, "processes", stringParamType, null);
+                Class<?>[] httpParamTypes = {String.class, String.class};
+                runner.addFunctionOfClassMethod("http0", CLASS_NAME, "http0", httpParamTypes, null);
+                httpParamTypes = new Class[]{int.class, String.class, String.class};
+                runner.addFunctionOfClassMethod("http1", CLASS_NAME, "http1", httpParamTypes, null);
+                Class<?>[] globalParamTypes = {String.class, Object.class};
+                runner.addFunctionOfClassMethod("global", CLASS_NAME, "global", globalParamTypes, null);
 
                 runner.addFunctionOfClassMethod("get", HttpUtil.class, "get", stringParamType, null);
-                runner.addFunctionOfClassMethod("run", RuntimeUtil.class, "execForStr", stringParamType, null);
+                Class<?>[] runParamTypes = {String[].class};
+                runner.addFunctionOfClassMethod("run", RuntimeUtil.class, "execForStr", runParamTypes, null);
                 Class<?>[] postTypes = {String.class, String.class};
                 runner.addFunctionOfClassMethod("post", HttpUtil.class, "post", postTypes, null);
 
@@ -105,6 +130,33 @@ public class ScriptExecutor {
             }
             return runner;
         });
+    }
+
+    public static boolean http0(String api, String varKey) {
+        return http1(HttpService.DEFAULT_PORT, api, varKey);
+    }
+
+    public static boolean http1(int port, String api, String varKey) {
+        String dbName = ObjectUtil.toString(TEMP_VARS.get().get("dbName"));
+        try {
+            HttpService.exportHttp(port, api, (req, resp, params, body) -> {
+                Map<String, Object> args = Map.of("req", req, "resp", resp, "params", params, "body", body);
+                return execute(dbName, ObjectUtil.toString(GLOBAL_VARS.get(varKey)), args);
+            });
+            return true;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return false;
+        }
+    }
+
+    public static void global(String key, Object value) {
+        GLOBAL_VARS.put(key, value);
+    }
+
+    public static Object exec(String varKey) {
+        String dbName = ObjectUtil.toString(TEMP_VARS.get().get("dbName"));
+        return execute(dbName, ObjectUtil.toString(GLOBAL_VARS.get(varKey)), null);
     }
 
     public static List<OSProcess> processes(String name) {

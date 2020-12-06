@@ -61,6 +61,12 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
             FullHttpResponse response = getResponse(req, api, decoder);
 
             boolean keepAlive = HttpUtil.isKeepAlive(req);
+            if (Objects.isNull(response.status())) {
+                response.setStatus(HttpResponseStatus.OK);
+            }
+            if (Objects.isNull(response.protocolVersion())) {
+                response.setProtocolVersion(req.protocolVersion());
+            }
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON).setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
 
             if (keepAlive) {
@@ -128,14 +134,15 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
 
             try {
                 Object responseObject = apiHandler.handleApi(req, response, params, body);
+                String respStr = "{}";
                 if (Objects.nonNull(responseObject)) {
-                    String responseJson = JSON.toJSONString(responseObject, SerializerFeature.QuoteFieldNames,
+                    respStr = JSON.toJSONString(responseObject, SerializerFeature.QuoteFieldNames,
                             SerializerFeature.WriteMapNullValue, SerializerFeature.WriteEnumUsingToString,
                             SerializerFeature.WriteNullListAsEmpty, SerializerFeature.WriteNullStringAsEmpty,
                             SerializerFeature.WriteNullNumberAsZero, SerializerFeature.WriteNullBooleanAsFalse,
                             SerializerFeature.SkipTransientField, SerializerFeature.WriteNonStringKeyAsString);
-                    ((WeFullHttpResponse) response).setContent(Unpooled.wrappedBuffer(responseJson.getBytes()));
                 }
+                ((WeFullHttpResponse) response).setContent(Unpooled.wrappedBuffer(respStr.getBytes()));
             } catch (Exception e) {
                 HttpResponseStatus status;
                 String errMsg;

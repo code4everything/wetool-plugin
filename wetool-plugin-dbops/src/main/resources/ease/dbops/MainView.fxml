@@ -12,6 +12,11 @@
         <VBox.margin>
             <Insets/>
         </VBox.margin>
+        <Button mnemonicParsing="false" onAction="#listSubScripts" text="子脚本" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets right="10.0"/>
+            </HBox.margin>
+        </Button>
         <ComboBox fx:id="dbNameBox" prefWidth="150.0" promptText="名称" HBox.hgrow="NEVER"/>
         <Button mnemonicParsing="false" onAction="#addScript" text="新增" HBox.hgrow="NEVER">
             <HBox.margin>
