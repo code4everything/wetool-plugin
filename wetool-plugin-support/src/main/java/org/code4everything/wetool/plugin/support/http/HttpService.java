@@ -1,6 +1,7 @@
 package org.code4everything.wetool.plugin.support.http;
 
 import cn.hutool.core.net.NetUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -21,6 +22,7 @@ import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -31,9 +33,24 @@ import java.util.concurrent.ConcurrentHashMap;
 @UtilityClass
 public class HttpService {
 
-    public static final int DEFAULT_PORT = 8189;
-
     static final Map<Integer, Map<String, HttpApiHandler>> HTTP_SERVICE = new ConcurrentHashMap<>(8);
+
+    private static Integer defaultPort = null;
+
+    /**
+     * 获取默认端口
+     *
+     * @since 1.3.0
+     */
+    public static int getDefaultPort() {
+        return ObjectUtil.defaultIfNull(defaultPort, 8189);
+    }
+
+    public static void setDefaultPort(int port) {
+        if (Objects.isNull(defaultPort)) {
+            defaultPort = port;
+        }
+    }
 
     /**
      * 暴露http服务
@@ -47,6 +64,18 @@ public class HttpService {
      */
     public static void exportHttp(int port, HttpMethod method, String api, HttpApiHandler handler) {
         exportHttp(port, method.name().toLowerCase() + " " + api, handler);
+    }
+
+    /**
+     * 暴露http服务
+     *
+     * @param api 请求接口，包含请求方法（小写），例如：get/api/hello, post/api/register
+     * @param handler 请求处理回调
+     *
+     * @since 1.3.0
+     */
+    public static void exportHttp(String api, HttpApiHandler handler) {
+        exportHttp(getDefaultPort(), api, handler);
     }
 
     /**

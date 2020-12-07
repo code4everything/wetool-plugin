@@ -19,6 +19,7 @@ import org.code4everything.wetool.plugin.support.config.WePluginInfo;
 import org.code4everything.wetool.plugin.support.config.WeTab;
 import org.code4everything.wetool.plugin.support.event.message.MouseCornerEventMessage;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
+import org.code4everything.wetool.plugin.support.http.HttpService;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -50,6 +51,7 @@ public class WetoolTester extends WeApplication {
     public static void runTest(WePluginInfo info, WeConfig config, String[] args) {
         // 加载插件支持类
         BootConfig.setDebug(true);
+        HttpService.setDefaultPort(78189);
         Class<WePluginSupporter> clazz = ClassUtil.loadClass(info.getSupportedClass());
         try {
             supporter = ReflectUtil.newInstance(clazz);

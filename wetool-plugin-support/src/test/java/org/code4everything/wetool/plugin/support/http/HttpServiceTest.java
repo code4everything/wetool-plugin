@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 public class HttpServiceTest {
 
     public static void main(String[] args) {
-        HttpService.exportHttp(HttpService.DEFAULT_PORT, "post/api/hello", (req, resp, params, body) -> {
+        HttpService.exportHttp("post/api/hello", (req, resp, params, body) -> {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("a", params.getInteger("a"));
             jsonObject.put("b", params.getInteger("b"));

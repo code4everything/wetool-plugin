@@ -58,9 +58,7 @@ public class ScriptExecutor {
         }
 
         DefaultContext<String, Object> context = new DefaultContext<>();
-        if (MapUtil.isNotEmpty(GLOBAL_VARS)) {
-            context.putAll(GLOBAL_VARS);
-        }
+        context.putAll(GLOBAL_VARS);
         if (MapUtil.isNotEmpty(args)) {
             context.putAll(args);
         }
@@ -136,7 +134,7 @@ public class ScriptExecutor {
     }
 
     public static boolean http0(String api, String varKey) {
-        return http1(HttpService.DEFAULT_PORT, api, varKey);
+        return http1(HttpService.getDefaultPort(), api, varKey);
     }
 
     public static boolean http1(int port, String api, String varKey) {
