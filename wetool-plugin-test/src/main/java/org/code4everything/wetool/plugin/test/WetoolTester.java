@@ -51,7 +51,7 @@ public class WetoolTester extends WeApplication {
     public static void runTest(WePluginInfo info, WeConfig config, String[] args) {
         // 加载插件支持类
         BootConfig.setDebug(true);
-        HttpService.setDefaultPort(78189);
+        HttpService.setDefaultPort(58189);
         Class<WePluginSupporter> clazz = ClassUtil.loadClass(info.getSupportedClass());
         try {
             supporter = ReflectUtil.newInstance(clazz);
