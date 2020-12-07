@@ -33,6 +33,7 @@ public class SubScriptController {
 
         globalVarName.getItems().addAll(subScript.keySet());
         globalVarName.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> subScriptArea.setText(StrUtil.nullToEmpty(subScript.getString(newValue))));
+        globalVarName.getSelectionModel().selectFirst();
     }
 
     public void saveSubScripts() {

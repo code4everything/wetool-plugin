@@ -138,11 +138,17 @@ public class ScriptExecutor {
     }
 
     public static boolean http1(int port, String api, String varKey) {
+        String dbName = ObjectUtil.toString(getTempVarsMap().get("dbName"));
         try {
             HttpService.exportHttp(port, api, (req, resp, params, body) -> {
                 Map<String, Object> args = Map.of("req", req, "resp", resp, "params", params, "body", body);
-                TEMP_VARS.get().putAll(args);
-                return exec(varKey);
+                getTempVarsMap().putAll(args);
+                getTempVarsMap().put("dbName", dbName);
+                try {
+                    return exec(varKey);
+                } finally {
+                    TEMP_VARS.remove();
+                }
             });
             return true;
         } catch (Exception e) {
@@ -156,12 +162,12 @@ public class ScriptExecutor {
     }
 
     public static void put(String key, Object value) {
-        TEMP_VARS.get().put(key, value);
+        getTempVarsMap().put(key, value);
     }
 
     @SneakyThrows
     public static Object exec(String varKey) {
-        Map<String, Object> args = TEMP_VARS.get();
+        Map<String, Object> args = getTempVarsMap();
         String dbName = ObjectUtil.toString(args.get("dbName"));
         String codes = ObjectUtil.toString(GLOBAL_VARS.get(varKey));
         Future<Object> future = WeUtils.executeAsync(() -> execute(dbName, codes, args));
@@ -235,5 +241,14 @@ public class ScriptExecutor {
         } else {
             FxDialogs.showInformation(header, ObjectUtil.toString(object));
         }
+    }
+
+    private static Map<String, Object> getTempVarsMap() {
+        Map<String, Object> map = TEMP_VARS.get();
+        if (Objects.isNull(map)) {
+            map = new HashMap<>(8);
+            TEMP_VARS.set(map);
+        }
+        return map;
     }
 }
