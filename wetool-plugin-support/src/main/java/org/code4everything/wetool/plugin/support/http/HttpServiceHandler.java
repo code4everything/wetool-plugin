@@ -16,6 +16,7 @@
 package org.code4everything.wetool.plugin.support.http;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.net.URLDecoder;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
@@ -112,7 +113,8 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
             String[] keyValue = token.split("=");
-            jsonObject.put(keyValue[0], keyValue.length > 1 ? keyValue[1] : null);
+            boolean hasValue = keyValue.length > 1;
+            jsonObject.put(keyValue[0], hasValue ? URLDecoder.decode(keyValue[1], CharsetUtil.CHARSET_UTF_8) : null);
         }
 
         return jsonObject;

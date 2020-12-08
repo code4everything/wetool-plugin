@@ -14,6 +14,14 @@ public class ObjectResp extends JSONObject {
         return new ObjectResp();
     }
 
+    public static ObjectResp of(Map<String, Object>... maps) {
+        ObjectResp resp = of();
+        for (Map<String, Object> map : maps) {
+            resp.put(map);
+        }
+        return resp;
+    }
+
     public static ObjectResp of(String key, Object value) {
         return of().put(key, value);
     }
