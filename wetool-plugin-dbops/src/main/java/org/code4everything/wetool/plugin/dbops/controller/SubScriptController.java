@@ -50,4 +50,11 @@ public class SubScriptController {
         ScriptExecutor.GLOBAL_VARS.put(varKey, script);
         FxDialogs.showSuccess();
     }
+
+    public void remove() {
+        String varKey = globalVarName.getValue();
+        subScript.remove(varKey);
+        ScriptExecutor.GLOBAL_VARS.remove(varKey);
+        FileUtil.writeUtf8String(JSON.toJSONString(subScript, true), MainController.subScriptFile);
+    }
 }
