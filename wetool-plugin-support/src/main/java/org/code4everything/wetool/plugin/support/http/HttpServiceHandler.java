@@ -144,7 +144,7 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
                             SerializerFeature.WriteNullNumberAsZero, SerializerFeature.WriteNullBooleanAsFalse,
                             SerializerFeature.SkipTransientField, SerializerFeature.WriteNonStringKeyAsString);
                 }
-                ((WeFullHttpResponse) response).setContent(Unpooled.wrappedBuffer(respStr.getBytes()));
+                ((WeFullHttpResponse) response).setContent(str2buf(respStr));
             } catch (Exception e) {
                 HttpResponseStatus status;
                 String errMsg;
@@ -157,8 +157,7 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
                     log.error("[{}] api service error, request api: {}, error: {}", port, api, errMsg);
                 }
 
-                ByteBuf content = Unpooled.wrappedBuffer(errMsg.getBytes());
-                response = new DefaultFullHttpResponse(httpVersion, status, content);
+                response = new DefaultFullHttpResponse(httpVersion, status, str2buf(errMsg));
             }
         }
 
@@ -169,5 +168,9 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         log.error(ExceptionUtil.stacktraceToString(cause, Integer.MAX_VALUE));
         ctx.close();
+    }
+
+    private ByteBuf str2buf(String str) {
+        return Unpooled.copiedBuffer(str, CharsetUtil.CHARSET_UTF_8);
     }
 }
