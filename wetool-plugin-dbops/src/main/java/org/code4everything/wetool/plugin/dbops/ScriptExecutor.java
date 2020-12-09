@@ -145,7 +145,7 @@ public class ScriptExecutor {
 
     public static void pushThisEvent2Remote(String postApi) {
         String body = JSON.toJSONString(CONTEXT_THREAD_LOCAL.get());
-        log.info("push event to remote: {}", body);
+        log.debug("push event to remote: {}", body);
         HttpUtil.post(postApi, body);
     }
 
