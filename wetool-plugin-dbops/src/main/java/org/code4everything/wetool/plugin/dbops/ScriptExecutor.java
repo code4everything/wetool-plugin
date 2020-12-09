@@ -9,6 +9,7 @@ import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.system.oshi.OshiUtil;
+import com.alibaba.fastjson.JSON;
 import com.ql.util.express.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 import com.ql.util.express.parse.ExpressPackage;
@@ -51,6 +52,8 @@ public class ScriptExecutor {
 
     private static final ThreadLocal<Map<String, Object>> TEMP_VARS = new ThreadLocal<>();
 
+    private static final ThreadLocal<DefaultContext<String, Object>> CONTEXT_THREAD_LOCAL = new ThreadLocal<>();
+
     @SneakyThrows
     public static Object execute(String dbName, String codes, Map<String, Object> args) {
         if (StrUtil.isBlank(codes)) {
@@ -72,10 +75,12 @@ public class ScriptExecutor {
         Map<String, Object> tempMap = new HashMap<>(8);
         tempMap.put("dbName", StrUtil.nullToEmpty(dbName));
         TEMP_VARS.set(tempMap);
+        CONTEXT_THREAD_LOCAL.set(context);
         try {
             return expressRunner.execute(codes, context, null, true, false);
         } finally {
             TEMP_VARS.remove();
+            CONTEXT_THREAD_LOCAL.remove();
         }
     }
 
@@ -86,7 +91,10 @@ public class ScriptExecutor {
             ExpressPackage expressPackage = runner.getRootExpressPackage();
             expressPackage.addPackage("org.code4everything.wetool.plugin.support.util");
             expressPackage.addPackage("org.code4everything.wetool.plugin.support.factory");
+            expressPackage.addPackage("org.code4everything.wetool.plugin.support.event");
             expressPackage.addPackage("org.code4everything.wetool.plugin.support.http");
+            expressPackage.addPackage("org.code4everything.wetool.plugin.support.druid");
+            expressPackage.addPackage("com.alibaba.fastjson");
             expressPackage.addPackage("cn.hutool.core.util");
             expressPackage.addPackage("cn.hutool.core.collection");
             expressPackage.addPackage("cn.hutool.core.date");
@@ -108,6 +116,8 @@ public class ScriptExecutor {
                 runner.addFunctionOfClassMethod("http1", CLASS_NAME, "http1", httpParamTypes, null);
                 Class<?>[] globalParamTypes = {String.class, Object.class};
                 runner.addFunctionOfClassMethod("global", CLASS_NAME, "global", globalParamTypes, null);
+                String methodName = "pushThisEvent2Remote";
+                runner.addFunctionOfClassMethod(methodName, CLASS_NAME, methodName, new Class[]{String.class}, null);
 
                 runner.addFunctionOfClassMethod("get", HttpUtil.class, "get", stringParamType, null);
                 Class<?>[] runParamTypes = {String[].class};
@@ -131,6 +141,12 @@ public class ScriptExecutor {
             }
             return runner;
         });
+    }
+
+    public static void pushThisEvent2Remote(String postApi) {
+        String body = JSON.toJSONString(CONTEXT_THREAD_LOCAL.get());
+        log.info("push event to remote: {}", body);
+        HttpUtil.post(postApi, body);
     }
 
     public static boolean http0(String api, String varKey) {

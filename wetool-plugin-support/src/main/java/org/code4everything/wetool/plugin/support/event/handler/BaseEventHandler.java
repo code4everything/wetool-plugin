@@ -7,6 +7,7 @@ import org.code4everything.wetool.plugin.support.event.EventHandler;
 import org.code4everything.wetool.plugin.support.event.EventMessage;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author pantao
@@ -18,7 +19,7 @@ public abstract class BaseEventHandler<T extends EventMessage> implements EventH
     @Override
     @SuppressWarnings("unchecked")
     public final void handleEvent(String eventKey, Date eventTime, EventMessage eventMessage) {
-        if (shouldHandle(eventMessage)) {
+        if (Objects.nonNull(eventMessage) && shouldHandle(eventMessage)) {
             handleEvent0(eventKey, eventTime, (T) eventMessage);
         } else {
             String errMsg = "invalid event message, event key: {}, event time: {}, event message: {}";

@@ -23,6 +23,10 @@ import java.util.*;
 import org.code4everything.wetool.plugin.support.util.*;
 import org.code4everything.wetool.plugin.support.factory.*;
 import org.code4everything.wetool.plugin.support.http.*;
+import org.code4everything.wetool.plugin.support.event.*;
+import org.code4everything.wetool.plugin.support.druid.*;
+
+import com.alibaba.fastjson.*;
 
 import cn.hutool.core.util.*;
 import cn.hutool.core.collection.*;
@@ -50,6 +54,7 @@ import cn.hutool.core.map.*;
 |exec(String key)|Object|执行脚本，参数为全局变量名称，脚本内容取全局变量对应的值，返回执行结果|
 |http0(String api, String varKey)|boolean|暴露http服务，api格式：get/api/hello，varKey为回调脚本（子脚本）的名称|
 |http1(int port, String api, String varKey)|boolean|暴露http服务|
+|pushThisEvent2Remote(String postApi)|void|推送当前事件到远程|
 
 ### 内置变量
 
@@ -62,7 +67,7 @@ import cn.hutool.core.map.*;
 
 目前脚本支持两种触发方式：手动执行，以及事件订阅。[查看有哪些事件？](../../wetool-plugin-support/readme.md)，如果需要用到事件的消息作为参数，可能需要查看源代码，[查看目录](../../wetool-plugin-support/src/main/java/org/code4everything/wetool/plugin/support/event/message)。
 
-事件发布的消息会随一个被定义为 `eventMessage` 的变量一起注入到脚本中。
+事件发布的消息会随一个被定义为 `eventMessage` 的变量一起注入到脚本中，同时会注入 `eventKey` `eventTime` 属性。
 
 ### 例子1：存储剪贴板历史并添加查询按钮
 

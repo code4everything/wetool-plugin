@@ -249,9 +249,16 @@ public class MainController implements BaseViewController {
                     if (Objects.isNull(qlScript) || qlScript.getType() != ExecuteTypeEnum.EVENT || !key.equals(qlScript.getEventKey())) {
                         return;
                     }
+
                     String dbName = StrUtil.blankToDefault(qlScript.getSpecifyDbName(), dbNameBox.getValue());
-                    Map<String, Object> args = Objects.isNull(eventMessage) ? null : Map.of("eventMessage",
-                            eventMessage);
+                    Map<String, Object> args = new HashMap<>(4, 1);
+                    args.put("eventKey", key);
+                    args.put("eventTime", date);
+                    if (Objects.nonNull(eventMessage)) {
+                        args.put("eventMessage", eventMessage);
+                        args.put("messageClass", eventMessage.getClass().getName());
+                    }
+
                     try {
                         ScriptExecutor.execute(dbName, qlScript.getCodes(), args);
                     } catch (Exception x) {

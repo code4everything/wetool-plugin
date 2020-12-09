@@ -1,6 +1,10 @@
 package org.code4everything.wetool.plugin.support.event;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.support.event.handler.*;
@@ -201,6 +205,47 @@ public class EventCenter {
         });
 
         return true;
+    }
+
+    /**
+     * 发布传过来的事件
+     *
+     * @since 1.3.0
+     */
+    @SuppressWarnings("unchecked")
+    public static boolean publishEventFromRemote(JSONObject eventJson) {
+        String eventKey = eventJson.getString("eventKey");
+        if (!EVENT_MAP.containsKey(eventKey)) {
+            log.error("event '{}' not register yet!", eventKey);
+            return false;
+        }
+
+        EventMessage eventMessage = null;
+        String messageString = eventJson.getString("eventMessage");
+
+        if (StrUtil.isNotEmpty(messageString)) {
+            String messageClass = eventJson.getString("messageClass");
+            if (StrUtil.isBlank(messageClass)) {
+                log.error("event '{}' missing event message class", eventKey);
+                return false;
+            }
+            try {
+                Class<? extends EventMessage> messageClazz =
+                        (Class<? extends EventMessage>) Class.forName(messageClass);
+                eventMessage = JSON.parseObject(messageString, messageClazz);
+            } catch (Exception e) {
+                log.error("event '{}' msg class cast to event message error", eventKey);
+                return false;
+            }
+        }
+
+        Date eventTime = eventJson.getDate("eventTime");
+        if (Objects.isNull(eventTime)) {
+            eventTime = DateUtil.date();
+        }
+
+        log.debug("push event from remote: " + eventJson.toJSONString());
+        return publishEvent(eventKey, eventTime, eventMessage);
     }
 
     /**
