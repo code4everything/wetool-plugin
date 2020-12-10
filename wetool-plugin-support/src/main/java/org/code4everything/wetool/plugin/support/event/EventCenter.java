@@ -231,7 +231,6 @@ public class EventCenter {
                 log.error("event '{}' no clipboard text", eventKey);
                 return false;
             }
-            log.debug("push event from remote: " + eventJson.toJSONString());
             ClipboardUtil.setStr(clip);
             return true;
         }

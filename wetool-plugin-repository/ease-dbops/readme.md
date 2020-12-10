@@ -25,6 +25,7 @@ import org.code4everything.wetool.plugin.support.factory.*;
 import org.code4everything.wetool.plugin.support.http.*;
 import org.code4everything.wetool.plugin.support.event.*;
 import org.code4everything.wetool.plugin.support.druid.*;
+import org.code4everything.wetool.plugin.support.cache.*;
 
 import com.alibaba.fastjson.*;
 
