@@ -67,7 +67,9 @@ import cn.hutool.core.map.*;
 
 目前脚本支持两种触发方式：手动执行，以及事件订阅。[查看有哪些事件？](../../wetool-plugin-support/readme.md)，如果需要用到事件的消息作为参数，可能需要查看源代码，[查看目录](../../wetool-plugin-support/src/main/java/org/code4everything/wetool/plugin/support/event/message)。
 
-事件发布的消息会随一个被定义为 `eventMessage` 的变量一起注入到脚本中，同时会注入 `eventKey` `eventTime` 属性。
+事件发布的消息会随一个被定义为 `eventMessage` 的变量一起注入到脚本中，同时还会注入 `eventKey` `eventTime` 属性。
+
+### 远程事件的推送与发布
 
 ### 例子1：存储剪贴板历史并添加查询按钮
 
@@ -187,8 +189,6 @@ posY=eventMessage.getMouseEvent().getY();
 
 update(sql,list(button,clickCount,posX,posY));
 ```
-
-Enjoy this...
 
 ### 更新历史
 

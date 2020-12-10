@@ -63,6 +63,16 @@ EventCenter.subscribeEvent(String eventKey, EventHandler eventHandler);
 
 类 `JdbcExecutor` 提供简单的ORM映射
 
+### HTTP服务
+
+暴露http服务接口，仅接受参数和JSON数据，同时响应JSON数据。API格式：get/api/test1, post/api/test2
+
+```java
+HttpService.exportHttp(String api, HttpApiHandler handler);
+HttpService.exportHttp(int port, String api, HttpApiHandler handler);
+```
+
+
 ### 仅适用本插件库的特定工具类
 
 [WeUtils](src/main/java/org/code4everything/wetool/plugin/support/util/WeUtils.java)
