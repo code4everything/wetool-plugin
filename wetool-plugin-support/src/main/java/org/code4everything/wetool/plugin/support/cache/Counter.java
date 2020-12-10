@@ -1,6 +1,5 @@
 package org.code4everything.wetool.plugin.support.cache;
 
-import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.collection.IterUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -21,7 +20,7 @@ import java.util.Objects;
 @UtilityClass
 public class Counter {
 
-    private static final String DEFAULT_MASTER_KEY = "wetool";
+    static final String DEFAULT_MASTER_KEY = "wetool";
 
     private static final WeTimedCache<WeTimedCache<Long>> TIMED_COUNTER_MAP = new WeTimedCache<>(Long.MAX_VALUE);
 
@@ -44,8 +43,8 @@ public class Counter {
 
         WeTimedCache<Long> weTimedCache = TIMED_COUNTER_MAP.get(masterKey);
         if (Objects.isNull(weTimedCache)) {
-            TimedCache<String, Long> timedCache = new TimedCache<>(Long.MAX_VALUE);
-            timedCache.schedulePrune(1000);
+            weTimedCache = new WeTimedCache<>(Long.MAX_VALUE);
+            weTimedCache.schedulePrune(1000);
         }
         TIMED_COUNTER_MAP.put(masterKey, weTimedCache, timeout);
         return weTimedCache;
@@ -97,7 +96,7 @@ public class Counter {
         map.forEach((k, v) -> increment(masterKey, k, v.longValue(), timeout));
     }
 
-    public static long increment(String masterKey, String secondKey, long addend, long timeout) {
+    public static synchronized long increment(String masterKey, String secondKey, long addend, long timeout) {
         masterKey = StrUtil.blankToDefault(masterKey, DEFAULT_MASTER_KEY);
         WeTimedCache<Long> weTimedCache = TIMED_COUNTER_MAP.get(masterKey);
         if (Objects.isNull(weTimedCache)) {
@@ -135,10 +134,11 @@ public class Counter {
     }
 
     public static boolean existsCounter(String secondKey) {
-        return existsCounter(StrUtil.blankToDefault(DEFAULT_MASTER_KEY, secondKey));
+        return existsCounter(null, secondKey);
     }
 
     public static boolean existsCounter(String masterKey, String secondKey) {
+        masterKey = StrUtil.blankToDefault(masterKey, DEFAULT_MASTER_KEY);
         return ObjectUtil.defaultIfNull(TIMED_COUNTER_MAP.get(masterKey), EMPTY_CACHE).containsKey(secondKey);
     }
 }
