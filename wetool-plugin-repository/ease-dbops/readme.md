@@ -71,6 +71,26 @@ import cn.hutool.core.map.*;
 
 ### 远程事件的推送与发布
 
+假设我们在两台机器上（A和B）都启动了WeTool，需要对事件进行汇总，A作为主节点（假设ip为`192.168.1.130`），即事件接收方，B作为副节点即远程事件的推送方。
+
+现在我们需要在A端暴露一个HTTP服务来接收远端传过来的事件，并发布该事件：
+
+```java
+http0("post/api/event/remote", "http_remote_event_sub_script");
+```
+
+然后添加名称为`http_remote_event_sub_script`的子脚本，脚本内容如下（body由http回调自动带入）：
+
+```java
+EventCenter.publishEventFromRemote(body);
+```
+
+最后我们需要在B端将事件推送出来，添加一个脚本，订阅要远程推送的事件，脚本内容如下：
+
+```java
+pushThisEvent2Remote("http://192.168.1.130:8189/api/event/remote");
+```
+
 ### 例子1：存储剪贴板历史并添加查询按钮
 
 首先，我们需要创建用于存储剪贴板内容的数据表
