@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 计数器缓存
@@ -20,7 +21,7 @@ import java.util.Objects;
 @UtilityClass
 public class Counter {
 
-    static final String DEFAULT_MASTER_KEY = "wetool";
+    public static final String DEFAULT_MASTER_KEY = "wetool";
 
     private static final WeTimedCache<WeTimedCache<Long>> TIMED_COUNTER_MAP = new WeTimedCache<>(Long.MAX_VALUE);
 
@@ -61,6 +62,14 @@ public class Counter {
     public static Map<String, Long> getByMaster(String masterKey) {
         WeTimedCache<Long> weTimedCache = TIMED_COUNTER_MAP.get(masterKey);
         return Objects.isNull(weTimedCache) ? Collections.emptyMap() : weTimedCache.getAllKeyValues();
+    }
+
+    public static List<Map<String, Object>> toHttpResponse(String masterKey, String keyName, String valueName) {
+        Map<String, Long> map = getByMaster(masterKey);
+        return map.entrySet().stream().map(entry -> {
+            Object value = entry.getValue();
+            return Map.of(keyName, entry.getKey(), valueName, value);
+        }).collect(Collectors.toList());
     }
 
     public static boolean existsMaster(String masterKey) {
