@@ -2,6 +2,7 @@ package org.code4everything.wetool.plugin.support.event;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -218,6 +219,21 @@ public class EventCenter {
         if (!EVENT_MAP.containsKey(eventKey)) {
             log.error("event '{}' not register yet!", eventKey);
             return false;
+        }
+
+        if (EVENT_CLIPBOARD_CHANGED.equals(eventKey)) {
+            JSONObject jsonObject = eventJson.getJSONObject("eventMessage");
+            String clip = null;
+            if (Objects.nonNull(jsonObject)) {
+                clip = jsonObject.getString("clipboardText");
+            }
+            if (StrUtil.isBlank(clip)) {
+                log.error("event '{}' no clipboard text", eventKey);
+                return false;
+            }
+            log.debug("push event from remote: " + eventJson.toJSONString());
+            ClipboardUtil.setStr(clip);
+            return true;
         }
 
         EventMessage eventMessage = null;
