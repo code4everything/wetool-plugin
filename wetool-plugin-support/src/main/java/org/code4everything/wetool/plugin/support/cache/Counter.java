@@ -37,7 +37,7 @@ public class Counter {
         if (TIMED_COUNTER_MAP.isEmpty()) {
             synchronized (Counter.class) {
                 if (TIMED_COUNTER_MAP.isEmpty()) {
-                    TIMED_COUNTER_MAP.schedulePrune(1000);
+                    TIMED_COUNTER_MAP.schedulePrune(100);
                 }
             }
         }
@@ -45,7 +45,7 @@ public class Counter {
         WeTimedCache<Long> weTimedCache = TIMED_COUNTER_MAP.get(masterKey);
         if (Objects.isNull(weTimedCache)) {
             weTimedCache = new WeTimedCache<>(Long.MAX_VALUE);
-            weTimedCache.schedulePrune(1000);
+            weTimedCache.schedulePrune(100);
         }
         TIMED_COUNTER_MAP.put(masterKey, weTimedCache, timeout);
         return weTimedCache;
