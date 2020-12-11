@@ -299,7 +299,7 @@ public class JdbcExecutor {
         JdbcOpsUtils.getParserChain().initParse();
         try {
             caller.executeAndSetSql(connection, sqlHolder);
-            log.info("[{}ms] execute sql [{}]", System.currentTimeMillis() - start, sqlHolder.get());
+            log.debug("[{}ms] execute sql [{}]", System.currentTimeMillis() - start, sqlHolder.get());
         } catch (Exception e) {
             log.error("execute sql failed [{}] \r\n{}", sqlHolder.get(), ExceptionUtil.stacktraceToString(e));
         } finally {
