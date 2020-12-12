@@ -2,6 +2,7 @@ package org.code4everything.wetool.plugin.support.event;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
@@ -231,7 +232,12 @@ public class EventCenter {
                 log.error("event '{}' no clipboard text", eventKey);
                 return false;
             }
-            ClipboardUtil.setStr(clip);
+
+            try {
+                ClipboardUtil.setStr(clip);
+            } catch (Exception e) {
+                log.error(ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
+            }
             return true;
         }
 

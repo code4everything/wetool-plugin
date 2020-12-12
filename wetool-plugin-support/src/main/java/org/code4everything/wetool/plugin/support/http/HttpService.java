@@ -125,7 +125,7 @@ public class HttpService {
             EventCenter.subscribeEvent(EventCenter.EVENT_WETOOL_EXIT, new BaseNoMessageEventHandler() {
                 @Override
                 public void handleEvent0(String eventKey, Date eventTime) {
-                    log.info("shut down http service, port: {}", port);
+                    log.info("shutdown http service, port: {}", port);
                     bossGroup.shutdownGracefully();
                     workerGroup.shutdownGracefully();
                 }
