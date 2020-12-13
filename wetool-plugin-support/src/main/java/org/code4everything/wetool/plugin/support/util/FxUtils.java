@@ -134,12 +134,15 @@ public class FxUtils {
                 PRESSING_KEY_CODE.remove(eventMessage.getKeyEvent().getKeyCode());
             }
         });
-        EventCenter.subscribeEvent(EventCenter.EVENT_WETOOL_SHOW, new BaseNoMessageEventHandler() {
+
+        BaseNoMessageEventHandler eventHandler = new BaseNoMessageEventHandler() {
             @Override
             public void handleEvent0(String eventKey, Date eventTime) {
                 PRESSING_KEY_CODE.clear();
             }
-        });
+        };
+        EventCenter.subscribeEvent(EventCenter.EVENT_WETOOL_SHOW, eventHandler);
+        EventCenter.subscribeEvent(EventCenter.EVENT_WETOOL_HIDDEN, eventHandler);
     }
 
     private static void handleShortcuts(Pair<List<Integer>, Runnable> pair) {
