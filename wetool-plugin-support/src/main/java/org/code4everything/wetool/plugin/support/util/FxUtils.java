@@ -568,26 +568,34 @@ public class FxUtils {
         }
     }
 
-    private static FileChooser getFileChooser() {
+    public static FileChooser getFileChooser() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle(AppConsts.Title.APP_TITLE);
         chooser.setInitialDirectory(new File(WeUtils.getConfig().getFileChooserInitDir()));
         return chooser;
     }
 
-    private static void handleFileListCallable(List<File> files, Callable<List<File>> callable) {
-        if (CollUtil.isEmpty(files) || Objects.isNull(callable)) {
+    public static void handleFileListCallable(List<File> files, Callable<List<File>> callable) {
+        if (CollUtil.isEmpty(files)) {
             return;
         }
         WeUtils.getConfig().setFileChooserInitDir(files.get(0).getParent());
+
+        if (Objects.isNull(callable)) {
+            return;
+        }
         callable.call(files);
     }
 
-    private static void handleFileCallable(File file, Callable<File> callable) {
-        if (Objects.isNull(file) || Objects.isNull(callable)) {
+    public static void handleFileCallable(File file, Callable<File> callable) {
+        if (Objects.isNull(file)) {
             return;
         }
         WeUtils.getConfig().setFileChooserInitDir(file.getParent());
+
+        if (Objects.isNull(callable)) {
+            return;
+        }
         callable.call(file);
     }
 }

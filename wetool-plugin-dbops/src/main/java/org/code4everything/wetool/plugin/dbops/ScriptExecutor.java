@@ -3,7 +3,9 @@ package org.code4everything.wetool.plugin.dbops;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
@@ -20,16 +22,20 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.code4everything.wetool.plugin.support.constant.AppConsts;
 import org.code4everything.wetool.plugin.support.control.cell.UnmodifiableTextFieldTableCell;
 import org.code4everything.wetool.plugin.support.druid.JdbcExecutor;
 import org.code4everything.wetool.plugin.support.http.HttpService;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
+import org.code4everything.wetool.plugin.support.util.FxUtils;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 import oshi.software.os.OSProcess;
 
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -104,32 +110,8 @@ public class ScriptExecutor {
             expressPackage.addPackage("cn.hutool.core.map");
 
             try {
-                Class<?>[] stringParamType = {String.class};
-
-                runner.addFunctionOfClassMethod("dialog", CLASS_NAME, "dialog", new Class[]{Object.class}, null);
-                runner.addFunctionOfClassMethod("list", CLASS_NAME, "list", new Class[]{Object[].class}, null);
-                runner.addFunctionOfClassMethod("exec", CLASS_NAME, "exec", new Class[]{String.class}, null);
-                runner.addFunctionOfClassMethod("input", CLASS_NAME, "input", stringParamType, null);
-                runner.addFunctionOfClassMethod("processes", CLASS_NAME, "processes", stringParamType, null);
-                Class<?>[] httpParamTypes = {String.class, String.class};
-                runner.addFunctionOfClassMethod("http0", CLASS_NAME, "http0", httpParamTypes, null);
-                httpParamTypes = new Class[]{int.class, String.class, String.class};
-                runner.addFunctionOfClassMethod("http1", CLASS_NAME, "http1", httpParamTypes, null);
-                Class<?>[] globalParamTypes = {String.class, Object.class};
-                runner.addFunctionOfClassMethod("global", CLASS_NAME, "global", globalParamTypes, null);
-                String methodName = "pushThisEvent2Remote";
-                runner.addFunctionOfClassMethod(methodName, CLASS_NAME, methodName, new Class[]{String.class}, null);
-
-                runner.addFunctionOfClassMethod("get", HttpUtil.class, "get", stringParamType, null);
-                Class<?>[] runParamTypes = {String[].class};
-                runner.addFunctionOfClassMethod("run", RuntimeUtil.class, "execForStr", runParamTypes, null);
-                Class<?>[] postTypes = {String.class, String.class};
-                runner.addFunctionOfClassMethod("post", HttpUtil.class, "post", postTypes, null);
-
-                Class<?>[] logParamTypes = {String.class, Object[].class};
-                runner.addFunctionOfClassMethod("log", CLASS_NAME, "log", logParamTypes, null);
-                Class<?>[] formatParamTypes = {CharSequence.class, Object[].class};
-                runner.addFunctionOfClassMethod("format", StrUtil.class, "format", formatParamTypes, null);
+                importInnerMethods(runner);
+                importOuterMethods(runner);
 
                 if (StrUtil.isNotEmpty(name)) {
                     JdbcExecutor jdbcExecutor = JdbcExecutor.getJdbcExecutor(name);
@@ -142,6 +124,123 @@ public class ScriptExecutor {
             }
             return runner;
         });
+    }
+
+    private static void importInnerMethods(ExpressRunner runner) throws Exception {
+        Class<?>[] types = {};
+        runner.addFunctionOfClassMethod("fileSaveDialog", CLASS_NAME, "fileSaveDialog", types, null);
+        runner.addFunctionOfClassMethod("filesDialog", CLASS_NAME, "filesDialog", types, null);
+        runner.addFunctionOfClassMethod("fileDialog", CLASS_NAME, "fileDialog", types, null);
+        runner.addFunctionOfClassMethod("folderDialog", CLASS_NAME, "folderDialog", types, null);
+
+        types = new Class<?>[]{Object.class};
+        runner.addFunctionOfClassMethod("dialog", CLASS_NAME, "dialog", types, null);
+        runner.addFunctionOfClassMethod("append", CLASS_NAME, "append", types, null);
+
+        types = new Class<?>[]{Object[].class};
+        runner.addFunctionOfClassMethod("list", CLASS_NAME, "list", types, null);
+
+        types = new Class<?>[]{String.class};
+        runner.addFunctionOfClassMethod("exec", CLASS_NAME, "exec", types, null);
+        runner.addFunctionOfClassMethod("input", CLASS_NAME, "input", types, null);
+        runner.addFunctionOfClassMethod("processes", CLASS_NAME, "processes", types, null);
+        runner.addFunctionOfClassMethod("pushThisEvent2Remote", CLASS_NAME, "pushThisEvent2Remote", types, null);
+
+        types = new Class<?>[]{String.class, String.class};
+        runner.addFunctionOfClassMethod("http0", CLASS_NAME, "http0", types, null);
+
+        types = new Class<?>[]{int.class, String.class, String.class};
+        runner.addFunctionOfClassMethod("http1", CLASS_NAME, "http1", types, null);
+
+        types = new Class<?>[]{String.class, Object.class};
+        runner.addFunctionOfClassMethod("global", CLASS_NAME, "global", types, null);
+
+        types = new Class<?>[]{String.class, Object[].class};
+        runner.addFunctionOfClassMethod("log", CLASS_NAME, "log", types, null);
+
+        types = new Class<?>[]{String.class, String[].class};
+        runner.addFunctionOfClassMethod("join", CLASS_NAME, "join", types, null);
+
+        types = new Class<?>[]{File.class, String.class};
+        runner.addFunctionOfClassMethod("save", CLASS_NAME, "save", types, null);
+    }
+
+    private static void importOuterMethods(ExpressRunner runner) throws Exception {
+        Class<?>[] types = {String.class};
+        runner.addFunctionOfClassMethod("get", HttpUtil.class, "get", types, null);
+
+        types = new Class<?>[]{String[].class};
+        runner.addFunctionOfClassMethod("run", RuntimeUtil.class, "execForStr", types, null);
+
+        types = new Class<?>[]{String.class, String.class};
+        runner.addFunctionOfClassMethod("post", HttpUtil.class, "post", types, null);
+
+        types = new Class<?>[]{CharSequence.class, Object[].class};
+        runner.addFunctionOfClassMethod("format", StrUtil.class, "format", types, null);
+    }
+
+    public static String join(String demiliter, String... params) {
+        if (ArrayUtil.isEmpty(params)) {
+            return StrUtil.EMPTY;
+        }
+        StringJoiner joiner = new StringJoiner(demiliter);
+        for (String param : params) {
+            joiner.add(param);
+        }
+        return joiner.toString();
+    }
+
+    public static StringBuilder append(Object param) {
+        String key = "java_lang_StringBuilder";
+        Object builder = TEMP_VARS.get().get(key);
+
+        StringBuilder stringBuilder;
+        if (Objects.isNull(builder)) {
+            stringBuilder = new StringBuilder();
+            TEMP_VARS.get().put(key, stringBuilder);
+        } else if (builder instanceof StringBuilder) {
+            stringBuilder = (StringBuilder) builder;
+        } else {
+            TEMP_VARS.get().remove(key);
+            return append(param);
+        }
+
+        return stringBuilder.append(param);
+    }
+
+    public static File fileSaveDialog() {
+        File file = FxUtils.getFileChooser().showSaveDialog(FxUtils.getStage());
+        FxUtils.handleFileCallable(file, null);
+        return file;
+    }
+
+    public static boolean save(File file, String content) {
+        if (Objects.isNull(file)) {
+            return false;
+        }
+        FileUtil.writeUtf8String(content, file);
+        return true;
+    }
+
+    public static List<File> filesDialog() {
+        List<File> files = FxUtils.getFileChooser().showOpenMultipleDialog(FxUtils.getStage());
+        FxUtils.handleFileListCallable(files, null);
+        return files;
+    }
+
+    public static File fileDialog() {
+        File file = FxUtils.getFileChooser().showOpenDialog(FxUtils.getStage());
+        FxUtils.handleFileCallable(file, null);
+        return file;
+    }
+
+    public static File folderDialog() {
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle(AppConsts.Title.APP_TITLE);
+        chooser.setInitialDirectory(new File(WeUtils.getConfig().getFileChooserInitDir()));
+        File file = chooser.showDialog(FxUtils.getStage());
+        FxUtils.handleFileCallable(file, null);
+        return file;
     }
 
     public static void pushThisEvent2Remote(String postApi) {
