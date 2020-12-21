@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.ql.util.express.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 import com.ql.util.express.parse.ExpressPackage;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn;
@@ -40,6 +41,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.stream.Collectors;
 
 /**
@@ -208,8 +210,11 @@ public class ScriptExecutor {
         return stringBuilder.append(param);
     }
 
+    @SneakyThrows
     public static File fileSaveDialog() {
-        File file = FxUtils.getFileChooser().showSaveDialog(FxUtils.getStage());
+        FutureTask<File> task = new FutureTask<>(() -> FxUtils.getFileChooser().showSaveDialog(FxUtils.getStage()));
+        Platform.runLater(task);
+        File file = task.get();
         FxUtils.handleFileCallable(file, null);
         return file;
     }
@@ -222,23 +227,35 @@ public class ScriptExecutor {
         return true;
     }
 
+    @SneakyThrows
     public static List<File> filesDialog() {
-        List<File> files = FxUtils.getFileChooser().showOpenMultipleDialog(FxUtils.getStage());
+        FutureTask<List<File>> task =
+                new FutureTask<>(() -> FxUtils.getFileChooser().showOpenMultipleDialog(FxUtils.getStage()));
+        Platform.runLater(task);
+        List<File> files = task.get();
         FxUtils.handleFileListCallable(files, null);
         return files;
     }
 
+    @SneakyThrows
     public static File fileDialog() {
-        File file = FxUtils.getFileChooser().showOpenDialog(FxUtils.getStage());
+        FutureTask<File> task = new FutureTask<>(() -> FxUtils.getFileChooser().showOpenDialog(FxUtils.getStage()));
+        Platform.runLater(task);
+        File file = task.get();
         FxUtils.handleFileCallable(file, null);
         return file;
     }
 
+    @SneakyThrows
     public static File folderDialog() {
-        DirectoryChooser chooser = new DirectoryChooser();
-        chooser.setTitle(AppConsts.Title.APP_TITLE);
-        chooser.setInitialDirectory(new File(WeUtils.getConfig().getFileChooserInitDir()));
-        File file = chooser.showDialog(FxUtils.getStage());
+        FutureTask<File> task = new FutureTask<>(() -> {
+            DirectoryChooser chooser = new DirectoryChooser();
+            chooser.setTitle(AppConsts.Title.APP_TITLE);
+            chooser.setInitialDirectory(new File(WeUtils.getConfig().getFileChooserInitDir()));
+            return chooser.showDialog(FxUtils.getStage());
+        });
+        Platform.runLater(task);
+        File file = task.get();
         FxUtils.handleFileCallable(file, null);
         return file;
     }
