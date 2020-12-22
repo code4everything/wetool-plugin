@@ -130,10 +130,10 @@ public class ScriptExecutor {
 
     private static void importInnerMethods(ExpressRunner runner) throws Exception {
         Class<?>[] types = {};
-        runner.addFunctionOfClassMethod("fileSaveDialog", CLASS_NAME, "fileSaveDialog", types, null);
-        runner.addFunctionOfClassMethod("filesDialog", CLASS_NAME, "filesDialog", types, null);
-        runner.addFunctionOfClassMethod("fileDialog", CLASS_NAME, "fileDialog", types, null);
-        runner.addFunctionOfClassMethod("folderDialog", CLASS_NAME, "folderDialog", types, null);
+        runner.addFunctionOfClassMethod("chooseSaveFile", CLASS_NAME, "chooseSaveFile", types, null);
+        runner.addFunctionOfClassMethod("chooseMultiFile", CLASS_NAME, "chooseMultiFile", types, null);
+        runner.addFunctionOfClassMethod("chooseFile", CLASS_NAME, "chooseFile", types, null);
+        runner.addFunctionOfClassMethod("chooseFolder", CLASS_NAME, "chooseFolder", types, null);
 
         types = new Class<?>[]{Object.class};
         runner.addFunctionOfClassMethod("dialog", CLASS_NAME, "dialog", types, null);
@@ -181,11 +181,11 @@ public class ScriptExecutor {
         runner.addFunctionOfClassMethod("format", StrUtil.class, "format", types, null);
     }
 
-    public static String join(String demiliter, String... params) {
+    public static String join(String delimiter, String... params) {
         if (ArrayUtil.isEmpty(params)) {
             return StrUtil.EMPTY;
         }
-        StringJoiner joiner = new StringJoiner(demiliter);
+        StringJoiner joiner = new StringJoiner(delimiter);
         for (String param : params) {
             joiner.add(param);
         }
@@ -211,7 +211,7 @@ public class ScriptExecutor {
     }
 
     @SneakyThrows
-    public static File fileSaveDialog() {
+    public static File chooseSaveFile() {
         FutureTask<File> task = new FutureTask<>(() -> FxUtils.getFileChooser().showSaveDialog(FxUtils.getStage()));
         Platform.runLater(task);
         File file = task.get();
@@ -228,7 +228,7 @@ public class ScriptExecutor {
     }
 
     @SneakyThrows
-    public static List<File> filesDialog() {
+    public static List<File> chooseMultiFile() {
         FutureTask<List<File>> task =
                 new FutureTask<>(() -> FxUtils.getFileChooser().showOpenMultipleDialog(FxUtils.getStage()));
         Platform.runLater(task);
@@ -238,7 +238,7 @@ public class ScriptExecutor {
     }
 
     @SneakyThrows
-    public static File fileDialog() {
+    public static File chooseFile() {
         FutureTask<File> task = new FutureTask<>(() -> FxUtils.getFileChooser().showOpenDialog(FxUtils.getStage()));
         Platform.runLater(task);
         File file = task.get();
@@ -247,7 +247,7 @@ public class ScriptExecutor {
     }
 
     @SneakyThrows
-    public static File folderDialog() {
+    public static File chooseFolder() {
         FutureTask<File> task = new FutureTask<>(() -> {
             DirectoryChooser chooser = new DirectoryChooser();
             chooser.setTitle(AppConsts.Title.APP_TITLE);
@@ -335,9 +335,9 @@ public class ScriptExecutor {
         }
         String header = "结果";
         if (object instanceof List) {
-            List list = (List) object;
+            List<?> list = (List) object;
             if (CollUtil.isNotEmpty(list)) {
-                list.removeIf(Objects::isNull);
+                list = list.stream().filter(Objects::nonNull).collect(Collectors.toList());
             }
             if (CollUtil.isEmpty(list)) {
                 dialog("结果为空！");
@@ -366,7 +366,7 @@ public class ScriptExecutor {
             });
 
             tableView.setEditable(true);
-            tableView.getItems().addAll(list);
+            tableView.getItems().addAll(tableList);
             VBox.setVgrow(tableView, Priority.ALWAYS);
             vBox.getChildren().add(tableView);
             vBox.setPrefWidth(1000);

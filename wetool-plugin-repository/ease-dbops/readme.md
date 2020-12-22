@@ -58,10 +58,10 @@ import cn.hutool.core.map.*;
 |pushThisEvent2Remote(String postApi)|void|推送当前事件到远程|
 |join(String delimiter, String... params)|String|拼接字符串|
 |append(Object param)|StringBuilder|追加字符串|
-|fileSaveDialog()|File|保存文件的弹窗|
-|filesDialog()|List\<File\>|多选文件的弹窗|
-|fileDialog()|File|单选文件的弹窗|
-|folderDialog()|File|选择文件夹的弹窗|
+|chooseSaveFile()|File|保存文件的弹窗|
+|chooseMultiFile()|List\<File\>|多选文件的弹窗|
+|chooseFile()|File|单选文件的弹窗|
+|chooseFolder()|File|选择文件夹的弹窗|
 |save(File file, String content)|boolean|保存文件|
 
 ### 内置变量
