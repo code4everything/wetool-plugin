@@ -63,6 +63,8 @@ import cn.hutool.core.map.*;
 |chooseFile()|File|单选文件的弹窗|
 |chooseFolder()|File|选择文件夹的弹窗|
 |save(File file, String content)|boolean|保存文件|
+|random(List\<Object\>)|Object|从列表中随机取一个元素|
+|choice(String tip, List\<String\>)|String|下拉框弹窗|
 
 ### 内置变量
 

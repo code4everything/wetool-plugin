@@ -5,10 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.*;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.system.oshi.OshiUtil;
 import com.alibaba.fastjson.JSON;
@@ -27,6 +24,7 @@ import javafx.stage.DirectoryChooser;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.code4everything.wetool.plugin.dbops.controller.MainController;
 import org.code4everything.wetool.plugin.support.constant.AppConsts;
 import org.code4everything.wetool.plugin.support.control.cell.UnmodifiableTextFieldTableCell;
 import org.code4everything.wetool.plugin.support.druid.JdbcExecutor;
@@ -148,6 +146,12 @@ public class ScriptExecutor {
         runner.addFunctionOfClassMethod("processes", CLASS_NAME, "processes", types, null);
         runner.addFunctionOfClassMethod("pushThisEvent2Remote", CLASS_NAME, "pushThisEvent2Remote", types, null);
 
+        types = new Class<?>[]{List.class};
+        runner.addFunctionOfClassMethod("random", CLASS_NAME, "random", types, null);
+
+        types = new Class<?>[]{String.class, List.class};
+        runner.addFunctionOfClassMethod("choice", CLASS_NAME, "choice", types, null);
+
         types = new Class<?>[]{String.class, String.class};
         runner.addFunctionOfClassMethod("http0", CLASS_NAME, "http0", types, null);
 
@@ -179,6 +183,18 @@ public class ScriptExecutor {
 
         types = new Class<?>[]{CharSequence.class, Object[].class};
         runner.addFunctionOfClassMethod("format", StrUtil.class, "format", types, null);
+    }
+
+    @SneakyThrows
+    public static String choice(String tip, List<String> items) {
+        return FxDialogs.showChoice(MainController.TAB_NAME, tip, items).get();
+    }
+
+    public static Object random(List<Object> list) {
+        if (CollUtil.isEmpty(list)) {
+            return null;
+        }
+        return list.get(RandomUtil.randomInt(0, list.size()));
     }
 
     public static String join(String delimiter, String... params) {

@@ -98,17 +98,31 @@ public class FxDialogs {
     public static <T> void showChoice(String header, String content, Consumer<T> consumer,
                                       Collection<? extends T> items) {
         Platform.runLater(() -> {
-            ChoiceDialog<T> dialog = new ChoiceDialog<>();
-            dialog.setTitle(AppConsts.Title.APP_TITLE);
-            dialog.setHeaderText(header);
-            dialog.setContentText(content);
-            dialog.setResizable(true);
-            dialog.getItems().addAll(items);
+            ChoiceDialog<T> dialog = getChoiceDialog(header, content, items);
             Optional<T> result = dialog.showAndWait();
             if (ObjectUtil.isNotNull(consumer)) {
                 consumer.accept(result.orElse(null));
             }
         });
+    }
+
+    public static <T> ChoiceDialog<T> getChoiceDialog(String header, String content, Collection<? extends T> items) {
+        ChoiceDialog<T> dialog = new ChoiceDialog<>();
+        dialog.setTitle(AppConsts.Title.APP_TITLE);
+        dialog.setHeaderText(header);
+        dialog.setContentText(content);
+        dialog.setResizable(true);
+        dialog.getItems().addAll(items);
+        return dialog;
+    }
+
+    public static Future<String> showChoice(String header, String content, Collection<String> items) {
+        FutureTask<String> task = new FutureTask<>(() -> {
+            ChoiceDialog<String> dialog = getChoiceDialog(header, content, items);
+            return dialog.showAndWait().orElse("");
+        });
+        Platform.runLater(task);
+        return task;
     }
 
     /**
