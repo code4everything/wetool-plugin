@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.bean.BaseBean;
@@ -43,52 +44,53 @@ public class WeConfig implements BaseBean, Serializable {
     /**
      * 初始化参数
      */
-    private WeInitialize initialize;
+    private WeInitialize initialize = new WeInitialize();
 
     /**
      * 剪贴板历史记录的条数
      */
-    private Integer clipboardSize;
+    private Integer clipboardSize = 20;
 
     /**
      * 文本框是否自动换行
      */
-    private Boolean autoWrap;
+    private Boolean autoWrap = true;
 
     /**
      * 文件过滤（正则表达式）
      */
-    private String fileFilter;
+    private String fileFilter = "";
 
     /**
      * 初始化选择文件的路径
      */
-    private String fileChooserInitDir;
+    private String fileChooserInitDir = "";
 
     /**
      * 字符串记录到日志的长度（会压缩裁剪）
      */
-    private Integer logCompressLen;
+    private Integer logCompressLen = 128;
 
     /**
      * 可快捷打开文件的一系列菜单
      */
-    private Set<WeStart> quickStarts = new HashSet<>();
+    private Set<WeStart> quickStarts = Collections.emptySet();
 
     /**
      * 禁止加载的插件，禁止的插件只需配置插件的作者、名称、版本即可（这些信息可在程序刚启动时的日志中看到）
      */
-    private Set<WePluginInfo> pluginDisables = new HashSet<>();
+    private Set<WePluginInfo> pluginDisables = Collections.emptySet();
 
     /**
      * 插件路径
      */
-    private Set<String> pluginPaths = new HashSet<>();
+    private Set<String> pluginPaths = Collections.emptySet();
 
     /**
      * windows虚拟桌面触发角
      */
-    private MouseCornerEventMessage.LocationTypeEnum winVirtualDesktopHotCorner;
+    private MouseCornerEventMessage.LocationTypeEnum winVirtualDesktopHotCorner =
+            MouseCornerEventMessage.LocationTypeEnum.NONE;
 
     /**
      * 自定义重启脚本文件名，只能位于WeTool工作目录
@@ -100,7 +102,12 @@ public class WeConfig implements BaseBean, Serializable {
      * <p>
      * 参考：https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8
      */
-    private JSONArray dbConnections;
+    private JSONArray dbConnections = new JSONArray();
+
+    /**
+     * 是否关闭鼠标键盘监听器
+     */
+    private Boolean disableKeyboardMouseListener = false;
 
     // end--------------------------------------------------------------------------------------------------------------
 
@@ -189,6 +196,7 @@ public class WeConfig implements BaseBean, Serializable {
         }
     }
 
+    @JSONField(serialize = false)
     public Pair<Date, String> getLastClipboardHistoryItem() {
         Pair<Date, String> last = clipboardHistory.getLast();
         return ObjectUtil.defaultIfNull(last, new Pair<>(new Date(), StrUtil.nullToEmpty(ClipboardUtil.getStr())));

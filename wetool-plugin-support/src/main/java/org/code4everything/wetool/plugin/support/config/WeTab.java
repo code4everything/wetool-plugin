@@ -1,11 +1,13 @@
 package org.code4everything.wetool.plugin.support.config;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.code4everything.boot.base.bean.BaseBean;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -23,15 +25,10 @@ public class WeTab implements BaseBean, Serializable {
     /**
      * 初始化加载的选项卡
      */
-    private Set<String> loads;
+    private Set<String> loads = Collections.emptySet();
 
     /**
      * 支持加载的选项卡，可不配置此属性，展示的配置文件只是为了说明目前支持的选项卡
      */
     private Set<String> supports;
-
-    @Generated
-    public Set<String> getLoads() {
-        return Objects.isNull(loads) ? new HashSet<>() : loads;
-    }
 }

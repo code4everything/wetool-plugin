@@ -23,25 +23,25 @@ public class WeInitialize implements BaseBean, Serializable {
     /**
      * 初始化宽度
      */
-    private Integer width;
+    private Integer width = 1000;
 
     /**
      * 初始化高度
      */
-    private Integer height;
+    private Integer height = 800;
 
     /**
      * 初始化时是否全屏
      */
-    private Boolean fullscreen;
+    private Boolean fullscreen = false;
 
     /**
      * 初始时是否自动隐藏
      */
-    private Boolean hide;
+    private Boolean hide = false;
 
     /**
      * 初始加载的选项卡
      */
-    private WeTab tabs;
+    private WeTab tabs = new WeTab();
 }
