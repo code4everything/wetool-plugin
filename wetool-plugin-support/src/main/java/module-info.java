@@ -55,6 +55,7 @@ module org.code4everything.wetool.plugin.support {
     exports org.code4everything.wetool.plugin.support;
     exports org.code4everything.wetool.plugin.support.config;
     exports org.code4everything.wetool.plugin.support.constant;
+    exports org.code4everything.wetool.plugin.support.control;
     exports org.code4everything.wetool.plugin.support.control.cell;
     exports org.code4everything.wetool.plugin.support.exception;
     exports org.code4everything.wetool.plugin.support.factory;

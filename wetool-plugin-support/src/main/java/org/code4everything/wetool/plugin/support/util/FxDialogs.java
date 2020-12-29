@@ -12,6 +12,7 @@ import javafx.stage.StageStyle;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.support.constant.AppConsts;
+import org.code4everything.wetool.plugin.support.control.EditableChoiceDialog;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -93,13 +94,11 @@ public class FxDialogs {
      * @param header 头部，可为Null
      * @param content 提示内容，可为Null
      * @param items Choice可有的选项
-     * @param <T> 结果类型
      */
-    public static <T> void showChoice(String header, String content, Consumer<T> consumer,
-                                      Collection<? extends T> items) {
+    public static void showChoice(String header, String content, Consumer<String> consumer, Collection<String> items) {
         Platform.runLater(() -> {
-            ChoiceDialog<T> dialog = getChoiceDialog(header, content, items);
-            Optional<T> result = dialog.showAndWait();
+            EditableChoiceDialog dialog = getEditableChoiceDialog(header, content, items);
+            Optional<String> result = dialog.showAndWait();
             if (ObjectUtil.isNotNull(consumer)) {
                 consumer.accept(result.orElse(null));
             }
@@ -116,9 +115,20 @@ public class FxDialogs {
         return dialog;
     }
 
+    public static EditableChoiceDialog getEditableChoiceDialog(String header, String content,
+                                                               Collection<String> items) {
+        EditableChoiceDialog dialog = new EditableChoiceDialog(null, items);
+        dialog.setTitle(AppConsts.Title.APP_TITLE);
+        dialog.setHeaderText(header);
+        dialog.setContentText(content);
+        dialog.setResizable(true);
+        dialog.getItems().addAll(items);
+        return dialog;
+    }
+
     public static Future<String> showChoice(String header, String content, Collection<String> items) {
         FutureTask<String> task = new FutureTask<>(() -> {
-            ChoiceDialog<String> dialog = getChoiceDialog(header, content, items);
+            EditableChoiceDialog dialog = getEditableChoiceDialog(header, content, items);
             return dialog.showAndWait().orElse("");
         });
         Platform.runLater(task);
