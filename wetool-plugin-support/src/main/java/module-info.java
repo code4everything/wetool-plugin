@@ -48,7 +48,6 @@ module org.code4everything.wetool.plugin.support {
     requires io.netty.codec.http;
     requires io.netty.transport;
     requires io.netty.handler;
-    requires org.mapstruct.processor;
     requires hutool.cache;
 
     // 导出包

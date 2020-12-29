@@ -15,5 +15,6 @@ public class CommonTest {
     public void test() {
         WeConfig config = JSON.parseObject("{}", WeConfig.class);
         Console.log(JSON.toJSONString(config, true));
+        System.out.println(config.getAutoWrap());
     }
 }
