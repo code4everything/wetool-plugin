@@ -2,6 +2,7 @@ package org.code4everything.wetool.plugin.dbops;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
@@ -341,10 +342,10 @@ public class ScriptExecutor {
     }
 
     public static List<Object> list(Object... args) {
-        return Arrays.asList(args);
+        return ListUtil.list(false, args);
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"rawtypes"})
     public static void dialog(Object object) {
         if (Objects.isNull(object)) {
             return;
