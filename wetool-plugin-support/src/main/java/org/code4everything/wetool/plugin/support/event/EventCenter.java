@@ -128,6 +128,11 @@ public class EventCenter {
      */
     public static final String EVENT_MOUSE_RELEASED = "event_mouse_released";
 
+    /**
+     * 所有插件加载完毕，订阅事件可使用 {@link BaseNoMessageEventHandler}
+     */
+    public static final String EVENT_ALL_PLUGIN_LOADED = "event_all_plugin_loaded";
+
     private static final Map<String, EventMode> EVENT_MAP = new ConcurrentHashMap<>();
 
     private static final Map<String, List<EventHandler>> HANDLER_MAP = new ConcurrentHashMap<>();

@@ -56,6 +56,7 @@ EventCenter.subscribeEvent(String eventKey, EventHandler eventHandler);
 |鼠标移动事件|event_mouse_motion|MouseListenerEventMessage|-|
 |鼠标按下事件|event_mouse_pressed|MouseListenerEventMessage|-|
 |鼠标释放事件|event_mouse_released|MouseListenerEventMessage|-|
+|所有插件加载完毕事件|event_all_plugin_loaded|-|-|
 
 ### 数据库操作
 
