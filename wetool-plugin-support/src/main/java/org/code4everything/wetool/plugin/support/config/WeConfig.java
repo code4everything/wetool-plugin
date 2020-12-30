@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
@@ -15,7 +16,9 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.bean.BaseBean;
 import org.code4everything.boot.config.BootConfig;
+import org.code4everything.wetool.plugin.support.constant.AppConsts;
 import org.code4everything.wetool.plugin.support.event.message.MouseCornerEventMessage;
+import org.code4everything.wetool.plugin.support.util.Callable;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.Serializable;
@@ -109,6 +112,11 @@ public class WeConfig implements BaseBean, Serializable {
      */
     private Boolean disableKeyboardMouseListener = false;
 
+    /**
+     * 是否关闭暗黑模式
+     */
+    private Boolean disableDarkMode = false;
+
     // end--------------------------------------------------------------------------------------------------------------
 
     private transient LinkedList<Pair<Date, String>> clipboardHistory = new LinkedList<>();
@@ -200,5 +208,12 @@ public class WeConfig implements BaseBean, Serializable {
     public Pair<Date, String> getLastClipboardHistoryItem() {
         Pair<Date, String> last = clipboardHistory.getLast();
         return ObjectUtil.defaultIfNull(last, new Pair<>(new Date(), StrUtil.nullToEmpty(ClipboardUtil.getStr())));
+    }
+
+    public void darkIfEnabled(Callable<String> darkCallable) {
+        if (BooleanUtil.isTrue(getDisableDarkMode())) {
+            return;
+        }
+        darkCallable.call(AppConsts.DARK_CSS);
     }
 }

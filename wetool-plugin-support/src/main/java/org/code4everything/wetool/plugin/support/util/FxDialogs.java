@@ -62,11 +62,8 @@ public class FxDialogs {
     public static <R> void showDialog(String header, Node dialogPane, DialogWinnable<R> winnable, R defaultR) {
         Platform.runLater(() -> {
             Dialog<R> dialog = new Dialog<>();
-            dialog.setTitle(AppConsts.Title.APP_TITLE);
-            dialog.setHeaderText(header);
-            dialog.setResizable(true);
-            dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.getDialogPane().setContent(dialogPane);
+            buildDialog(dialog, header, null);
 
             ButtonType ok = new ButtonType("确定", ButtonBar.ButtonData.OK_DONE);
             if (ObjectUtil.isNotNull(winnable)) {
@@ -107,10 +104,7 @@ public class FxDialogs {
 
     public static <T> ChoiceDialog<T> getChoiceDialog(String header, String content, Collection<? extends T> items) {
         ChoiceDialog<T> dialog = new ChoiceDialog<>();
-        dialog.setTitle(AppConsts.Title.APP_TITLE);
-        dialog.setHeaderText(header);
-        dialog.setContentText(content);
-        dialog.setResizable(true);
+        buildDialog(dialog, header, content);
         dialog.getItems().addAll(items);
         return dialog;
     }
@@ -118,12 +112,18 @@ public class FxDialogs {
     public static EditableChoiceDialog getEditableChoiceDialog(String header, String content,
                                                                Collection<String> items) {
         EditableChoiceDialog dialog = new EditableChoiceDialog(null, items);
+        buildDialog(dialog, header, content);
+        dialog.getItems().addAll(items);
+        return dialog;
+    }
+
+    private static void buildDialog(Dialog<?> dialog, String header, String content) {
         dialog.setTitle(AppConsts.Title.APP_TITLE);
         dialog.setHeaderText(header);
         dialog.setContentText(content);
         dialog.setResizable(true);
-        dialog.getItems().addAll(items);
-        return dialog;
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        WeUtils.getConfig().darkIfEnabled(dialog.getDialogPane().getStylesheets()::add);
     }
 
     public static Future<String> showChoice(String header, String content, Collection<String> items) {
@@ -171,10 +171,7 @@ public class FxDialogs {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setWidth(500);
         dialog.getDialogPane().setPrefWidth(500);
-        dialog.setTitle(AppConsts.Title.APP_TITLE);
-        dialog.setHeaderText(header);
-        dialog.setContentText(content);
-        dialog.setResizable(true);
+        buildDialog(dialog, header, content);
         return dialog;
     }
 
@@ -235,6 +232,7 @@ public class FxDialogs {
         alert.initModality(modality);
         alert.initStyle(StageStyle.DECORATED);
 
+        WeUtils.getConfig().darkIfEnabled(alert.getDialogPane().getStylesheets()::add);
         return alert;
     }
 }

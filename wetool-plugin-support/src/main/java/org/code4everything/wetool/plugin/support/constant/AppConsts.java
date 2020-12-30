@@ -21,6 +21,8 @@ public class AppConsts {
      */
     public static final String COMPATIBLE_LOWER_VERSION = "1.1.0";
 
+    public static final String DARK_CSS = "/css/dark.css";
+
     @UtilityClass
     public static class Tip {
 
