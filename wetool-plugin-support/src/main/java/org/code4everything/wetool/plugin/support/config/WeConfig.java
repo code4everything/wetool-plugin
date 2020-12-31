@@ -117,6 +117,11 @@ public class WeConfig implements BaseBean, Serializable {
      */
     private Boolean disableDarkMode = false;
 
+    /**
+     * 自动移除未加载的插件
+     */
+    private Boolean autoRemoveUnloadedPlugin = true;
+
     // end--------------------------------------------------------------------------------------------------------------
 
     private transient LinkedList<Pair<Date, String>> clipboardHistory = new LinkedList<>();
