@@ -5,11 +5,13 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Holder;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.parser.Feature;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -136,13 +138,23 @@ public class MainController implements BaseViewController {
             QlScript qlScript = SCRIPTS.getObject(uuid, QlScript.class);
             String dbName = StrUtil.blankToDefault(qlScript.getSpecifyDbName(), dbNameBox.getValue());
 
-            WeUtils.execute(() -> {
-                try {
-                    ScriptExecutor.execute(dbName, qlScript.getCodes(), null);
-                } catch (Exception e) {
-                    FxDialogs.showException("执行脚本失败", e);
-                }
-            });
+            if (BooleanUtil.isTrue(qlScript.getExecInFx())) {
+                Platform.runLater(() -> {
+                    try {
+                        ScriptExecutor.execute(dbName, qlScript.getCodes(), null);
+                    } catch (Exception e) {
+                        FxDialogs.showException("执行脚本失败", e);
+                    }
+                });
+            } else {
+                WeUtils.execute(() -> {
+                    try {
+                        ScriptExecutor.execute(dbName, qlScript.getCodes(), null);
+                    } catch (Exception e) {
+                        FxDialogs.showException("执行脚本失败", e);
+                    }
+                });
+            }
         };
 
         for (String uuid : SCRIPTS.keySet()) {
@@ -259,11 +271,22 @@ public class MainController implements BaseViewController {
                         args.put("messageClass", eventMessage.getClass().getName());
                     }
 
-                    try {
-                        ScriptExecutor.execute(dbName, qlScript.getCodes(), args);
-                    } catch (Exception x) {
-                        String errMsg = "execute event script error: {}";
-                        log.error(errMsg, ExceptionUtil.stacktraceToString(x, Integer.MAX_VALUE));
+                    if (BooleanUtil.isTrue(qlScript.getExecInFx())) {
+                        Platform.runLater(() -> {
+                            try {
+                                ScriptExecutor.execute(dbName, qlScript.getCodes(), args);
+                            } catch (Exception x) {
+                                String errMsg = "execute event script error: {}";
+                                log.error(errMsg, ExceptionUtil.stacktraceToString(x, Integer.MAX_VALUE));
+                            }
+                        });
+                    } else {
+                        try {
+                            ScriptExecutor.execute(dbName, qlScript.getCodes(), args);
+                        } catch (Exception x) {
+                            String errMsg = "execute event script error: {}";
+                            log.error(errMsg, ExceptionUtil.stacktraceToString(x, Integer.MAX_VALUE));
+                        }
                     }
                 });
             });

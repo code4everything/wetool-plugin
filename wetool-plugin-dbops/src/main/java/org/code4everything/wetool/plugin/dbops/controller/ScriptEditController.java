@@ -1,9 +1,11 @@
 package org.code4everything.wetool.plugin.dbops.controller;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSON;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -46,6 +48,9 @@ public class ScriptEditController {
     @FXML
     public ComboBox<String> eventKeyBox;
 
+    @FXML
+    public CheckBox execInFxCheck;
+
     private QlScript qlScript;
 
     @FXML
@@ -71,6 +76,7 @@ public class ScriptEditController {
         qlScript.setEventKey(eventKeyBox.getValue());
         qlScript.setSpecifyDbName(dbNameBox.getValue());
         qlScript.setCodes(qlScriptText.getText());
+        qlScript.setExecInFx(execInFxCheck.isSelected());
 
         return qlScript;
     }
@@ -88,6 +94,7 @@ public class ScriptEditController {
         commentText.setText(qlScript.getComment());
         eventKeyBox.setValue(qlScript.getEventKey());
         qlScriptText.setText(qlScript.getCodes());
+        execInFxCheck.setSelected(BooleanUtil.isTrue(qlScript.getExecInFx()));
     }
 
     public void testScript() {

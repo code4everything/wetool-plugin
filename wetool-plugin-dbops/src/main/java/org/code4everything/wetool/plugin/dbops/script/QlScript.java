@@ -49,4 +49,9 @@ public class QlScript {
      * 代码块
      */
     private String codes;
+
+    /**
+     * 是否在fx ui线程中执行
+     */
+    private Boolean execInFx;
 }

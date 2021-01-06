@@ -47,5 +47,7 @@ public class AppConsts {
     public static class BeanKey {
 
         public static final String PLUGIN_MENU = "pluginMenu";
+
+        public static final String TITLE_BAR = "titleBar";
     }
 }
