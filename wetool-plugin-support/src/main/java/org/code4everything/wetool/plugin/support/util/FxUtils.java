@@ -35,6 +35,7 @@ import org.code4everything.wetool.plugin.support.event.handler.BaseKeyboardEvent
 import org.code4everything.wetool.plugin.support.event.handler.BaseNoMessageEventHandler;
 import org.code4everything.wetool.plugin.support.event.message.KeyboardListenerEventMessage;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
+import org.jnativehook.keyboard.NativeKeyEvent;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -87,9 +88,8 @@ public class FxUtils {
      * @since 1.3.0
      */
     public static synchronized void registerShortcuts(List<Integer> shortcutKeyCodes, Runnable runnable) {
-        if (ArrayUtil.isEmpty(shortcutKeyCodes) || Objects.isNull(runnable)) {
-            return;
-        }
+        Objects.requireNonNull(runnable);
+        checkShortcuts(shortcutKeyCodes);
         SHORTCUT_ACTION.add(new Pair<>(shortcutKeyCodes, runnable));
     }
 
@@ -99,10 +99,18 @@ public class FxUtils {
      * @since 1.3.0
      */
     public static synchronized void registerGlobalShortcuts(List<Integer> shortcutKeyCodes, Runnable runnable) {
-        if (ArrayUtil.isEmpty(shortcutKeyCodes) || Objects.isNull(runnable)) {
-            return;
-        }
+        Objects.requireNonNull(runnable);
+        checkShortcuts(shortcutKeyCodes);
+        String errMsg = "global cannot register shortcut only use key 'escape'";
+        Preconditions.checkArgument(shortcutKeyCodes.size() > 1 || !shortcutKeyCodes.contains(NativeKeyEvent.VC_ESCAPE), errMsg);
         GLOBAL_SHORTCUT_ACTION.add(new Pair<>(shortcutKeyCodes, runnable));
+    }
+
+    private static void checkShortcuts(List<Integer> shortcutKeyCodes) {
+        Preconditions.checkArgument(CollUtil.isNotEmpty(shortcutKeyCodes), "shortcuts must not be empty");
+        shortcutKeyCodes.forEach(Objects::requireNonNull);
+        String errMsg = "key 'escape' cannot combined with any other shortcuts";
+        Preconditions.checkArgument(!shortcutKeyCodes.contains(NativeKeyEvent.VC_ESCAPE) || shortcutKeyCodes.size() == 1, errMsg);
     }
 
     /**
@@ -118,7 +126,11 @@ public class FxUtils {
         EventCenter.subscribeEvent(EventCenter.EVENT_KEYBOARD_PRESSED, new BaseKeyboardEventHandler() {
             @Override
             public void handleEvent0(String eventKey, Date eventTime, KeyboardListenerEventMessage eventMessage) {
-                PRESSING_KEY_CODE.add(eventMessage.getKeyEvent().getKeyCode());
+                int keyCode = eventMessage.getKeyEvent().getKeyCode();
+                if (keyCode == NativeKeyEvent.VC_ESCAPE) {
+                    PRESSING_KEY_CODE.clear();
+                }
+                PRESSING_KEY_CODE.add(keyCode);
 
                 GLOBAL_SHORTCUT_ACTION.forEach(FxUtils::handleShortcuts);
 
