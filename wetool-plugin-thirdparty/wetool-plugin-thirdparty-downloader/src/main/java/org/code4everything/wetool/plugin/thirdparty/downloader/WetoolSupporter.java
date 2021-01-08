@@ -1,7 +1,7 @@
 package org.code4everything.wetool.plugin.thirdparty.downloader;
 
+import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.gui.GuiManager;
-import com.acgist.snail.system.context.SystemContext;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
