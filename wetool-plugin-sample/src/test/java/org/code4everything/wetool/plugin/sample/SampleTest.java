@@ -11,6 +11,7 @@ import org.code4everything.wetool.plugin.test.WetoolTester;
 public class SampleTest {
 
     public static void main(String[] args) {
+        WetoolTester.getConfig().setDisableKeyboardMouseListener(false);
         WetoolTester.runTest(args);
     }
 }

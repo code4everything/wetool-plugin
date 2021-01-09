@@ -35,6 +35,8 @@ public class WetoolTester extends WeApplication {
 
     private static WePluginInfo info;
 
+    private static WeConfig weConfig;
+
     public static void runTest(String[] args) {
         runTest(getConfig(), args);
     }
@@ -68,14 +70,18 @@ public class WetoolTester extends WeApplication {
     }
 
     public static WeConfig getConfig() {
-        WeConfig config = new WeConfig();
-        config.setAutoWrap(true);
-        config.setClipboardSize(20);
-        config.setFileFilter("^[^.].*$");
-        config.setQuickStarts(new HashSet<>());
-        config.setPluginDisables(new HashSet<>());
-        config.setDbConnections(new JSONArray());
-        config.setWinVirtualDesktopHotCorner(MouseCornerEventMessage.LocationTypeEnum.NONE);
+        if (Objects.nonNull(weConfig)) {
+            return weConfig;
+        }
+
+        weConfig = new WeConfig();
+        weConfig.setAutoWrap(true);
+        weConfig.setClipboardSize(20);
+        weConfig.setFileFilter("^[^.].*$");
+        weConfig.setQuickStarts(new HashSet<>());
+        weConfig.setPluginDisables(new HashSet<>());
+        weConfig.setDbConnections(new JSONArray());
+        weConfig.setWinVirtualDesktopHotCorner(MouseCornerEventMessage.LocationTypeEnum.NONE);
 
         WeInitialize initialize = new WeInitialize();
         initialize.setFullscreen(false);
@@ -88,8 +94,8 @@ public class WetoolTester extends WeApplication {
         tab.setSupports(new HashSet<>());
 
         initialize.setTabs(tab);
-        config.setInitialize(initialize);
-        return config;
+        weConfig.setInitialize(initialize);
+        return weConfig;
     }
 
     @Override

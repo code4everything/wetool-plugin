@@ -1,7 +1,7 @@
 package org.code4everything.wetool.plugin.sample;
 
-import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.Pane;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.sample.controller.SampleController;
 import org.code4everything.wetool.plugin.support.WePluginSupporter;
@@ -36,9 +36,11 @@ public class WetoolSupporter implements WePluginSupporter {
     public MenuItem registerBarMenu() {
         return FxUtils.createBarMenuItem("插件示例", event -> {
             // 注意保证fxml文件的url路径唯一性
-            Node node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/sample/Sample.fxml", true);
+            Pane node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/sample/Sample.fxml", true);
             FxDialogs.showInformation(SampleController.TAB_NAME, "welcome to wetool plugin");
-            FxUtils.openTab(node, SampleController.TAB_ID, SampleController.TAB_NAME);
+            //FxUtils.openTab(node, SampleController.TAB_ID, SampleController.TAB_NAME);
+            FxUtils.getStage().setTitle("插件示例");
+            FxUtils.getStage().getScene().setRoot(node);
         });
     }
 
