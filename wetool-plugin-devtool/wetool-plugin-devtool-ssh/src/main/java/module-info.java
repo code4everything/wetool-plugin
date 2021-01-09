@@ -4,6 +4,7 @@
  */
 module wetool.plugin.devtool.ssh {
     requires jsch;
+    requires terminalfx;
 
     requires java.base;
 
@@ -12,7 +13,4 @@ module wetool.plugin.devtool.ssh {
     requires fastjson;
 
     requires org.code4everything.wetool.plugin.support;
-    requires javafx.controls;
-    requires javafx.fxml;
-    requires com.kodedu.terminalfx;
 }

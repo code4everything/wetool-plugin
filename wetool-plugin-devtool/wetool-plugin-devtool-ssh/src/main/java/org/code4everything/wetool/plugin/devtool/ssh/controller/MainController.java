@@ -3,7 +3,6 @@ package org.code4everything.wetool.plugin.devtool.ssh.controller;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
-import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.kodedu.terminalfx.TerminalBuilder;
@@ -16,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import org.code4everything.wetool.plugin.devtool.ssh.config.PullingConfiguration;
 import org.code4everything.wetool.plugin.devtool.ssh.config.ServerConfiguration;
 import org.code4everything.wetool.plugin.devtool.ssh.config.SftpFile;
@@ -24,15 +24,16 @@ import org.code4everything.wetool.plugin.devtool.ssh.constant.CommonConsts;
 import org.code4everything.wetool.plugin.devtool.ssh.hutool.Sftp;
 import org.code4everything.wetool.plugin.devtool.ssh.ssh.SftpUtils;
 import org.code4everything.wetool.plugin.support.BaseViewController;
+import org.code4everything.wetool.plugin.support.event.EventCenter;
+import org.code4everything.wetool.plugin.support.event.handler.BaseNoMessageEventHandler;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -77,18 +78,15 @@ public class MainController implements BaseViewController {
         fileList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         reloadConfig();
 
-        // 文件同步线程
-        final ExecutorService service = Executors.newSingleThreadExecutor(r -> {
-            Thread thread = new Thread(r);
-            thread.setDaemon(true);
-            thread.setName("Sftp-File-Sync");
-            return thread;
-        });
-        service.execute(() -> {
-            while (true) {
-                pull();
-            }
-        });
+        // 文件同步
+        if (SftpUtils.listConf().stream().anyMatch(server -> CollUtil.isNotEmpty(server.getPullingList()) && server.getPullingList().stream().anyMatch(PullingConfiguration::getEnable))) {
+            EventCenter.subscribeEvent(EventCenter.EVENT_SECONDS_TIMER, new BaseNoMessageEventHandler() {
+                @Override
+                public void handleEvent0(String eventKey, Date eventTime) {
+                    pull();
+                }
+            });
+        }
     }
 
     public void openConfigFile() {
@@ -251,9 +249,6 @@ public class MainController implements BaseViewController {
                 delayMap.put(pulling, delay + 1);
             }
         }
-
-        // 一秒钟执行一次
-        ThreadUtil.sleep(1000);
     }
 
     private void download(boolean open) {
@@ -306,6 +301,18 @@ public class MainController implements BaseViewController {
     private void openTerminal(ServerConfiguration server, String charset) {
         config.setReceiveEncoding(charset);
         config.setSendEncoding(charset);
+
+        String powershell = "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe";
+        if (FileUtil.exist(powershell)) {
+            config.setWindowsTerminalStarter(powershell);
+        }
+
+        WeUtils.getConfig().darkIfEnabled(file -> {
+            config.setBackgroundColor(Color.rgb(16, 16, 16));
+            config.setForegroundColor(Color.rgb(240, 240, 240));
+            config.setCursorColor(Color.rgb(0, 255, 0, 0.5));
+        });
+
         TerminalBuilder terminalBuilder = new TerminalBuilder(config);
         terminalBuilder.setTerminalPath(Paths.get(defaultConsolePath));
         TerminalTab terminal = terminalBuilder.newTerminal();
