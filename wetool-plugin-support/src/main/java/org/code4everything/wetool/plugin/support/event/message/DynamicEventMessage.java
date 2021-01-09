@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.code4everything.wetool.plugin.support.druid.JdbcOpsUtils;
 import org.code4everything.wetool.plugin.support.event.EventMessage;
 
 import java.util.HashMap;
@@ -38,6 +39,10 @@ public class DynamicEventMessage implements EventMessage {
     @SuppressWarnings("unchecked")
     public <T> T getObject(String key) {
         return (T) get(key);
+    }
+
+    public <T> T getObject(String key, Class<T> clazz) {
+        return JdbcOpsUtils.fastCast(get(key), clazz);
     }
 
     public String getString(String key) {
