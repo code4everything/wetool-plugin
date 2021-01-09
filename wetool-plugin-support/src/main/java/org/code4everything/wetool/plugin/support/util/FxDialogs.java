@@ -29,6 +29,22 @@ import java.util.function.Consumer;
 public class FxDialogs {
 
     /**
+     * 弹出文本框
+     *
+     * @param header 标题
+     * @param text 内容
+     *
+     * @since 1.5.0
+     */
+    public static void showTextAreaDialog(String header, String text) {
+        TextArea codeArea = new TextArea();
+        codeArea.setPrefWidth(1000);
+        codeArea.setPrefHeight(800);
+        codeArea.appendText(text);
+        showDialog(header, codeArea);
+    }
+
+    /**
      * 弹出对话框
      *
      * @param header 头部，可为Null

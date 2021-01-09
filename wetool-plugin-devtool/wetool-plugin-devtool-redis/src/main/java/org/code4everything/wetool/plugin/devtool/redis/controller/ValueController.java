@@ -327,4 +327,15 @@ public class ValueController {
         }
         JedisUtils.getJedis(keyExplorer).del(key);
     }
+
+    public void maximize() {
+        String text = valueText.getText();
+        try {
+            Object object = JSON.parse(text);
+            text = JSON.toJSONString(object, true);
+        } catch (Exception e) {
+            // ignore
+        }
+        FxDialogs.showTextAreaDialog(keyText.getText(), text);
+    }
 }

@@ -51,7 +51,15 @@
             </Button>
         </VBox>
         <TextArea fx:id="valueText" prefHeight="200.0" prefWidth="200.0"
-                  promptText="使用换行分隔列表，SortedSeT和Hash的MemberScore和KeyValue使用英文冒号分隔！" HBox.hgrow="ALWAYS"/>
+                  promptText="使用换行分隔列表，SortedSeT和Hash的MemberScore和KeyValue使用英文冒号分隔！" HBox.hgrow="ALWAYS">
+            <contextMenu>
+                <ContextMenu>
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#maximize" text="最大化"/>
+                    </items>
+                </ContextMenu>
+            </contextMenu>
+        </TextArea>
     </HBox>
     <HBox VBox.vgrow="NEVER">
         <VBox.margin>
@@ -62,7 +70,8 @@
                 <Font size="14.0"/>
             </font>
         </Label>
-        <TextField fx:id="expireText" promptText="-1表示不过期，支持 YYYY-MM-dd HH:mm:ss 日期格式，单位：秒" HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="expireText" promptText="-1表示不过期，支持 YYYY-MM-dd HH:mm:ss 日期格式，单位：秒"
+                   HBox.hgrow="ALWAYS"/>
     </HBox>
     <HBox VBox.vgrow="NEVER">
         <VBox.margin>
@@ -91,8 +100,8 @@
                 <Insets left="10.0"/>
             </HBox.margin>
         </RadioButton>
-        <RadioButton fx:id="typeSortedSetRadio" mnemonicParsing="false" text="Sorted Set" toggleGroup="$typeGroup"
-                     HBox.hgrow="NEVER">
+        <RadioButton fx:id="typeSortedSetRadio" mnemonicParsing="false" text="Sorted Set"
+                     toggleGroup="$typeGroup" HBox.hgrow="NEVER">
             <HBox.margin>
                 <Insets left="10.0"/>
             </HBox.margin>

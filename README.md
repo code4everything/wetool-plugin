@@ -32,14 +32,23 @@
 - ~~了解JavaFX图形化技术~~
 - ~~安装了SceneBuilder 2.0以上版本~~
 
-### Maven
+### 个人Maven仓库
 
-个人Maven仓库
+仓库1
 
 ```xml
 <repository>
     <id>ease-maven</id>
-    <url>https://code4everything.github.io/repository/maven</url>
+    <url>https://gitee.com/code4everything/repository/raw/master/maven</url>
+</repository>
+```
+
+仓库2
+
+```xml
+<repository>
+    <id>ease-maven</id>
+    <url>https://github.com/code4everything/repository/tree/master/maven</url>
 </repository>
 ```
 
