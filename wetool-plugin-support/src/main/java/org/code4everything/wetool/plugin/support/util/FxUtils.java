@@ -90,7 +90,7 @@ public class FxUtils {
      *
      * @since 1.5.0
      */
-    public static void actionInSearch(String name, EventHandler<ActionEvent> eventHandler) {
+    public static void registerAction(String name, EventHandler<ActionEvent> eventHandler) {
         if (Objects.isNull(searchActionMethod)) {
             log.error("method not found");
             return;

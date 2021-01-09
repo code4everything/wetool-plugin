@@ -148,7 +148,7 @@ public class MainController implements BaseViewController {
 
             String name = MainController.TAB_NAME + "-ease-dbops/" + qlScript.getName();
             if (BooleanUtil.isTrue(qlScript.getRegister2Search())) {
-                FxUtils.actionInSearch(name, actionEvent -> execScript(qlScript));
+                FxUtils.registerAction(name, actionEvent -> execScript(qlScript));
             } else {
                 FxUtils.unregisterAction(name);
             }
