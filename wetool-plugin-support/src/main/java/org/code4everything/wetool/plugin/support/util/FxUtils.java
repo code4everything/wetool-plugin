@@ -3,11 +3,9 @@ package org.code4everything.wetool.plugin.support.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.*;
 import cn.hutool.system.SystemUtil;
 import com.google.common.base.Preconditions;
 import javafx.application.Platform;
@@ -41,6 +39,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -68,6 +67,31 @@ public class FxUtils {
     private static final List<Pair<List<Integer>, Runnable>> SHORTCUT_ACTION = new ArrayList<>();
 
     private static final List<Pair<List<Integer>, Runnable>> GLOBAL_SHORTCUT_ACTION = new ArrayList<>();
+
+    private static Method searchActionMethod;
+
+    static {
+        try {
+            Class<?> clazz = Class.forName("org.code4everything.wetool.controller.MainController");
+            searchActionMethod = ReflectUtil.getMethod(clazz, "addTabForSearch", String.class, EventHandler.class);
+        } catch (ClassNotFoundException e) {
+            log.error(ExceptionUtil.stacktraceToString(e));
+        }
+    }
+
+    /**
+     * 搜索动作
+     *
+     * @param name 名称
+     * @param eventHandler 事件处理器
+     */
+    public static void actionInSearch(String name, EventHandler<ActionEvent> eventHandler) {
+        if (Objects.isNull(searchActionMethod)) {
+            log.error("method not found");
+            return;
+        }
+        ReflectUtil.invokeStatic(searchActionMethod, name, eventHandler);
+    }
 
     /**
      * 清空文本输入框
