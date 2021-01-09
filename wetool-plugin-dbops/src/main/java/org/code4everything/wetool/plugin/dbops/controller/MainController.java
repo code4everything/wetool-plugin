@@ -135,26 +135,7 @@ public class MainController implements BaseViewController {
         EventHandler<ActionEvent> actionHandler = actionEvent -> {
             Button button = (Button) actionEvent.getSource();
             String uuid = button.getParent().getId();
-            QlScript qlScript = SCRIPTS.getObject(uuid, QlScript.class);
-            String dbName = StrUtil.blankToDefault(qlScript.getSpecifyDbName(), dbNameBox.getValue());
-
-            if (BooleanUtil.isTrue(qlScript.getExecInFx())) {
-                Platform.runLater(() -> {
-                    try {
-                        ScriptExecutor.execute(dbName, qlScript.getCodes(), null);
-                    } catch (Exception e) {
-                        FxDialogs.showException("执行脚本失败", e);
-                    }
-                });
-            } else {
-                WeUtils.execute(() -> {
-                    try {
-                        ScriptExecutor.execute(dbName, qlScript.getCodes(), null);
-                    } catch (Exception e) {
-                        FxDialogs.showException("执行脚本失败", e);
-                    }
-                });
-            }
+            execScript(SCRIPTS.getObject(uuid, QlScript.class));
         };
 
         for (String uuid : SCRIPTS.keySet()) {
@@ -163,6 +144,13 @@ public class MainController implements BaseViewController {
                 if (!qlScript.getName().contains(search) && !qlScript.getComment().contains(search)) {
                     continue;
                 }
+            }
+
+            String name = MainController.TAB_NAME + "-ease-dbops/" + qlScript.getName();
+            if (BooleanUtil.isTrue(qlScript.getRegister2Search())) {
+                FxUtils.actionInSearch(name, actionEvent -> execScript(qlScript));
+            } else {
+                FxUtils.unregisterAction(name);
             }
 
             HBox hBox = new HBox();
@@ -204,6 +192,28 @@ public class MainController implements BaseViewController {
             VBox.setVgrow(separator, Priority.NEVER);
             VBox.setMargin(separator, bottom);
             parentPane.getChildren().addAll(hBox, separator);
+        }
+    }
+
+    private void execScript(QlScript qlScript) {
+        String dbName = StrUtil.blankToDefault(qlScript.getSpecifyDbName(), dbNameBox.getValue());
+
+        if (BooleanUtil.isTrue(qlScript.getExecInFx())) {
+            Platform.runLater(() -> {
+                try {
+                    ScriptExecutor.execute(dbName, qlScript.getCodes(), null);
+                } catch (Exception e) {
+                    FxDialogs.showException("执行脚本失败", e);
+                }
+            });
+        } else {
+            WeUtils.execute(() -> {
+                try {
+                    ScriptExecutor.execute(dbName, qlScript.getCodes(), null);
+                } catch (Exception e) {
+                    FxDialogs.showException("执行脚本失败", e);
+                }
+            });
         }
     }
 

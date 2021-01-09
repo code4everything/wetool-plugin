@@ -70,10 +70,13 @@ public class FxUtils {
 
     private static Method searchActionMethod;
 
+    private static Method unregisterActionMethod;
+
     static {
         try {
             Class<?> clazz = Class.forName("org.code4everything.wetool.controller.MainController");
             searchActionMethod = ReflectUtil.getMethod(clazz, "addTabForSearch", String.class, EventHandler.class);
+            unregisterActionMethod = ReflectUtil.getMethod(clazz, "unregisterAction", String.class);
         } catch (ClassNotFoundException e) {
             log.error(ExceptionUtil.stacktraceToString(e));
         }
@@ -84,6 +87,8 @@ public class FxUtils {
      *
      * @param name 名称
      * @param eventHandler 事件处理器
+     *
+     * @since 1.5.0
      */
     public static void actionInSearch(String name, EventHandler<ActionEvent> eventHandler) {
         if (Objects.isNull(searchActionMethod)) {
@@ -91,6 +96,21 @@ public class FxUtils {
             return;
         }
         ReflectUtil.invokeStatic(searchActionMethod, name, eventHandler);
+    }
+
+    /**
+     * 注销搜索动作
+     *
+     * @param name 名称
+     *
+     * @since 1.5.0
+     */
+    public static void unregisterAction(String name) {
+        if (Objects.isNull(unregisterActionMethod)) {
+            log.error("method not found");
+            return;
+        }
+        ReflectUtil.invokeStatic(unregisterActionMethod, name);
     }
 
     /**

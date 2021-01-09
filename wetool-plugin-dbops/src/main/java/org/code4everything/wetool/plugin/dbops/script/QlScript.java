@@ -54,4 +54,9 @@ public class QlScript {
      * 是否在fx ui线程中执行
      */
     private Boolean execInFx;
+
+    /**
+     * 回调注册到全局搜索框中
+     */
+    private Boolean register2Search;
 }

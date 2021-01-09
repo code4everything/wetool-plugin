@@ -51,6 +51,9 @@ public class ScriptEditController {
     @FXML
     public CheckBox execInFxCheck;
 
+    @FXML
+    public CheckBox register2Search;
+
     private QlScript qlScript;
 
     @FXML
@@ -77,6 +80,7 @@ public class ScriptEditController {
         qlScript.setSpecifyDbName(dbNameBox.getValue());
         qlScript.setCodes(qlScriptText.getText());
         qlScript.setExecInFx(execInFxCheck.isSelected());
+        qlScript.setRegister2Search(register2Search.isSelected());
 
         return qlScript;
     }
@@ -95,6 +99,7 @@ public class ScriptEditController {
         eventKeyBox.setValue(qlScript.getEventKey());
         qlScriptText.setText(qlScript.getCodes());
         execInFxCheck.setSelected(BooleanUtil.isTrue(qlScript.getExecInFx()));
+        register2Search.setSelected(BooleanUtil.isTrue(qlScript.getRegister2Search()));
     }
 
     public void testScript() {
