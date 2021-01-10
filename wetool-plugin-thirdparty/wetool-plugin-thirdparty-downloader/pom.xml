@@ -46,6 +46,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>com.acgist</groupId>
+            <artifactId>snail.javafx</artifactId>
+            <version>${snail.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.code4everything</groupId>
             <artifactId>wetool-plugin-support</artifactId>
             <version>${wetool.version}</version>

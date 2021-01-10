@@ -9,6 +9,7 @@ import org.code4everything.wetool.plugin.test.WetoolTester;
 public class ThirdPartyDownloaderTest {
 
     public static void main(String[] args) {
+        WetoolTester.getConfig().setDisableKeyboardMouseListener(true);
         WetoolTester.runTest(args);
     }
 }

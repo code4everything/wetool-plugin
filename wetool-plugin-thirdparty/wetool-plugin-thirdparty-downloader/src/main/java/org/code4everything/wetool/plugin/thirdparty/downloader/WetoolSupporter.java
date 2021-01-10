@@ -3,10 +3,13 @@ package org.code4everything.wetool.plugin.thirdparty.downloader;
 import com.acgist.snail.context.SystemContext;
 import com.acgist.snail.gui.GuiManager;
 import javafx.application.Platform;
-import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.Pane;
 import org.code4everything.wetool.plugin.support.WePluginSupporter;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
+
+import java.util.Objects;
 
 /**
  * @author pantao
@@ -20,9 +23,13 @@ public class WetoolSupporter implements WePluginSupporter {
 
     private boolean initialized = false;
 
+    private Scene scene;
+
     @Override
     public MenuItem registerBarMenu() {
-        return FxUtils.createBarMenuItem(TAB_NAME, actionEvent -> openTab());
+        MenuItem barMenuItem = FxUtils.createBarMenuItem(TAB_NAME, actionEvent -> openTab());
+        barMenuItem.setId(TAB_ID);
+        return barMenuItem;
     }
 
     @Override
@@ -48,7 +55,13 @@ public class WetoolSupporter implements WePluginSupporter {
             }
             initialized = true;
         }
-        Node node = FxUtils.loadFxml(WetoolSupporter.class, "/fxml/main.fxml", true);
-        FxUtils.openTab(node, TAB_ID, TAB_NAME);
+
+        Pane pane = FxUtils.loadFxml(WetoolSupporter.class, "/fxml/main.fxml", true);
+        Objects.requireNonNull(pane);
+        if (Objects.isNull(scene)) {
+            scene = new Scene(pane);
+        }
+        scene.setRoot(pane);
+        FxUtils.getStage().setScene(scene);
     }
 }
