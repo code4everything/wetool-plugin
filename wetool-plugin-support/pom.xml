@@ -240,14 +240,6 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        <!--本地jar包-->
-        <dependency>
-            <groupId>com.brunomnsilva</groupId>
-            <artifactId>smartgraph</artifactId>
-            <version>0.9</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/com/brunomnsilva/smartgraph-0.9.jar</systemPath>
-        </dependency>
     </dependencies>
 
     <build>

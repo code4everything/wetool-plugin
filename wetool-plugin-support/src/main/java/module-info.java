@@ -50,7 +50,6 @@ module org.code4everything.wetool.plugin.support {
     requires io.netty.handler;
     requires hutool.cache;
     requires io.vavr;
-    requires smartgraph;
 
     // 导出包
     exports org.code4everything.wetool.plugin.support;
