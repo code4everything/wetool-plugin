@@ -48,7 +48,7 @@
 ```xml
 <repository>
     <id>ease-maven</id>
-    <url>https://github.com/code4everything/repository/tree/master/maven</url>
+    <url>https://code4everything.github.io/repository/maven</url>
 </repository>
 ```
 
