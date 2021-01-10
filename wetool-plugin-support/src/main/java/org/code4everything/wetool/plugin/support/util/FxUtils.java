@@ -75,7 +75,7 @@ public class FxUtils {
     static {
         try {
             Class<?> clazz = Class.forName("org.code4everything.wetool.controller.MainController");
-            searchActionMethod = ReflectUtil.getMethod(clazz, "addTabForSearch", String.class, EventHandler.class);
+            searchActionMethod = ReflectUtil.getMethod(clazz, "registerAction", String.class, EventHandler.class);
             unregisterActionMethod = ReflectUtil.getMethod(clazz, "unregisterAction", String.class);
         } catch (ClassNotFoundException e) {
             log.error(ExceptionUtil.stacktraceToString(e));
