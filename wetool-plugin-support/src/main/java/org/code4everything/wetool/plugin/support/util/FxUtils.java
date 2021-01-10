@@ -617,11 +617,7 @@ public class FxUtils {
 
     private static void restartHelper(String cmd) {
         log.info("restart use cmd: " + cmd);
-        if (SystemUtil.getOsInfo().isWindows()) {
-            WeUtils.execute(() -> RuntimeUtil.execForStr(cmd));
-        } else {
-            RuntimeUtil.execForStr(cmd);
-        }
+        WeUtils.execute(() -> RuntimeUtil.execForStr(cmd));
     }
 
     public static FileChooser getFileChooser() {
