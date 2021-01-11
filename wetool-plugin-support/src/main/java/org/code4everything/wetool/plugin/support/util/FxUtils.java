@@ -81,6 +81,10 @@ public class FxUtils {
         }
     }
 
+    public static Set<Integer> getPressingKeyCodes() {
+        return Collections.unmodifiableSet(PRESSING_KEY_CODE);
+    }
+
     /**
      * 搜索动作
      *
@@ -375,7 +379,6 @@ public class FxUtils {
      * @since 1.3.0
      */
     public static void showStage() {
-        EventCenter.publishEvent(EventCenter.EVENT_WETOOL_SHOW, DateUtil.date());
         Platform.runLater(() -> getStage().show());
     }
 
@@ -398,7 +401,6 @@ public class FxUtils {
      * @since 1.3.0
      */
     public static void hideStage() {
-        EventCenter.publishEvent(EventCenter.EVENT_WETOOL_HIDDEN, DateUtil.date());
         Platform.runLater(() -> getStage().hide());
     }
 
