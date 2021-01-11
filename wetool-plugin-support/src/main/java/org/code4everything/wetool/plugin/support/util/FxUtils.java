@@ -6,7 +6,6 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.*;
-import cn.hutool.system.SystemUtil;
 import com.google.common.base.Preconditions;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -143,6 +142,11 @@ public class FxUtils {
      * @since 1.3.0
      */
     public static synchronized void registerGlobalShortcuts(List<Integer> shortcutKeyCodes, Runnable runnable) {
+        if (BooleanUtil.isTrue(WeUtils.getConfig().getDisableKeyboardMouseListener())) {
+            log.warn("register global shortcuts failed, because jnative hook is disabled");
+            return;
+        }
+
         Objects.requireNonNull(runnable);
         checkShortcuts(shortcutKeyCodes);
         String errMsg = "global cannot register shortcut only use key 'escape'";
