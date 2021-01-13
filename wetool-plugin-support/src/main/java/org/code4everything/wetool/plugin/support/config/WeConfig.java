@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.parser.Feature;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.bean.BaseBean;
@@ -165,7 +166,7 @@ public class WeConfig implements BaseBean, Serializable {
         Object object = JSONPath.eval(configJson, path);
         if (Objects.isNull(object)) {
             // 重新加载配置
-            configJson = JSON.parseObject(FileUtil.readUtf8String(currentPath));
+            configJson = JSON.parseObject(FileUtil.readUtf8String(currentPath), Feature.OrderedField);
             object = JSONPath.eval(configJson, path);
         }
         return object;
