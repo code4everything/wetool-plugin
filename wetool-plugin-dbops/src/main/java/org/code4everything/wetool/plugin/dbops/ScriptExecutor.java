@@ -370,7 +370,7 @@ public class ScriptExecutor {
             map.forEach((k, v) -> {
                 TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>();
                 tableColumn.setEditable(true);
-                tableColumn.setText(ObjectUtil.toString(k));
+                tableColumn.setText(Objects.isNull(k) ? StrUtil.EMPTY : ObjectUtil.toString(k));
                 tableColumn.setCellFactory(UnmodifiableTextFieldTableCell.forTableColumn());
                 tableColumn.setCellValueFactory(new PropertyValueFactory<>(null) {
                     @Override

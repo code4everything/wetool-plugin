@@ -1,12 +1,14 @@
 package org.code4everything.wetool.plugin.test;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.system.SystemUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.parser.Feature;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.config.BootConfig;
@@ -67,6 +69,14 @@ public class WetoolTester extends WeApplication {
         BeanFactory.register(config);
         WeApplication.initApp();
         launch(args);
+    }
+
+    public static void setConfig(String jsonPath) {
+        setConfig(JSON.parseObject(FileUtil.readUtf8String(jsonPath), WeConfig.class, Feature.OrderedField));
+    }
+
+    public static void setConfig(WeConfig weConfig) {
+        WetoolTester.weConfig = weConfig;
     }
 
     public static WeConfig getConfig() {

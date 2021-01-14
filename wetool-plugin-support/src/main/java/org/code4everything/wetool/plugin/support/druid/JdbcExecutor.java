@@ -213,7 +213,7 @@ public class JdbcExecutor {
             Map<String, Object> map = new LinkedHashMap<>(columnCount, 1);
 
             for (int i = 1; i <= columnCount; i++) {
-                map.put(metaData.getColumnName(i), resultSet.getObject(i));
+                map.put(metaData.getColumnLabel(i), resultSet.getObject(i));
             }
 
             list.add(map);
