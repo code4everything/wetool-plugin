@@ -403,7 +403,7 @@ public class FxUtils {
     public static void hideStage() {
         Platform.runLater(() -> {
             if (BooleanUtil.isTrue(BeanFactory.get("isTraySuccess"))) {
-                FxUtils.hideStage();
+                FxUtils.getStage().hide();
             } else {
                 getStage().setIconified(true);
             }
