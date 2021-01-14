@@ -74,6 +74,8 @@ import cn.hutool.core.map.*;
 |dbName|String|脚本当前执行的dbName|
 |currDir|String|当前工作目录|
 |lineSep|String|文件换行符|
+|fileSep|String|文件目录分隔符|
+|userHome|String|用户目录|
 
 ### 事件订阅
 

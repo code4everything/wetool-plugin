@@ -14,6 +14,7 @@ import org.code4everything.wetool.plugin.support.event.EventMode;
 import org.code4everything.wetool.plugin.support.event.EventPublisher;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
+import java.io.File;
 import java.util.Optional;
 
 /**
@@ -28,6 +29,8 @@ public class WetoolSupporter implements WePluginSupporter {
         Optional<EventPublisher> optional = EventCenter.registerEvent("wetool_dbops_initialized", EventMode.MULTI_SUB);
         ScriptExecutor.GLOBAL_VARS.put("currDir", FileUtils.currentWorkDir());
         ScriptExecutor.GLOBAL_VARS.put("lineSep", FileUtil.getLineSeparator());
+        ScriptExecutor.GLOBAL_VARS.put("fileSep", File.separator);
+        ScriptExecutor.GLOBAL_VARS.put("userHome", FileUtil.getUserHomePath());
         DynamicParamsUtil.supportDynamicParams = true;
         // 初始化时加载视图，让监听事件的脚本可以后台运行
         FxUtils.loadFxml(WetoolSupporter.class, "/ease/dbops/MainView.fxml", true);
