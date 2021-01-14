@@ -210,7 +210,7 @@ public class JdbcExecutor {
         query(sql, params, null, resultSet -> {
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
-            Map<String, Object> map = new HashMap<>(columnCount, 1);
+            Map<String, Object> map = new LinkedHashMap<>(columnCount, 1);
 
             for (int i = 1; i <= columnCount; i++) {
                 map.put(metaData.getColumnName(i), resultSet.getObject(i));
