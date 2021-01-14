@@ -370,13 +370,15 @@ public class ScriptExecutor {
             map.forEach((k, v) -> {
                 TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>();
                 tableColumn.setEditable(true);
-                tableColumn.setText(Objects.isNull(k) ? StrUtil.EMPTY : ObjectUtil.toString(k));
+                tableColumn.setText(ObjectUtil.toString(k));
                 tableColumn.setCellFactory(UnmodifiableTextFieldTableCell.forTableColumn());
                 tableColumn.setCellValueFactory(new PropertyValueFactory<>(null) {
                     @Override
                     @SneakyThrows
                     public ObservableValue<String> call(TableColumn.CellDataFeatures<Map<String, Object>, String> param) {
-                        return new SimpleObjectProperty<>(ObjectUtil.toString(param.getValue().get(k)));
+                        Object value = param.getValue().get(k);
+                        return new SimpleObjectProperty<>(Objects.isNull(value) ? StrUtil.EMPTY :
+                                ObjectUtil.toString(value));
                     }
                 });
                 tableView.getColumns().add(tableColumn);
