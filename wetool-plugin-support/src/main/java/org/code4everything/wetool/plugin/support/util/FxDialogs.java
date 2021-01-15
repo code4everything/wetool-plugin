@@ -129,7 +129,6 @@ public class FxDialogs {
                                                                Collection<String> items) {
         EditableChoiceDialog dialog = new EditableChoiceDialog(null, items);
         buildDialog(dialog, header, content);
-        dialog.getItems().addAll(items);
         return dialog;
     }
 
@@ -147,7 +146,7 @@ public class FxDialogs {
             EditableChoiceDialog dialog = getEditableChoiceDialog(header, content, items);
             return dialog.showAndWait().orElse("");
         });
-        Platform.runLater(task);
+        execFxFutureTask(task);
         return task;
     }
 
@@ -179,7 +178,7 @@ public class FxDialogs {
             TextInputDialog dialog = getTextInputDialog(header, content);
             return dialog.showAndWait().orElse("");
         });
-        Platform.runLater(future);
+        execFxFutureTask(future);
         return future;
     }
 
@@ -250,5 +249,13 @@ public class FxDialogs {
 
         WeUtils.getConfig().darkIfEnabled(alert.getDialogPane().getStylesheets()::add);
         return alert;
+    }
+
+    public void execFxFutureTask(FutureTask<?> futureTask) {
+        if (Thread.currentThread().getName().equals("JavaFX Application Thread")) {
+            futureTask.run();
+        } else {
+            Platform.runLater(futureTask);
+        }
     }
 }

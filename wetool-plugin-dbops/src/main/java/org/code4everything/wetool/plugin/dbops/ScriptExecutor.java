@@ -13,7 +13,6 @@ import com.alibaba.fastjson.JSON;
 import com.ql.util.express.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 import com.ql.util.express.parse.ExpressPackage;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn;
@@ -230,7 +229,7 @@ public class ScriptExecutor {
     @SneakyThrows
     public static File chooseSaveFile() {
         FutureTask<File> task = new FutureTask<>(() -> FxUtils.getFileChooser().showSaveDialog(FxUtils.getStage()));
-        Platform.runLater(task);
+        FxDialogs.execFxFutureTask(task);
         File file = task.get();
         FxUtils.handleFileCallable(file, null);
         return file;
@@ -248,7 +247,7 @@ public class ScriptExecutor {
     public static List<File> chooseMultiFile() {
         FutureTask<List<File>> task =
                 new FutureTask<>(() -> FxUtils.getFileChooser().showOpenMultipleDialog(FxUtils.getStage()));
-        Platform.runLater(task);
+        FxDialogs.execFxFutureTask(task);
         List<File> files = task.get();
         FxUtils.handleFileListCallable(files, null);
         return files;
@@ -257,7 +256,7 @@ public class ScriptExecutor {
     @SneakyThrows
     public static File chooseFile() {
         FutureTask<File> task = new FutureTask<>(() -> FxUtils.getFileChooser().showOpenDialog(FxUtils.getStage()));
-        Platform.runLater(task);
+        FxDialogs.execFxFutureTask(task);
         File file = task.get();
         FxUtils.handleFileCallable(file, null);
         return file;
@@ -271,7 +270,7 @@ public class ScriptExecutor {
             chooser.setInitialDirectory(new File(WeUtils.getConfig().getFileChooserInitDir()));
             return chooser.showDialog(FxUtils.getStage());
         });
-        Platform.runLater(task);
+        FxDialogs.execFxFutureTask(task);
         File file = task.get();
         FxUtils.handleFileCallable(file, null);
         return file;
