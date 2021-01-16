@@ -66,6 +66,7 @@ module org.code4everything.wetool.plugin.support {
     exports org.code4everything.wetool.plugin.support.druid;
     exports org.code4everything.wetool.plugin.support.listener;
     exports org.code4everything.wetool.plugin.support.http;
+    exports org.code4everything.wetool.plugin.support.func;
 
     // 开放反射权限
     opens org.code4everything.wetool.plugin.support.config;
