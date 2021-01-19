@@ -65,6 +65,8 @@ import cn.hutool.core.map.*;
 |save(File file, String content)|boolean|保存文件|
 |random(List\<Object\>)|Object|从列表中随机取一个元素|
 |choice(String tip, List\<String\>)|String|下拉框弹窗|
+|get(String urlString)|String|http get请求，返回响应内容|
+|post(String urlString, String body)|String|http post请求，返回响应数据|
 
 ### 内置变量
 
