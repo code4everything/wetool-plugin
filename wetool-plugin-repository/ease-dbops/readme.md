@@ -52,7 +52,7 @@ import cn.hutool.core.map.*;
 |run(String... cmds)|String|执行命令，返回执行结果|
 |put(String key, Object value)|void|设置局部变量，可传递到子脚本中|
 |global(String key, Object value)|void|声明全局变量，自动注入到脚本中|
-|exec(String key)|Object|执行脚本，参数为全局变量名称，脚本内容取全局变量对应的值，返回执行结果|
+|exec(String varKey)|Object|执行脚本，参数为全局变量名称，脚本内容取全局变量对应的值，返回执行结果|
 |http0(String api, String varKey)|boolean|暴露http服务，api格式：get/api/hello，varKey为回调脚本（子脚本）的名称|
 |http1(int port, String api, String varKey)|boolean|暴露http服务|
 |pushThisEvent2Remote(String postApi)|void|推送当前事件到远程|
@@ -67,6 +67,8 @@ import cn.hutool.core.map.*;
 |choice(String tip, List\<String\>)|String|下拉框弹窗|
 |get(String urlString)|String|http get请求，返回响应内容|
 |post(String urlString, String body)|String|http post请求，返回响应数据|
+
+> 补充说明：子（回调）脚本会注册到全局变量中，`varKey` 可以直接是脚本代码，不一定是子（回调）脚本的Key
 
 ### 内置变量
 

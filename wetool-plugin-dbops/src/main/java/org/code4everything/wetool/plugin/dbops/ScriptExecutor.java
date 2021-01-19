@@ -318,7 +318,7 @@ public class ScriptExecutor {
     public static Object exec(String varKey) {
         Map<String, Object> args = getTempVarsMap();
         String dbName = ObjectUtil.toString(args.get("dbName"));
-        String codes = ObjectUtil.toString(GLOBAL_VARS.get(varKey));
+        String codes = StrUtil.emptyToDefault(ObjectUtil.toString(GLOBAL_VARS.get(varKey)), varKey);
         Future<Object> future = WeUtils.executeAsync(() -> execute(dbName, codes, args));
         return future.get();
     }
