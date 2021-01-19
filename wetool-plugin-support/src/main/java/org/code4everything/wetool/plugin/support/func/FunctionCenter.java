@@ -1,10 +1,9 @@
 package org.code4everything.wetool.plugin.support.func;
 
+import cn.hutool.core.lang.Pair;
 import lombok.experimental.UtilityClass;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -37,16 +36,64 @@ public class FunctionCenter {
     }
 
     /**
+     * 获取所有已注册方法名称
+     *
+     * @return 方法名称列表
+     */
+    public static Set<String> getRegisteredMethodNames() {
+        return Collections.unmodifiableSet(METHOD_CALLBACK_MAP.keySet());
+    }
+
+    /**
+     * 获取方法详情
+     *
+     * @param methodName 方法名称
+     *
+     * @return 方法详情
+     */
+    public static MethodCallback getMethodDetail(String methodName) {
+        return METHOD_CALLBACK_MAP.get(methodName);
+    }
+
+    /**
+     * 检测一个方法是否注册
+     *
+     * @param methodName 方法名称
+     *
+     * @return 是否注册
+     */
+    public static boolean existsMethodName(String methodName) {
+        return METHOD_CALLBACK_MAP.containsKey(methodName);
+    }
+
+    /**
      * 调用方法
      *
-     * @param uniqueMethodName 方法全局唯一名称
+     * @param methodName 方法全局唯一名称
      * @param params 调用参数
      *
      * @return 执行结果
      */
-    public static Object callFunc(String uniqueMethodName, List<Object> params) {
-        MethodCallback methodCallback = METHOD_CALLBACK_MAP.get(uniqueMethodName);
+    public static Object callFunc(String methodName, List<Object> params) {
+        MethodCallback methodCallback = METHOD_CALLBACK_MAP.get(methodName);
         Objects.requireNonNull(methodCallback, "method name is not registered yet");
         return methodCallback.checkAndCallMethod(params);
+    }
+
+    /**
+     * 如果方法存在时调用方法
+     *
+     * @param methodName 方法全局唯一名称
+     * @param params 调用参数
+     *
+     * @return pair: key是一个布尔值，告诉你是否执行了方法，value是执行结果
+     */
+    public static Pair<Boolean, Object> callFuncIfExists(String methodName, List<Object> params) {
+        MethodCallback methodCallback = METHOD_CALLBACK_MAP.get(methodName);
+        if (Objects.isNull(methodCallback)) {
+            return new Pair<>(false, null);
+        }
+        Object result = methodCallback.checkAndCallMethod(params);
+        return new Pair<>(true, result);
     }
 }

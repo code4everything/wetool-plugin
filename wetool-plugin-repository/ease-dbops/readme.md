@@ -14,7 +14,7 @@ dbops，中文名为数据库小应用，我们可以将一系列的脚本封装
 
 ### 自动导包
 
-程序自动导入以下类
+脚本自动导入以下类
 
 ```java
 import java.lang.*;
@@ -26,6 +26,7 @@ import org.code4everything.wetool.plugin.support.http.*;
 import org.code4everything.wetool.plugin.support.event.*;
 import org.code4everything.wetool.plugin.support.druid.*;
 import org.code4everything.wetool.plugin.support.cache.*;
+import org.code4everything.wetool.plugin.support.func.*;
 
 import com.alibaba.fastjson.*;
 

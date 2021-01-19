@@ -143,7 +143,7 @@ public class EventCenter {
      * @return 事件KEY列表
      */
     public static Set<String> listEventKeys() {
-        return EVENT_MAP.keySet();
+        return Collections.unmodifiableSet(EVENT_MAP.keySet());
     }
 
     /**

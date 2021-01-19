@@ -6,10 +6,7 @@ import org.code4everything.wetool.plugin.devtool.ssh.config.ServerConfiguration;
 import org.code4everything.wetool.plugin.devtool.ssh.hutool.Sftp;
 
 import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author pantao
@@ -27,7 +24,7 @@ public class SftpUtils {
     }
 
     public static Collection<ServerConfiguration> listConf() {
-        return CONFIGURATION_MAP.values();
+        return Collections.unmodifiableCollection(CONFIGURATION_MAP.values());
     }
 
     public static void putConf(ServerConfiguration server) {

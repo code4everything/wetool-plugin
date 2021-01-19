@@ -12,9 +12,13 @@ import org.code4everything.wetool.plugin.support.WePluginSupporter;
 import org.code4everything.wetool.plugin.support.event.EventCenter;
 import org.code4everything.wetool.plugin.support.event.EventMode;
 import org.code4everything.wetool.plugin.support.event.EventPublisher;
+import org.code4everything.wetool.plugin.support.func.FunctionCenter;
+import org.code4everything.wetool.plugin.support.func.MethodCallback;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -26,15 +30,46 @@ public class WetoolSupporter implements WePluginSupporter {
 
     @Override
     public boolean initialize() {
-        Optional<EventPublisher> optional = EventCenter.registerEvent("wetool_dbops_initialized", EventMode.MULTI_SUB);
+        DynamicParamsUtil.supportDynamicParams = true;
+
         ScriptExecutor.GLOBAL_VARS.put("currDir", FileUtils.currentWorkDir());
         ScriptExecutor.GLOBAL_VARS.put("lineSep", FileUtil.getLineSeparator());
         ScriptExecutor.GLOBAL_VARS.put("fileSep", File.separator);
         ScriptExecutor.GLOBAL_VARS.put("userHome", FileUtil.getUserHomePath());
-        DynamicParamsUtil.supportDynamicParams = true;
+
         // 初始化时加载视图，让监听事件的脚本可以后台运行
         FxUtils.loadFxml(WetoolSupporter.class, "/ease/dbops/MainView.fxml", true);
+
+        Optional<EventPublisher> optional = EventCenter.registerEvent("wetool_dbops_initialized", EventMode.MULTI_SUB);
         optional.ifPresent(eventPublisher -> eventPublisher.publishEvent(DateUtil.date()));
+
+        // 注册脚本执行方法
+        FunctionCenter.registerFunc(new MethodCallback() {
+            @Override
+            public String getUniqueMethodName() {
+                return "ease-dbops-script-execute";
+            }
+
+            @Override
+            public String getDescription() {
+                // @formatter:off
+                return "执行QL脚本，对应方法：ScriptExecutor.execute(@Nullable String dbName, String codes, @Nullable Map<String, Object> args)";
+                // @formatter:on
+            }
+
+            @Override
+            public List<Class<?>> getParamTypes() {
+                return List.of(String.class, String.class, Map.class);
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public Object callMethod(List<Object> params) {
+                return ScriptExecutor.execute((String) params.get(0), (String) params.get(1),
+                        (Map<String, Object>) params.get(2));
+            }
+        });
+
         return true;
     }
 

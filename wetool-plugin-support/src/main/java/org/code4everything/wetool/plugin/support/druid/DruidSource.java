@@ -36,10 +36,10 @@ public class DruidSource {
     }
 
     public static Set<String> listAllNames() {
-        return MAP.keySet();
+        return Collections.unmodifiableSet(MAP.keySet());
     }
 
     public static Collection<DruidDataSource> listAllDataSources() {
-        return MAP.values();
+        return Collections.unmodifiableCollection(MAP.values());
     }
 }

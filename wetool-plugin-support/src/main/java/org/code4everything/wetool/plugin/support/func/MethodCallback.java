@@ -21,6 +21,13 @@ public interface MethodCallback {
     String getUniqueMethodName();
 
     /**
+     * 方法详细说明
+     *
+     * @return 方法说明
+     */
+    String getDescription();
+
+    /**
      * 方法所需参数类型
      *
      * @return 参数类型列表

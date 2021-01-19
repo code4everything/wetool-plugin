@@ -101,6 +101,7 @@ public class ScriptExecutor {
             expressPackage.addPackage("org.code4everything.wetool.plugin.support.http");
             expressPackage.addPackage("org.code4everything.wetool.plugin.support.druid");
             expressPackage.addPackage("org.code4everything.wetool.plugin.support.cache");
+            expressPackage.addPackage("org.code4everything.wetool.plugin.support.func");
             expressPackage.addPackage("com.alibaba.fastjson");
             expressPackage.addPackage("cn.hutool.core.util");
             expressPackage.addPackage("cn.hutool.core.collection");
