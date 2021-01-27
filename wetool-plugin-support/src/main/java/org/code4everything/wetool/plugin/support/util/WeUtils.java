@@ -5,7 +5,6 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Console;
-import cn.hutool.core.thread.GlobalThreadPool;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.OsInfo;
@@ -26,7 +25,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author pantao
@@ -40,8 +40,26 @@ public class WeUtils {
 
     private static final String DATE_VARIABLE = "%(DATE|date)%";
 
-    private static final Thread.UncaughtExceptionHandler UNCAUGHT_EXCEPTION_HANDLER =
-            (t, e) -> log.error(ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
+    private static final String PREFIX = "wetool-pool-";
+
+    private static final ThreadFactory THREAD_FACTORY = new ThreadFactory() {
+
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+
+        private final Thread.UncaughtExceptionHandler exceptionHandler =
+                (t, e) -> log.error(ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r, PREFIX + threadNumber.getAndIncrement());
+            thread.setDaemon(true);
+            thread.setUncaughtExceptionHandler(exceptionHandler);
+            return thread;
+        }
+    };
+
+    private static final ThreadPoolExecutor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(8, 32, 60L,
+            TimeUnit.SECONDS, new LinkedBlockingQueue<>(64), THREAD_FACTORY);
 
     private static int compressLen = 0;
 
@@ -51,10 +69,7 @@ public class WeUtils {
      * @since 1.3.0
      */
     public static void execute(Runnable runnable) {
-        GlobalThreadPool.execute(() -> {
-            Thread.currentThread().setUncaughtExceptionHandler(UNCAUGHT_EXCEPTION_HANDLER);
-            runnable.run();
-        });
+        THREAD_POOL_EXECUTOR.execute(runnable);
     }
 
     /**
@@ -63,7 +78,7 @@ public class WeUtils {
      * @since 1.3.0
      */
     public static <V> Future<V> executeAsync(Callable<V> callable) {
-        return GlobalThreadPool.submit(callable);
+        return THREAD_POOL_EXECUTOR.submit(callable);
     }
 
     /**
@@ -256,7 +271,7 @@ public class WeUtils {
     public static void exitSystem() {
         EventCenter.publishEvent(EventCenter.EVENT_WETOOL_EXIT, DateUtil.date());
         DruidSource.listAllDataSources().forEach(DruidDataSource::close);
-        GlobalThreadPool.shutdown(false);
+        THREAD_POOL_EXECUTOR.shutdown();
         log.info("wetool exited");
         System.exit(IntegerConsts.ZERO);
     }
