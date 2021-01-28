@@ -136,15 +136,14 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
 
             try {
                 Object responseObject = apiHandler.handleApi(req, response, params, body);
-                String respStr = "{}";
                 if (Objects.nonNull(responseObject)) {
-                    respStr = JSON.toJSONString(responseObject, SerializerFeature.QuoteFieldNames,
+                    String respStr = JSON.toJSONString(responseObject, SerializerFeature.QuoteFieldNames,
                             SerializerFeature.WriteMapNullValue, SerializerFeature.WriteEnumUsingToString,
                             SerializerFeature.WriteNullListAsEmpty, SerializerFeature.WriteNullStringAsEmpty,
                             SerializerFeature.WriteNullNumberAsZero, SerializerFeature.WriteNullBooleanAsFalse,
                             SerializerFeature.SkipTransientField, SerializerFeature.WriteNonStringKeyAsString);
+                    ((WeFullHttpResponse) response).setContent(str2buf(respStr));
                 }
-                ((WeFullHttpResponse) response).setContent(str2buf(respStr));
             } catch (Exception e) {
                 HttpResponseStatus status;
                 String errMsg;
