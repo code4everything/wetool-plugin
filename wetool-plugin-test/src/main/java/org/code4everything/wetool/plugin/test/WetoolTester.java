@@ -22,6 +22,7 @@ import org.code4everything.wetool.plugin.support.config.WeTab;
 import org.code4everything.wetool.plugin.support.event.message.MouseCornerEventMessage;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.http.HttpService;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -113,6 +114,6 @@ public class WetoolTester extends WeApplication {
         super.start(stage);
         Objects.requireNonNull(info);
         Objects.requireNonNull(supporter);
-        PluginLoader.registerPlugin(info, supporter);
+        WeUtils.execute(() -> PluginLoader.registerPlugin(info, supporter));
     }
 }
