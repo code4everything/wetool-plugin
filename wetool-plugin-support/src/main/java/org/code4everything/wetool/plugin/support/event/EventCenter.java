@@ -14,6 +14,7 @@ import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 
 /**
  * @author pantao
@@ -137,6 +138,8 @@ public class EventCenter {
 
     private static final Map<String, List<EventHandler>> HANDLER_MAP = new ConcurrentHashMap<>();
 
+    private static final Semaphore EVENT_SEMAPHORE = new Semaphore(6);
+
     /**
      * 获取所有注册时事件KEY
      *
@@ -207,7 +210,17 @@ public class EventCenter {
             if (list.size() == 1) {
                 list.get(0).handleEvent(eventKey, eventTime, eventMessage);
             } else {
-                list.forEach(e -> WeUtils.execute(() -> e.handleEvent(eventKey, eventTime, eventMessage)));
+                list.forEach(e -> WeUtils.execute(() -> {
+                    try {
+                        // 限制同时执行事件的线程
+                        EVENT_SEMAPHORE.acquire();
+                        e.handleEvent(eventKey, eventTime, eventMessage);
+                    } catch (Exception exception) {
+                        log.error(ExceptionUtil.stacktraceToString(exception, Integer.MAX_VALUE));
+                    } finally {
+                        EVENT_SEMAPHORE.release();
+                    }
+                }));
             }
         });
 
