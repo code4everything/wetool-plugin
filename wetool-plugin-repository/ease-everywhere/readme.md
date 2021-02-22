@@ -2,7 +2,7 @@
 
 基于ApacheLucene搜索框架实现的文件检索工具，通过Lucene语法可搜索路径，文件名，部分文件内容（需配置）
 
-最新下载地址：[wetool-plugin-everywhere-1.3.0.jar](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-everywhere-1.3.0.jar)
+最新下载地址：[wetool-plugin-everywhere-1.5.0.jar](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-everywhere-1.5.0.jar)
 
 文件配置完成后，点击重载配置，程序将重新创建索引（比较耗时），文件配置说明如下：
 
@@ -51,6 +51,10 @@
 
 
 ### 更新历史
+
+#### [v1.5.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-everywhere-1.5.0.jar)
+
+- 更新WeTool版本
 
 #### [v1.3.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-everywhere-1.3.0.jar)
 

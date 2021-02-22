@@ -4,7 +4,7 @@ dbops，中文名为数据库小应用，我们可以将一系列的脚本封装
 
 为什么叫数据库小应用？因为原本这款插件是为了将一系列SQL操作封装成小应用而设计的，而考虑到执行这一系列的SQL可能会用到参数的注入，变量的定义，绑定方法，那这一系列操作肯定会绕到脚本的执行上去，那自然就不仅限于SQL了，只要符合语法的脚本都是能够被执行的。
 
-最新版下载地址：[wetool-plugin-dbops](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.3.0.jar)
+最新版下载地址：[wetool-plugin-dbops-1.5.0.jar](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.5.0.jar)
 
 > 如需配置数据库，[请点击此处查看](https://gitee.com/code4everything/wetool) 。本插件使用的脚本解析库 [QLExpress](https://github.com/alibaba/QLExpress), 语法基本和java一致，几乎没有学习成本，了解语法点击链接即可。
 
@@ -230,6 +230,12 @@ update(sql,list(button,clickCount,posX,posY));
 ```
 
 ### 更新历史
+
+#### [v1.5.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.5.0.jar)
+
+- 注册脚本执行方法到WeTool方法调用中心
+- 修复了一些已知问题
+- 新增全局变量
 
 #### [v1.3.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.3.0.jar)
 

@@ -1,7 +1,7 @@
 {
     "author": "ease",
     "name": "sample",
-    "version": "1.3.0",
-    "requireWetoolVersion": "1.3.0",
+    "version": "1.5.0",
+    "requireWetoolVersion": "1.5.0",
     "supportedClass": "org.code4everything.wetool.plugin.sample.WetoolSupporter"
 }
