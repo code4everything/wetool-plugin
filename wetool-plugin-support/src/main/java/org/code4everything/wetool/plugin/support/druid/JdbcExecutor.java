@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.sql.*;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
 
 /**
  * @author pantao
@@ -29,8 +28,6 @@ import java.util.regex.Pattern;
 public class JdbcExecutor {
 
     private static final Map<String, JdbcExecutor> MAP = new HashMap<>(4);
-
-    private final Pattern existsSqlPatten = Pattern.compile("^\\s*?select count(.*)>0 from.*");
 
     private final DruidDataSource dataSource;
 
@@ -44,10 +41,10 @@ public class JdbcExecutor {
         return MAP.computeIfAbsent(name, s -> new JdbcExecutor(dataSource));
     }
 
+    /**
+     * recommend syntax: select true from {table} where {condition} limit 1
+     */
     public boolean exists(String sql, @Nullable List<Object> params) {
-        if (!existsSqlPatten.matcher(sql).matches()) {
-            throw new SqlException("sql syntax error for exist query, must like 'select count(*)>0 from...'");
-        }
         return ObjectUtil.defaultIfNull(selectOne(sql, params, Boolean.class), false);
     }
 
