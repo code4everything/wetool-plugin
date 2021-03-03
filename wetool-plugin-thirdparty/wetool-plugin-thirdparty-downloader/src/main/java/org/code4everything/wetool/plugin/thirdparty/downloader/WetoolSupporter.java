@@ -42,7 +42,7 @@ public class WetoolSupporter implements WePluginSupporter {
 
     @Override
     public void debugCall() {
-        openTab();
+        Platform.runLater(this::openTab);
     }
 
     private void openTab() {
