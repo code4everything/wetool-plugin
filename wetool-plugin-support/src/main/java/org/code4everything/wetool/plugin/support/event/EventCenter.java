@@ -138,7 +138,7 @@ public class EventCenter {
 
     private static final Map<String, List<EventHandler>> HANDLER_MAP = new ConcurrentHashMap<>();
 
-    private static final Semaphore EVENT_SEMAPHORE = new Semaphore(6);
+    private static final Semaphore EVENT_SEMAPHORE = new Semaphore(16);
 
     /**
      * 获取所有注册时事件KEY
