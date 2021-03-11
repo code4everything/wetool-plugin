@@ -73,8 +73,17 @@
 </dependency>
 ```
 
+### v1.6.0开发计划
+
+- [ ] 支持开启HTTP文件浏览服务
+- [ ] [开发可视化爬虫插件](https://gitee.com/code4everything/visual-spider)
+- [ ] [集成HutoolCli](https://gitee.com/code4everything/hutool-cli)
+- [ ] 统一配置中心
+- [ ] 支持面板设置
+- [ ] 支持启动工具时运行插件
+
 ### 参与贡献
 
-欢迎提Issue、Pull Request，参与开发，如果觉得项目还不错，欢迎Star哦~
+树要成林，人要成群。
 
-> 使用插件前请确保已安装[`wetool.jar`](https://gitee.com/code4everything/wetool)
+欢迎大家提Issue、Pull Request，参与开发，一起完善本工具，如果觉得项目还不错，请Star哦~
