@@ -71,6 +71,8 @@ public class FxUtils {
 
     private static Method unregisterActionMethod;
 
+    private static  Robot robot;
+
     static {
         try {
             Class<?> clazz = Class.forName("org.code4everything.wetool.controller.MainController");
@@ -83,6 +85,28 @@ public class FxUtils {
 
     public static Set<Integer> getPressingKeyCodes() {
         return Collections.unmodifiableSet(PRESSING_KEY_CODE);
+    }
+
+    /**
+     * 开启windows虚拟桌面
+     */
+    public static void multiDesktopOnWindows() {
+        if (Objects.isNull(robot)) {
+            try {
+                robot = new Robot();
+            } catch (AWTException e) {
+                log.error(ExceptionUtil.stacktraceToString(e));
+            }
+        }
+
+        if (Objects.isNull(robot)) {
+            return;
+        }
+
+        robot.keyPress(java.awt.event.KeyEvent.VK_WINDOWS);
+        robot.keyPress(java.awt.event.KeyEvent.VK_TAB);
+        robot.keyRelease(java.awt.event.KeyEvent.VK_WINDOWS);
+        robot.keyRelease(java.awt.event.KeyEvent.VK_TAB);
     }
 
     /**
