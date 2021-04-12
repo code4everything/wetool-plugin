@@ -10,6 +10,7 @@ import cn.hutool.core.util.*;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.system.oshi.OshiUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONPath;
 import com.ql.util.express.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 import com.ql.util.express.parse.ExpressPackage;
@@ -184,6 +185,9 @@ public class ScriptExecutor {
 
         types = new Class<?>[]{CharSequence.class, Object[].class};
         runner.addFunctionOfClassMethod("format", StrUtil.class, "format", types, null);
+
+        types = new Class<?>[]{Object.class, String.class};
+        runner.addFunctionOfClassMethod("evalJson", JSONPath.class, "eval", types, null);
     }
 
     @SneakyThrows
