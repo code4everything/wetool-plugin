@@ -2,7 +2,6 @@ package org.code4everything.wetool.plugin.support.util;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ObjectUtil;
-import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -76,7 +75,7 @@ public class FxDialogs {
      * @param <R> 结果类型
      */
     public static <R> void showDialog(String header, Node dialogPane, DialogWinnable<R> winnable, R defaultR) {
-        Platform.runLater(() -> {
+        execFxFutureTask(() -> {
             Dialog<R> dialog = new Dialog<>();
             dialog.getDialogPane().setContent(dialogPane);
             buildDialog(dialog, header, null);
@@ -109,7 +108,7 @@ public class FxDialogs {
      * @param items Choice可有的选项
      */
     public static void showChoice(String header, String content, Consumer<String> consumer, Collection<String> items) {
-        Platform.runLater(() -> {
+        execFxFutureTask(() -> {
             EditableChoiceDialog dialog = getEditableChoiceDialog(header, content, items);
             Optional<String> result = dialog.showAndWait();
             if (ObjectUtil.isNotNull(consumer)) {
@@ -158,7 +157,7 @@ public class FxDialogs {
      * @param consumer 处理结果的回调
      */
     public static void showTextInput(String header, String content, Consumer<String> consumer) {
-        Platform.runLater(() -> {
+        execFxFutureTask(() -> {
             TextInputDialog dialog = getTextInputDialog(header, content);
             Optional<String> result = dialog.showAndWait();
             if (ObjectUtil.isNotNull(consumer)) {
@@ -203,7 +202,7 @@ public class FxDialogs {
     }
 
     public static void showException(String header, Throwable e) {
-        Platform.runLater(() -> {
+        execFxFutureTask(() -> {
             Alert alert = makeAlert(header, "错误信息追踪：", Alert.AlertType.ERROR, Modality.APPLICATION_MODAL);
 
             // 输出异常信息
@@ -234,7 +233,7 @@ public class FxDialogs {
     }
 
     private static void showAlert(String header, String content, Alert.AlertType alertType) {
-        Platform.runLater(() -> makeAlert(header, content, alertType, Modality.NONE).showAndWait());
+        execFxFutureTask(() -> makeAlert(header, content, alertType, Modality.NONE).showAndWait());
     }
 
     private static Alert makeAlert(String header, String content, Alert.AlertType alertType, Modality modality) {
@@ -251,11 +250,11 @@ public class FxDialogs {
         return alert;
     }
 
-    public void execFxFutureTask(FutureTask<?> futureTask) {
+    public void execFxFutureTask(Runnable runnable) {
         if (Thread.currentThread().getName().equals("JavaFX Application Thread")) {
-            futureTask.run();
+            runnable.run();
         } else {
-            Platform.runLater(futureTask);
+            execFxFutureTask(runnable);
         }
     }
 }
