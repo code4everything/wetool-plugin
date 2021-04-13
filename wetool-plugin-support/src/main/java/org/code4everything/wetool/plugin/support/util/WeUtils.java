@@ -58,8 +58,8 @@ public class WeUtils {
         }
     };
 
-    private static final ThreadPoolExecutor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(16, 64, 60L,
-            TimeUnit.SECONDS, new LinkedBlockingQueue<>(64), THREAD_FACTORY);
+    private static final ThreadPoolExecutor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(16, 32, 60L,
+            TimeUnit.SECONDS, new LinkedBlockingQueue<>(512), THREAD_FACTORY);
 
     private static int compressLen = 0;
 
