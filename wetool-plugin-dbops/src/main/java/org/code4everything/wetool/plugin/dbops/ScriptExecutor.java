@@ -7,6 +7,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.*;
+import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.system.oshi.OshiUtil;
 import com.alibaba.fastjson.JSON;
@@ -147,6 +148,7 @@ public class ScriptExecutor {
         runner.addFunctionOfClassMethod("input", CLASS_NAME, "input", types, null);
         runner.addFunctionOfClassMethod("processes", CLASS_NAME, "processes", types, null);
         runner.addFunctionOfClassMethod("pushThisEvent2Remote", CLASS_NAME, "pushThisEvent2Remote", types, null);
+        runner.addFunctionOfClassMethod("getGlobal", CLASS_NAME, "getGlobal", types, null);
 
         types = new Class<?>[]{List.class};
         runner.addFunctionOfClassMethod("random", CLASS_NAME, "random", types, null);
@@ -156,6 +158,7 @@ public class ScriptExecutor {
 
         types = new Class<?>[]{String.class, String.class};
         runner.addFunctionOfClassMethod("http0", CLASS_NAME, "http0", types, null);
+        runner.addFunctionOfClassMethod("request", CLASS_NAME, "request", types, null);
 
         types = new Class<?>[]{int.class, String.class, String.class};
         runner.addFunctionOfClassMethod("http1", CLASS_NAME, "http1", types, null);
@@ -193,6 +196,32 @@ public class ScriptExecutor {
     @SneakyThrows
     public static String choice(String tip, List<String> items) {
         return FxDialogs.showChoice(MainController.TAB_NAME, tip, items).get();
+    }
+
+    public static HttpRequest request(String method, String url) {
+        method = StrUtil.trim(method).toLowerCase();
+        switch (method) {
+            case "post":
+                return HttpRequest.post(url);
+            case "put":
+                return HttpRequest.put(url);
+            case "head":
+                return HttpRequest.head(url);
+            case "patch":
+                return HttpRequest.patch(url);
+            case "delete":
+                return HttpRequest.delete(url);
+            case "trace":
+                return HttpRequest.trace(url);
+            case "get":
+                return HttpRequest.get(url);
+            default:
+                return HttpRequest.options(url);
+        }
+    }
+
+    public static Object getGlobal(String key) {
+        return GLOBAL_VARS.get(key);
     }
 
     public static Object random(List<Object> list) {

@@ -69,6 +69,8 @@ import cn.hutool.core.map.*;
 |get(String urlString)|String|http get请求，返回响应内容|
 |post(String urlString, String body)|String|http post请求，返回响应数据|
 |evalJson(Object rootObject, String path|Object|按json路径获取值|
+|getGlobal(String key)|Object|获取全局变量|
+|request(String method, String url)|cn.hutool.http.HttpRequest|创建一个HttpRequest|
 
 > 补充说明：子（回调）脚本会注册到全局变量中，`varKey` 可以直接是脚本代码，不一定是子（回调）脚本的Key
 
