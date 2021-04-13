@@ -71,6 +71,8 @@ import cn.hutool.core.map.*;
 |evalJson(Object rootObject, String path|Object|按json路径获取值|
 |getGlobal(String key)|Object|获取全局变量|
 |request(String method, String url)|cn.hutool.http.HttpRequest|创建一个HttpRequest|
+|setClipboard(String str)|void|设置字符串到剪贴板|
+|getClipboard()|String|获取剪贴板字符串|
 
 > 补充说明：子（回调）脚本会注册到全局变量中，`varKey` 可以直接是脚本代码，不一定是子（回调）脚本的Key
 

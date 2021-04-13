@@ -6,6 +6,7 @@ import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.*;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
@@ -177,8 +178,12 @@ public class ScriptExecutor {
     }
 
     private static void importOuterMethods(ExpressRunner runner) throws Exception {
-        Class<?>[] types = {String.class};
+        Class<?>[] types = {};
+        runner.addFunctionOfClassMethod("getClipboard", ClipboardUtil.class, "getStr", types, null);
+
+        types = new Class<?>[]{String.class};
         runner.addFunctionOfClassMethod("get", HttpUtil.class, "get", types, null);
+        runner.addFunctionOfClassMethod("setClipboard", ClipboardUtil.class, "setStr", types, null);
 
         types = new Class<?>[]{String[].class};
         runner.addFunctionOfClassMethod("run", RuntimeUtil.class, "execForStr", types, null);
