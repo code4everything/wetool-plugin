@@ -78,12 +78,8 @@
 - [ ] 支持开启HTTP文件浏览服务
 - [ ] [开发可视化爬虫插件](https://gitee.com/code4everything/visual-spider)
 - [ ] [集成HutoolCli](https://gitee.com/code4everything/hutool-cli)
-- [ ] 统一配置中心
-- [ ] 支持面板设置
 - [ ] 支持启动工具时运行插件
 
 ### 参与贡献
-
-树要成林，人要成群。一个人可以走得很快，但一群人会走得更远。
 
 欢迎大家提Issue、Pull Request，参与开发，一起完善本工具，如果觉得项目还不错，请Star哦~
