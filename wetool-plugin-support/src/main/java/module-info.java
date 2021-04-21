@@ -34,6 +34,12 @@ module org.code4everything.wetool.plugin.support {
     // 工具包依赖
     requires transitive org.slf4j;
 
+    // 第三方组件库
+    requires transitive com.jfoenix;
+    requires transitive eu.hansolo.tilesfx;
+    requires transitive eu.hansolo.medusa;
+    requires transitive com.dlsc.formsfx;
+
     requires hutool.core;
     requires boot.surface;
     requires fastjson;
