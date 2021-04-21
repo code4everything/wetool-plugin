@@ -4,7 +4,7 @@ import javafx.scene.control.MenuItem;
 import org.code4everything.wetool.plugin.support.config.WePluginInfo;
 
 /**
- * 工具插件接口，实现类必须包含一个无参构造函数
+ * 工具插件接口，实现类必须包含一个无参构造函数，方法顺序即为调用顺序
  *
  * @author pantao
  * @since 2019/8/22
@@ -37,6 +37,13 @@ public interface WePluginSupporter {
     default java.awt.MenuItem registerTrayMenu() {return null;}
 
     /**
+     * 在成功回调之前调用
+     *
+     * @since 1.0.2
+     */
+    default void debugCall() {}
+
+    /**
      * 注册成功之后的回调
      *
      * @param info 定义的插件信息
@@ -44,11 +51,4 @@ public interface WePluginSupporter {
      * @param trayMenu 注册的托盘菜单
      */
     default void registered(WePluginInfo info, MenuItem barMenu, java.awt.MenuItem trayMenu) {}
-
-    /**
-     * 开发调试时调用（最后调用）
-     *
-     * @since 1.0.2
-     */
-    default void debugCall() {}
 }
