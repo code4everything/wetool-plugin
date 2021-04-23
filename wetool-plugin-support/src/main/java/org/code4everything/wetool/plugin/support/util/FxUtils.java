@@ -110,7 +110,7 @@ public class FxUtils {
     }
 
     /**
-     * 搜索动作
+     * 搜索动作，支持模式匹配，如：hutool*, env*
      *
      * @param name 名称
      * @param eventHandler 事件处理器
