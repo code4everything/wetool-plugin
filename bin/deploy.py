@@ -57,6 +57,9 @@ os.chdir(cwd)
 os.chdir('./wetool-plugin-support')
 print('deploy wetool-plugin-support...\r\n')
 replace_version()
+with open('./src/main/resources/version', 'w+', encoding='utf-8') as fw:
+    fw.write(version)
+
 print(os.popen('mvn clean deploy').read())
 copy_to('wetool-plugin-support')
 

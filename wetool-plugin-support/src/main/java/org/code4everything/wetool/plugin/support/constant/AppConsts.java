@@ -1,5 +1,7 @@
 package org.code4everything.wetool.plugin.support.constant;
 
+import cn.hutool.core.io.resource.ResourceUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -14,7 +16,7 @@ public class AppConsts {
     /**
      * 当前版本号
      */
-    public static final String CURRENT_VERSION = "1.5.0";
+    public static final String CURRENT_VERSION = StrUtil.trim(ResourceUtil.readUtf8Str("version"));
 
     /**
      * 兼容的最低版本号
