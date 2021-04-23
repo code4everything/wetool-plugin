@@ -234,6 +234,16 @@ posY=eventMessage.getMouseEvent().getY();
 update(sql,list(button,clickCount,posX,posY));
 ```
 
+### 例子4：新增Windows虚拟桌面触发角
+
+![image](images/windows_virtual_desktop.png)
+
+```java
+if(eventMessage.getType().name()=="LEFT_TOP"){
+FxUtils.multiDesktopOnWindows();
+}
+```
+
 ### 更新历史
 
 #### [v1.5.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.5.0.jar)
