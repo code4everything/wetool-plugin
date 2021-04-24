@@ -1,5 +1,7 @@
 package org.code4everything.wetool.plugin.support.http;
 
+import cn.hutool.cache.Cache;
+import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.net.URLDecoder;
 import cn.hutool.core.util.CharsetUtil;
@@ -18,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.support.exception.HttpBadReqException;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
@@ -30,6 +33,8 @@ import java.util.StringTokenizer;
 public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> {
 
     private final int port;
+
+    private final Cache<String, HttpApiHandler> httpApiHandlerCache = CacheUtil.newFIFOCache(128);
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
@@ -53,7 +58,7 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
             if (Objects.isNull(response.protocolVersion())) {
                 response.setProtocolVersion(req.protocolVersion());
             }
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON).setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
+            response.headers().setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
 
             if (keepAlive) {
                 if (!req.protocolVersion().isKeepAliveDefault()) {
@@ -107,8 +112,7 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
 
     private FullHttpResponse getResponse(HttpRequest req, String api, QueryStringDecoder decoder) {
         HttpVersion httpVersion = req.protocolVersion();
-        HttpApiHandler apiHandler = HttpService.HTTP_SERVICE.get(port).get(api);
-
+        HttpApiHandler apiHandler = getApiHandler(api);
         FullHttpResponse response;
 
         if (Objects.isNull(apiHandler)) {
@@ -116,6 +120,7 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
                     Unpooled.wrappedBuffer(new byte[0]));
         } else {
             JSONObject params = parseParams(decoder.rawQuery());
+            params.put(HttpService.REQ_API_KEY, api);
             JSONObject body = parseReqBody(req);
             response = new WeFullHttpResponse(httpVersion, HttpResponseStatus.OK);
 
@@ -128,6 +133,7 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
                             SerializerFeature.WriteNullNumberAsZero, SerializerFeature.WriteNullBooleanAsFalse,
                             SerializerFeature.SkipTransientField, SerializerFeature.WriteNonStringKeyAsString);
                     ((WeFullHttpResponse) response).setContent(str2buf(respStr));
+                    response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON);
                 }
             } catch (Exception e) {
                 HttpResponseStatus status;
@@ -146,6 +152,30 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
         }
 
         return response;
+    }
+
+    private HttpApiHandler getApiHandler(String api) {
+        Map<String, HttpApiHandler> apiHandlerMap = HttpService.HTTP_SERVICE.get(port);
+        HttpApiHandler httpApiHandler = apiHandlerMap.get(api);
+        if (Objects.nonNull(httpApiHandler)) {
+            return httpApiHandler;
+        }
+
+        return httpApiHandlerCache.get(api, () -> {
+            for (Map.Entry<String, HttpApiHandler> entry : apiHandlerMap.entrySet()) {
+                String apiPattern = entry.getKey();
+                if (apiPattern.endsWith("*")) {
+                    apiPattern = apiPattern.substring(0, apiPattern.length() - 1);
+                    if (api.startsWith(apiPattern)) {
+                        HttpApiHandler handler = entry.getValue();
+                        if (Objects.nonNull(handler)) {
+                            return handler;
+                        }
+                    }
+                }
+            }
+            return null;
+        });
     }
 
     @Override

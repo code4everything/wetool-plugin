@@ -33,6 +33,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @UtilityClass
 public class HttpService {
 
+    public static final String REQ_API_KEY = "wetool-http-request-api";
+
     static final Map<Integer, Map<String, HttpApiHandler>> HTTP_SERVICE = new ConcurrentHashMap<>(8);
 
     private static Integer defaultPort = null;
@@ -79,7 +81,7 @@ public class HttpService {
     }
 
     /**
-     * 暴露http服务
+     * 暴露http服务，支持模式匹配，如：get/api/file/*
      *
      * @param port 端口
      * @param api 请求接口，包含请求方法（小写），例如：get/api/hello, post/api/register
