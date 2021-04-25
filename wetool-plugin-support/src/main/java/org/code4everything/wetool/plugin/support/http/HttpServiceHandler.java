@@ -19,6 +19,7 @@ import io.netty.handler.codec.http.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.support.exception.HttpBadReqException;
+import org.code4everything.wetool.plugin.support.exception.HttpException;
 
 import java.util.Map;
 import java.util.Objects;
@@ -133,20 +134,16 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
                 if (responseObject instanceof FullHttpResponse) {
                     return (FullHttpResponse) responseObject;
                 }
-
-                String respStr = JSON.toJSONString(responseObject, SerializerFeature.QuoteFieldNames,
-                        SerializerFeature.WriteMapNullValue, SerializerFeature.WriteEnumUsingToString,
-                        SerializerFeature.WriteNullListAsEmpty, SerializerFeature.WriteNullStringAsEmpty,
-                        SerializerFeature.WriteNullNumberAsZero, SerializerFeature.WriteNullBooleanAsFalse,
-                        SerializerFeature.SkipTransientField, SerializerFeature.WriteNonStringKeyAsString);
-                ((WeFullHttpResponse) response).setContent(respStr);
-                response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON);
+                return Https.responseJson(response, responseObject);
             } catch (Exception e) {
                 HttpResponseStatus status;
                 String errMsg;
-                if (e instanceof HttpBadReqException) {
-                    status = HttpResponseStatus.BAD_REQUEST;
-                    errMsg = e.getMessage();
+                String contentType = "text/plain;charset=utf-8";
+                if (e instanceof HttpException) {
+                    HttpException httpException = (HttpException) e;
+                    status = httpException.getStatus();
+                    errMsg = httpException.getMsg();
+                    contentType = httpException.getContentType();
                 } else {
                     status = HttpResponseStatus.INTERNAL_SERVER_ERROR;
                     errMsg = ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE);
@@ -154,6 +151,7 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
                 }
 
                 response = new DefaultFullHttpResponse(httpVersion, status, Https.str2buf(errMsg));
+                response.headers().set(HttpHeaderNames.CONTENT_TYPE, contentType);
             }
         }
 

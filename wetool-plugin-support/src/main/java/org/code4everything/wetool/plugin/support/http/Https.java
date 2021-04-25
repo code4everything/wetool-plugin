@@ -2,6 +2,8 @@ package org.code4everything.wetool.plugin.support.http;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.CharsetUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -30,7 +32,7 @@ public class Https {
         FILE_TYPE_MAP.put("png", "image/png");
         FILE_TYPE_MAP.put("json", "application/json");
         FILE_TYPE_MAP.put("pdf", "application/pdf");
-        FILE_TYPE_MAP.put("mp4", "video/mpeg4");
+        FILE_TYPE_MAP.put("mp4", "video/mp4");
         FILE_TYPE_MAP.put("torrent", "application/x-bittorrent");
         FILE_TYPE_MAP.put("svg", "text/xml");
         FILE_TYPE_MAP.put("mp3", "audio/mp3");
@@ -39,25 +41,56 @@ public class Https {
         FILE_TYPE_MAP.put("css", "text/css");
     }
 
-    public static FullHttpResponse writeHtml(FullHttpResponse response, String html) {
+    /**
+     * 响应HTML内容
+     */
+    public static FullHttpResponse responseHtml(FullHttpResponse response, String html) {
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html;charset=utf-8");
         return setContent(response, str2buf(html));
     }
 
-    public static FullHttpResponse writeText(FullHttpResponse response, String text) {
+    /**
+     * 响应普通文本
+     */
+    public static FullHttpResponse responseText(FullHttpResponse response, String text) {
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=utf-8");
         return setContent(response, str2buf(text));
     }
 
-    public static FullHttpResponse writeMedia(FullHttpResponse response, String fileAbsolutePath) {
+    /**
+     * 响应流媒体文件
+     */
+    public static FullHttpResponse responseMedia(FullHttpResponse response, String fileAbsolutePath) {
         String type = FILE_TYPE_MAP.getOrDefault(FileUtil.getSuffix(fileAbsolutePath), "text/plain");
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, type + ";charset=utf-8");
         return setContent(response, Unpooled.copiedBuffer(FileUtil.readBytes(fileAbsolutePath)));
     }
 
-    public static FullHttpResponse writeFile(FullHttpResponse response, String fileAbsolutePath) {
+    /**
+     * 客户端下载文件
+     */
+    public static FullHttpResponse responseFile(FullHttpResponse response, String fileAbsolutePath) {
         response.headers().set(HttpHeaderNames.CONTENT_DISPOSITION, HttpHeaderValues.FILE);
-        return response;
+        return setContent(response, Unpooled.copiedBuffer(FileUtil.readBytes(fileAbsolutePath)));
+    }
+
+    /**
+     * 响应JSON
+     */
+    public static FullHttpResponse responseJson(FullHttpResponse response, Object object) {
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON);
+        return setContent(response, str2buf(objectToJsonString(object)));
+    }
+
+    /**
+     * 对象转JSON
+     */
+    public static String objectToJsonString(Object object) {
+        return JSON.toJSONString(object, SerializerFeature.QuoteFieldNames,
+                SerializerFeature.WriteMapNullValue, SerializerFeature.WriteEnumUsingToString,
+                SerializerFeature.WriteNullListAsEmpty, SerializerFeature.WriteNullStringAsEmpty,
+                SerializerFeature.WriteNullNumberAsZero, SerializerFeature.WriteNullBooleanAsFalse,
+                SerializerFeature.SkipTransientField, SerializerFeature.WriteNonStringKeyAsString);
     }
 
     private static FullHttpResponse setContent(FullHttpResponse response, ByteBuf content) {

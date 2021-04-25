@@ -3,6 +3,7 @@ package org.code4everything.wetool.plugin.support.http;
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.google.common.base.Preconditions;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
@@ -90,6 +91,7 @@ public class HttpService {
      * @since 1.3.0
      */
     public static void exportHttp(int port, String api, HttpApiHandler handler) {
+        Preconditions.checkArgument(StrUtil.isNotBlank(api), "api must not be blank");
         if (!NetUtil.isValidPort(port)) {
             // 非法端口
             throw new HttpExportException(StrUtil.format("invalid port: {}", port));
