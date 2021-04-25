@@ -16,11 +16,18 @@ import lombok.Setter;
 public class WeFullHttpResponse extends DefaultFullHttpResponse {
 
     @Getter
-    @Setter
     private ByteBuf content;
 
     public WeFullHttpResponse(HttpVersion version, HttpResponseStatus status) {
         super(version, status);
+    }
+
+    public void setContent(ByteBuf content) {
+        this.content = content;
+    }
+
+    public void setContent(String content) {
+        setContent(Https.str2buf(content));
     }
 
     @Override

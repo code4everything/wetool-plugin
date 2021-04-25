@@ -126,15 +126,21 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
 
             try {
                 Object responseObject = apiHandler.handleApi(req, response, params, body);
-                if (Objects.nonNull(responseObject)) {
-                    String respStr = JSON.toJSONString(responseObject, SerializerFeature.QuoteFieldNames,
-                            SerializerFeature.WriteMapNullValue, SerializerFeature.WriteEnumUsingToString,
-                            SerializerFeature.WriteNullListAsEmpty, SerializerFeature.WriteNullStringAsEmpty,
-                            SerializerFeature.WriteNullNumberAsZero, SerializerFeature.WriteNullBooleanAsFalse,
-                            SerializerFeature.SkipTransientField, SerializerFeature.WriteNonStringKeyAsString);
-                    ((WeFullHttpResponse) response).setContent(str2buf(respStr));
-                    response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON);
+                if (Objects.isNull(responseObject)) {
+                    return response;
                 }
+
+                if (responseObject instanceof FullHttpResponse) {
+                    return (FullHttpResponse) responseObject;
+                }
+
+                String respStr = JSON.toJSONString(responseObject, SerializerFeature.QuoteFieldNames,
+                        SerializerFeature.WriteMapNullValue, SerializerFeature.WriteEnumUsingToString,
+                        SerializerFeature.WriteNullListAsEmpty, SerializerFeature.WriteNullStringAsEmpty,
+                        SerializerFeature.WriteNullNumberAsZero, SerializerFeature.WriteNullBooleanAsFalse,
+                        SerializerFeature.SkipTransientField, SerializerFeature.WriteNonStringKeyAsString);
+                ((WeFullHttpResponse) response).setContent(respStr);
+                response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON);
             } catch (Exception e) {
                 HttpResponseStatus status;
                 String errMsg;
@@ -147,7 +153,7 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
                     log.error("[{}] api service error, request api: {}, error: {}", port, api, errMsg);
                 }
 
-                response = new DefaultFullHttpResponse(httpVersion, status, str2buf(errMsg));
+                response = new DefaultFullHttpResponse(httpVersion, status, Https.str2buf(errMsg));
             }
         }
 
@@ -182,9 +188,5 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         log.error(ExceptionUtil.stacktraceToString(cause, Integer.MAX_VALUE));
         ctx.close();
-    }
-
-    private ByteBuf str2buf(String str) {
-        return Unpooled.copiedBuffer(str, CharsetUtil.CHARSET_UTF_8);
     }
 }
