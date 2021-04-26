@@ -21,6 +21,7 @@ import org.code4everything.wetool.plugin.support.event.EventCenter;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -62,6 +63,15 @@ public class WeUtils {
             TimeUnit.SECONDS, new LinkedBlockingQueue<>(512), THREAD_FACTORY);
 
     private static int compressLen = 0;
+
+    /**
+     * 获取当前进程id
+     *
+     * @since 1.6.0
+     */
+    public static int getCurrentPid() {
+        return NumberUtil.parseInt(StrUtil.split(ManagementFactory.getRuntimeMXBean().getName(), "@")[0]);
+    }
 
     /**
      * 异步执行
