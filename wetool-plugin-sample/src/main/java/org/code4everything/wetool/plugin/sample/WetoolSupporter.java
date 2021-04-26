@@ -34,14 +34,7 @@ public class WetoolSupporter implements WePluginSupporter {
      */
     @Override
     public MenuItem registerBarMenu() {
-        return FxUtils.createBarMenuItem("插件示例", event -> {
-            // 注意保证fxml文件的url路径唯一性
-            Pane node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/sample/Sample.fxml", true);
-            FxDialogs.showInformation(SampleController.TAB_NAME, "welcome to wetool plugin");
-            //FxUtils.openTab(node, SampleController.TAB_ID, SampleController.TAB_NAME);
-            FxUtils.getStage().setTitle("插件示例");
-            FxUtils.getStage().getScene().setRoot(node);
-        });
+        return FxUtils.createBarMenuItem("插件示例", event -> initBootIfConfigured());
     }
 
     /**
@@ -63,5 +56,15 @@ public class WetoolSupporter implements WePluginSupporter {
     @Override
     public void registered(WePluginInfo info, MenuItem barMenu, java.awt.MenuItem trayMenu) {
         log.info("plugin sample registered success");
+    }
+
+    @Override
+    public void initBootIfConfigured() {
+        // 注意保证fxml文件的url路径唯一性
+        Pane node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/sample/Sample.fxml", true);
+        FxDialogs.showInformation(SampleController.TAB_NAME, "welcome to wetool plugin");
+        //FxUtils.openTab(node, SampleController.TAB_ID, SampleController.TAB_NAME);
+        FxUtils.getStage().setTitle("插件示例");
+        FxUtils.getStage().getScene().setRoot(node);
     }
 }

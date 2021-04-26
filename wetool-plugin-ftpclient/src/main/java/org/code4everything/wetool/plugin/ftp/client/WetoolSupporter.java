@@ -1,7 +1,6 @@
 package org.code4everything.wetool.plugin.ftp.client;
 
 import cn.hutool.core.collection.CollUtil;
-import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +34,9 @@ public class WetoolSupporter implements WePluginSupporter {
     @Override
     public MenuItem registerBarMenu() {
         if (ftpConfig.getShowOnStartup()) {
-            openTab();
+            initBootIfConfigured();
         }
-        return FxUtils.createBarMenuItem(FtpConsts.TAB_NAME, e -> openTab());
+        return FxUtils.createBarMenuItem(FtpConsts.TAB_NAME, e -> initBootIfConfigured());
     }
 
     @Override
@@ -56,10 +55,8 @@ public class WetoolSupporter implements WePluginSupporter {
         return menu;
     }
 
-    private void openTab() {
-        Platform.runLater(() -> {
-            Node node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/ftpclient/FtpTabView.fxml", true);
-            FxUtils.openTab(node, FtpConsts.TAB_ID, FtpConsts.TAB_NAME);
-        });
+    public void initBootIfConfigured() {
+        Node node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/ftpclient/FtpTabView.fxml", true);
+        FxUtils.openTab(node, FtpConsts.TAB_ID, FtpConsts.TAB_NAME);
     }
 }

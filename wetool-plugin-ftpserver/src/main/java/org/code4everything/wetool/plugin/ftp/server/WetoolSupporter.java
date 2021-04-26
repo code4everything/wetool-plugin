@@ -54,4 +54,9 @@ public class WetoolSupporter implements WePluginSupporter {
         menu.add(item);
         return menu;
     }
+
+    @Override
+    public void initBootIfConfigured() {
+        FtpServerManager.start();
+    }
 }

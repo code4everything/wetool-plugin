@@ -13,16 +13,12 @@ import org.code4everything.wetool.plugin.support.util.FxUtils;
 public class WetoolSupporter implements WePluginSupporter {
 
     @Override
-    public void debugCall() {
-        openTab();
+    public MenuItem registerBarMenu() {
+        return FxUtils.createBarMenuItem(CommonConsts.APP_NAME, event -> initBootIfConfigured());
     }
 
     @Override
-    public MenuItem registerBarMenu() {
-        return FxUtils.createBarMenuItem(CommonConsts.APP_NAME, event -> openTab());
-    }
-
-    private void openTab() {
+    public void initBootIfConfigured() {
         Node node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/everywhere/Main.fxml", true);
         FxUtils.openTab(node, CommonConsts.APP_ID, CommonConsts.APP_NAME);
     }

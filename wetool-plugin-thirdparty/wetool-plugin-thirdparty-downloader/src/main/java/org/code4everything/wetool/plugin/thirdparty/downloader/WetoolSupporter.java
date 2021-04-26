@@ -27,7 +27,7 @@ public class WetoolSupporter implements WePluginSupporter {
 
     @Override
     public MenuItem registerBarMenu() {
-        MenuItem barMenuItem = FxUtils.createBarMenuItem(TAB_NAME, actionEvent -> openTab());
+        MenuItem barMenuItem = FxUtils.createBarMenuItem(TAB_NAME, actionEvent -> initBootIfConfigured());
         barMenuItem.setId(TAB_ID);
         return barMenuItem;
     }
@@ -36,16 +36,17 @@ public class WetoolSupporter implements WePluginSupporter {
     public java.awt.MenuItem registerTrayMenu() {
         return FxUtils.createTrayMenuItem(TAB_NAME, e -> Platform.runLater(() -> {
             FxUtils.getStage().show();
-            openTab();
+            initBootIfConfigured();
         }));
     }
 
     @Override
     public void debugCall() {
-        Platform.runLater(this::openTab);
+        Platform.runLater(this::initBootIfConfigured);
     }
 
-    private void openTab() {
+    @Override
+    public void initBootIfConfigured() {
         if (!initialized) {
             SystemContext.info();
             final boolean enable = SystemContext.listen();

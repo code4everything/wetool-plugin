@@ -41,8 +41,7 @@ public interface WePluginSupporter {
      *
      * @since 1.0.2
      */
-    @Deprecated
-    default void debugCall() {}
+    default void debugCall() {initBootIfConfigured();}
 
     /**
      * 注册成功之后的回调
@@ -54,7 +53,7 @@ public interface WePluginSupporter {
     default void registered(WePluginInfo info, MenuItem barMenu, java.awt.MenuItem trayMenu) {}
 
     /**
-     * 初始化时运行插件回调
+     * 初始化时运行插件回调，当用户配置启动wetool运行此插件时调用此方法
      *
      * @since 1.6.0
      */

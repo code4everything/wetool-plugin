@@ -16,10 +16,13 @@ public class WetoolSupporter implements WePluginSupporter {
     @Override
     public boolean initialize() {
         Menu menu = FxUtils.makePluginMenu(AppConsts.Title.DEV_TOOL);
-        menu.getItems().add(FxUtils.createBarMenuItem(CommonConsts.APP_NAME, event -> {
-            Node node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/devtool/utilities/Main.fxml", true);
-            FxUtils.openTab(node, CommonConsts.APP_ID, CommonConsts.APP_NAME);
-        }));
+        menu.getItems().add(FxUtils.createBarMenuItem(CommonConsts.APP_NAME, event -> initBootIfConfigured()));
         return true;
+    }
+
+    @Override
+    public void initBootIfConfigured() {
+        Node node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/devtool/utilities/Main.fxml", true);
+        FxUtils.openTab(node, CommonConsts.APP_ID, CommonConsts.APP_NAME);
     }
 }

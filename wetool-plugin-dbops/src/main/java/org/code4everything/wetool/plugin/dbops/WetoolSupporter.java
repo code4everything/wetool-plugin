@@ -65,8 +65,7 @@ public class WetoolSupporter implements WePluginSupporter {
             @Override
             @SuppressWarnings("unchecked")
             public Object callMethod(List<Object> params) {
-                return ScriptExecutor.execute((String) params.get(0), (String) params.get(1),
-                        (Map<String, Object>) params.get(2));
+                return ScriptExecutor.execute((String) params.get(0), (String) params.get(1), (Map<String, Object>) params.get(2));
             }
         });
 
@@ -79,7 +78,7 @@ public class WetoolSupporter implements WePluginSupporter {
     }
 
     @Override
-    public void debugCall() {
+    public void initBootIfConfigured() {
         Node node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/dbops/MainView.fxml", true);
         FxUtils.openTab(node, MainController.TAB_ID, MainController.TAB_NAME);
     }

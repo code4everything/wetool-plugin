@@ -21,12 +21,7 @@ public class WetoolSupporter implements WePluginSupporter, Callable<Tab> {
 
     @Override
     public MenuItem registerBarMenu() {
-        final Callable<Tab> callable = this;
-        return FxUtils.createBarMenuItem(QiniuConsts.TAB_NAME, event -> {
-            Node node = FxUtils.loadFxml(WetoolSupporter.class, QiniuConsts.QINIU_VIEW_URL, true);
-            FxUtils.openTab(node, QiniuConsts.TAB_ID, QiniuConsts.TAB_NAME, callable);
-            ConfigUtils.loadConfig();
-        });
+        return FxUtils.createBarMenuItem(QiniuConsts.TAB_NAME, event -> initBootIfConfigured());
     }
 
     @Override
@@ -38,5 +33,12 @@ public class WetoolSupporter implements WePluginSupporter, Callable<Tab> {
                 event.consume();
             }
         });
+    }
+
+    @Override
+    public void initBootIfConfigured() {
+        Node node = FxUtils.loadFxml(WetoolSupporter.class, QiniuConsts.QINIU_VIEW_URL, true);
+        FxUtils.openTab(node, QiniuConsts.TAB_ID, QiniuConsts.TAB_NAME, this);
+        ConfigUtils.loadConfig();
     }
 }
