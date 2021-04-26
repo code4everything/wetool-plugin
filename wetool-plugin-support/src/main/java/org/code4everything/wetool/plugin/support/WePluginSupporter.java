@@ -37,10 +37,11 @@ public interface WePluginSupporter {
     default java.awt.MenuItem registerTrayMenu() {return null;}
 
     /**
-     * 在成功回调之前调用
+     * 在成功回调之前调用，仅debug模式可用
      *
      * @since 1.0.2
      */
+    @Deprecated
     default void debugCall() {}
 
     /**
@@ -51,4 +52,11 @@ public interface WePluginSupporter {
      * @param trayMenu 注册的托盘菜单
      */
     default void registered(WePluginInfo info, MenuItem barMenu, java.awt.MenuItem trayMenu) {}
+
+    /**
+     * 初始化时运行插件回调
+     *
+     * @since 1.6.0
+     */
+    default void initBootIfConfigured() {}
 }
