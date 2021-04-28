@@ -17,7 +17,6 @@
         <module>wetool-plugin-ftpserver</module>
         <module>wetool-plugin-qiniu</module>
         <module>wetool-plugin-dbops</module>
-        <module>wetool-plugin-devtool/wetool-plugin-devtool-java</module>
         <module>wetool-plugin-devtool/wetool-plugin-devtool-redis</module>
         <module>wetool-plugin-devtool/wetool-plugin-devtool-ssh</module>
         <module>wetool-plugin-devtool/wetool-plugin-devtool-utilities</module>

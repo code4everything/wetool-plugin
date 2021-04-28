@@ -11,4 +11,5 @@ module org.code4everything.wetool.plugin.test {
     requires boot.surface;
     requires fastjson;
     requires com.google.common;
+    requires FXTrayIcon;
 }

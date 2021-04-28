@@ -1,11 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<VBox prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.code4everything.wetool.plugin.devtool.utilities.controller.MainController">
+    <HBox VBox.vgrow="NEVER">
+        <VBox.margin>
+            <Insets/>
+        </VBox.margin>
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        </padding>
+        <Label text="当前时间" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets top="3.0"/>
+            </HBox.margin>
+        </Label>
+        <TextField fx:id="currentDateTimeField" editable="false" prefWidth="150.0" promptText="2019-11-04 21:48:52"
+                   HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </TextField>
+        <TextField fx:id="currentTimestampField" editable="false" prefWidth="110.0" promptText="1572875388"
+                   HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </TextField>
+        <Button fx:id="toggleButton" mnemonicParsing="false" onAction="#toggleScheduler" text="停止" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </Button>
+        <Button minWidth="1.0" mnemonicParsing="false" prefWidth="1.0" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </Button>
+        <TextField fx:id="dateTimeField" prefWidth="150.0" promptText="2019-11-04 21:48:52" HBox.hgrow="ALWAYS">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </TextField>
+        <Button mnemonicParsing="false" onAction="#toTimestamp" text="时间转时间戳" HBox.hgrow="ALWAYS">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </Button>
+        <Button mnemonicParsing="false" onAction="#toDateTime" text="时间戳转时间" HBox.hgrow="ALWAYS">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </Button>
+        <TextField fx:id="timestampField" prefWidth="110.0" promptText="1572875388" HBox.hgrow="ALWAYS">
+            <HBox.margin>
+                <Insets left="10.0"/>
+            </HBox.margin>
+        </TextField>
+    </HBox>
+    <Separator prefWidth="200.0" VBox.vgrow="NEVER">
+        <VBox.margin>
+            <Insets left="10.0" right="10.0"/>
+        </VBox.margin>
+    </Separator>
     <HBox prefWidth="200.0">
         <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
@@ -27,59 +86,9 @@
             </HBox.margin>
         </Button>
     </HBox>
-    <HBox prefHeight="100.0" prefWidth="200.0">
+    <Separator layoutX="20.0" layoutY="53.0" prefWidth="200.0" VBox.vgrow="NEVER">
         <VBox.margin>
-            <Insets/>
+            <Insets left="10.0" right="10.0"/>
         </VBox.margin>
-        <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-        </padding>
-        <Label text="当前时间" HBox.hgrow="NEVER">
-            <HBox.margin>
-                <Insets top="3.0"/>
-            </HBox.margin>
-        </Label>
-        <TextField fx:id="currentDateTimeField" prefWidth="150.0" promptText="2019-11-04 21:48:52" HBox.hgrow="NEVER"
-                   editable="false">
-            <HBox.margin>
-                <Insets left="10.0"/>
-            </HBox.margin>
-        </TextField>
-        <TextField fx:id="currentTimestampField" prefWidth="110.0" promptText="1572875388" HBox.hgrow="NEVER"
-                   editable="false">
-            <HBox.margin>
-                <Insets left="10.0"/>
-            </HBox.margin>
-        </TextField>
-        <Button mnemonicParsing="false" onAction="#toggleScheduler" text="停止" HBox.hgrow="NEVER" fx:id="toggleButton">
-            <HBox.margin>
-                <Insets left="10.0"/>
-            </HBox.margin>
-        </Button>
-        <Button minWidth="1.0" mnemonicParsing="false" prefWidth="1.0" HBox.hgrow="NEVER">
-            <HBox.margin>
-                <Insets left="10.0"/>
-            </HBox.margin>
-        </Button>
-        <TextField fx:id="dateTimeField" prefWidth="150.0" promptText="2019-11-04 21:48:52" HBox.hgrow="NEVER">
-            <HBox.margin>
-                <Insets left="10.0"/>
-            </HBox.margin>
-        </TextField>
-        <Button mnemonicParsing="false" onAction="#toTimestamp" text="时间转时间戳" HBox.hgrow="NEVER">
-            <HBox.margin>
-                <Insets left="10.0"/>
-            </HBox.margin>
-        </Button>
-        <Button mnemonicParsing="false" onAction="#toDateTime" text="时间戳转时间" HBox.hgrow="NEVER">
-            <HBox.margin>
-                <Insets left="10.0"/>
-            </HBox.margin>
-        </Button>
-        <TextField fx:id="timestampField" prefWidth="110.0" promptText="1572875388" HBox.hgrow="NEVER">
-            <HBox.margin>
-                <Insets left="10.0"/>
-            </HBox.margin>
-        </TextField>
-    </HBox>
+    </Separator>
 </VBox>

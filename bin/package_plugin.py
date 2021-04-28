@@ -6,8 +6,7 @@ import shutil
 import sys
 
 # 插件列表
-plugin_list = ['./wetool-plugin-devtool/wetool-plugin-devtool-java',
-               './wetool-plugin-devtool/wetool-plugin-devtool-redis',
+plugin_list = ['./wetool-plugin-devtool/wetool-plugin-devtool-redis',
                './wetool-plugin-devtool/wetool-plugin-devtool-ssh',
                './wetool-plugin-devtool/wetool-plugin-devtool-utilities',
                './wetool-plugin-everywhere',
