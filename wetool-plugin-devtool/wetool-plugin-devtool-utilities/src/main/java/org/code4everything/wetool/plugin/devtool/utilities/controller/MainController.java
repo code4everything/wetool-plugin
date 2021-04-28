@@ -2,8 +2,11 @@ package org.code4everything.wetool.plugin.devtool.utilities.controller;
 
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadFactoryBuilder;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -47,6 +50,12 @@ public class MainController implements BaseViewController {
     @FXML
     public Button toggleButton;
 
+    @FXML
+    public TextField classFile;
+
+    @FXML
+    public TextField targetFile;
+
     private boolean shouldUpdateTime = false;
 
     private Date date = new Date();
@@ -58,6 +67,21 @@ public class MainController implements BaseViewController {
         toggleScheduler();
         BeanFactory.registerView(CommonConsts.APP_ID, CommonConsts.APP_NAME, this);
         EXECUTOR.scheduleWithFixedDelay(this::updateTime, 0, 1000, TimeUnit.MILLISECONDS);
+        classFile.setOnMouseClicked(e -> FxUtils.chooseFile(file -> classFile.setText(file.getAbsolutePath())));
+    }
+
+    public void chooseTargetFile() {
+        FxUtils.saveFile(file -> targetFile.setText(file.getAbsolutePath()));
+    }
+
+    public void javap() {
+        if (StrUtil.isEmpty(targetFile.getText())) {
+            chooseTargetFile();
+        }
+        if (StrUtil.isNotEmpty(targetFile.getText())) {
+            FileUtil.writeUtf8String(RuntimeUtil.execForStr("javap", "-c", classFile.getText()), targetFile.getText());
+            FxUtils.openFile(targetFile.getText());
+        }
     }
 
     private void updateTime() {
