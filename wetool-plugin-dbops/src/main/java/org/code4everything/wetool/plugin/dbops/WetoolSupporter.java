@@ -2,7 +2,12 @@ package org.code4everything.wetool.plugin.dbops;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.jfoenix.controls.JFXDatePicker;
 import com.ql.util.express.DynamicParamsUtil;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +19,7 @@ import org.code4everything.wetool.plugin.support.event.EventMode;
 import org.code4everything.wetool.plugin.support.event.EventPublisher;
 import org.code4everything.wetool.plugin.support.func.FunctionCenter;
 import org.code4everything.wetool.plugin.support.func.MethodCallback;
+import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
 import java.io.File;
@@ -67,6 +73,12 @@ public class WetoolSupporter implements WePluginSupporter {
             public Object callMethod(List<Object> params) {
                 return ScriptExecutor.execute((String) params.get(0), (String) params.get(1), (Map<String, Object>) params.get(2));
             }
+        });
+
+        FxUtils.registerAction("dbops global*", event -> {
+            String name = StrUtil.removePrefix(event.getSource().toString(), "dbops global").trim();
+            String value = ObjectUtil.toString(ScriptExecutor.GLOBAL_VARS.get(name));
+            FxDialogs.showTextAreaDialog(StrUtil.format("在DBOPS中 {} 的全局变量", name), value);
         });
 
         return true;
