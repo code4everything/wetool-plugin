@@ -1,7 +1,7 @@
 module org.code4everything.wetool.plugin.test {
     requires org.code4everything.wetool;
     requires org.code4everything.wetool.plugin.support;
-    requires core;
+    requires com.google.zxing;
     requires java.base;
     requires hutool.core;
     requires hutool.system;
