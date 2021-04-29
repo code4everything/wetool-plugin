@@ -1,8 +1,8 @@
 ## Ease DB Ops
 
-dbops，中文名为数据库小应用，我们可以将一系列的脚本封装成一个小应用，程序会将这个小应用可视化为一个按钮，只需点击一下即可执行脚本。
+dbops，之前中文名为数据库小应用，现在正式更名为 `JavaQL脚本小程序`，我们可以将一系列的脚本封装成一个小应用，程序会将这个小应用可视化为一个按钮，只需点击一下即可执行脚本。
 
-为什么叫数据库小应用？因为原本这款插件是为了将一系列SQL操作封装成小应用而设计的，而考虑到执行这一系列的SQL可能会用到参数的注入，变量的定义，绑定方法，那这一系列操作肯定会绕到脚本的执行上去，那自然就不仅限于SQL了，只要符合语法的脚本都是能够被执行的。
+为什么叫之前数据库小应用？因为原本这款插件是为了将一系列SQL操作封装成小应用而设计的，而考虑到执行这一系列的SQL可能会用到参数的注入，变量的定义，绑定方法，那这一系列操作肯定会绕到脚本的执行上去，自然就不仅限于SQL了，只要符合语法的脚本都是能够被执行的，这也是现在改名的原因。
 
 最新版下载地址：[wetool-plugin-dbops-1.5.0.jar](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.5.0.jar)
 
@@ -87,11 +87,20 @@ import cn.hutool.core.map.*;
 |fileSep|String|文件目录分隔符|
 |userHome|String|用户目录|
 
-### 事件订阅
+### 事件触发
 
-目前脚本支持两种触发方式：手动执行，以及事件订阅。[查看有哪些事件？](../../wetool-plugin-support/readme.md)，如果需要用到事件的消息作为参数，可能需要查看源代码，[查看目录](../../wetool-plugin-support/src/main/java/org/code4everything/wetool/plugin/support/event/message)。
+目前脚本支持触发方式：手动执行，定时任务，以及事件订阅。
+
+**定时任务**
+
+支持cron表达式，如：每10秒钟执行一次 `*/10 * * * * *` ，定时任务触发时会注入 `cron` 和 `date` 两个变量，cron即当前执行的表达式，date表示当前执行的时间。
+  
+**事件订阅**
+  
+如果需要用到事件的消息作为参数，可能需要查看源代码，[查看事件](../../wetool-plugin-support/readme.md)，[源码目录](../../wetool-plugin-support/src/main/java/org/code4everything/wetool/plugin/support/event/message)。
 
 事件发布的消息会随一个被定义为 `eventMessage` 的变量一起注入到脚本中，同时还会注入 `eventKey` `eventTime` 属性。
+
 
 ### 远程事件的推送与发布
 
@@ -245,6 +254,10 @@ FxUtils.multiDesktopOnWindows();
 ```
 
 ### 更新历史
+
+#### [v1.5.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.5.0.jar)
+
+- 支持CRON表达式
 
 #### [v1.5.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.5.0.jar)
 

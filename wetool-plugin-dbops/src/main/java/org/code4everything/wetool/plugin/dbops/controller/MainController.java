@@ -7,6 +7,8 @@ import cn.hutool.core.lang.Holder;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.cron.CronUtil;
+import cn.hutool.cron.task.Task;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
@@ -51,7 +53,7 @@ public class MainController implements BaseViewController {
 
     public static final String TAB_ID = "ease-db-ops";
 
-    public static final String TAB_NAME = "数据库小应用";
+    public static final String TAB_NAME = "JavaQL脚本小程序";
 
     private static final JSONObject SCRIPTS = new JSONObject(true);
 
@@ -100,8 +102,7 @@ public class MainController implements BaseViewController {
         }
         SCRIPTS.clear();
         String json = FileUtil.readUtf8String(scriptJsonFile);
-        JSONObject jsonObject = JSON.parseObject(StrUtil.blankToDefault(json, "{}"), Feature.OrderedField,
-                Feature.AllowComment);
+        JSONObject jsonObject = JSON.parseObject(StrUtil.blankToDefault(json, "{}"), Feature.OrderedField, Feature.AllowComment);
         SCRIPTS.putAll(jsonObject);
     }
 
@@ -123,7 +124,7 @@ public class MainController implements BaseViewController {
         EventHandler<ActionEvent> editHandler = actionEvent -> {
             Button button = (Button) actionEvent.getSource();
             String uuid = button.getParent().getId();
-            showQlScriptEditDialog(SCRIPTS.getObject(uuid, QlScript.class));
+            showQlScriptEditDialog(getScript(uuid));
         };
         EventHandler<ActionEvent> removeHandler = actionEvent -> {
             Button button = (Button) actionEvent.getSource();
@@ -135,11 +136,11 @@ public class MainController implements BaseViewController {
         EventHandler<ActionEvent> actionHandler = actionEvent -> {
             Button button = (Button) actionEvent.getSource();
             String uuid = button.getParent().getId();
-            execScript(SCRIPTS.getObject(uuid, QlScript.class));
+            execScript(getScript(uuid));
         };
 
         for (String uuid : SCRIPTS.keySet()) {
-            QlScript qlScript = SCRIPTS.getObject(uuid, QlScript.class);
+            QlScript qlScript = getScript(uuid);
             if (StrUtil.isNotBlank(search)) {
                 if (!qlScript.getName().contains(search) && !qlScript.getComment().contains(search)) {
                     continue;
@@ -164,10 +165,13 @@ public class MainController implements BaseViewController {
             remove.setOnAction(removeHandler);
             Label label = new Label();
 
-            String labelText = "触发机制：" + ScriptEditController.TYPE_2_TIP.get(qlScript.getType().name());
+            String labelText = "触发机制：" + qlScript.getType().getDesc();
             if (qlScript.getType() == ExecuteTypeEnum.EVENT) {
                 labelText += "，订阅事件：" + qlScript.getEventKey();
                 eventSubscribe(qlScript.getEventKey(), uuid);
+            } else if (qlScript.getType() == ExecuteTypeEnum.CRON) {
+                labelText += "，CRON表达式：" + qlScript.getEventKey();
+                addCron(qlScript.getUuid(), qlScript.getEventKey());
             }
             if (StrUtil.isNotBlank(qlScript.getSpecifyDbName())) {
                 labelText += "，指定数据源：" + qlScript.getSpecifyDbName();
@@ -267,12 +271,11 @@ public class MainController implements BaseViewController {
                     return;
                 }
                 set.forEach(e -> {
-                    QlScript qlScript = SCRIPTS.getObject(e, QlScript.class);
+                    QlScript qlScript = getScript(e);
                     if (Objects.isNull(qlScript) || qlScript.getType() != ExecuteTypeEnum.EVENT || !key.equals(qlScript.getEventKey())) {
                         return;
                     }
 
-                    String dbName = StrUtil.blankToDefault(qlScript.getSpecifyDbName(), dbNameBox.getValue());
                     Map<String, Object> args = new HashMap<>(4, 1);
                     args.put("eventKey", key);
                     args.put("eventTime", date);
@@ -281,28 +284,33 @@ public class MainController implements BaseViewController {
                         args.put("messageClass", eventMessage.getClass().getName());
                     }
 
-                    if (BooleanUtil.isTrue(qlScript.getExecInFx())) {
-                        Platform.runLater(() -> {
-                            try {
-                                ScriptExecutor.execute(dbName, qlScript.getCodes(), args);
-                            } catch (Exception x) {
-                                String errMsg = "execute event script error: {}";
-                                log.error(errMsg, ExceptionUtil.stacktraceToString(x, Integer.MAX_VALUE));
-                            }
-                        });
-                    } else {
-                        try {
-                            ScriptExecutor.execute(dbName, qlScript.getCodes(), args);
-                        } catch (Exception x) {
-                            String errMsg = "execute event script error: {}";
-                            log.error(errMsg, ExceptionUtil.stacktraceToString(x, Integer.MAX_VALUE));
-                        }
-                    }
+                    executeByEventCall(qlScript, args);
                 });
             });
         }
 
         scripts.add(uuid);
+    }
+
+    private void executeByEventCall(QlScript qlScript, Map<String, Object> args) {
+        String dbName = StrUtil.blankToDefault(qlScript.getSpecifyDbName(), dbNameBox.getValue());
+        if (BooleanUtil.isTrue(qlScript.getExecInFx())) {
+            Platform.runLater(() -> {
+                try {
+                    ScriptExecutor.execute(dbName, qlScript.getCodes(), args);
+                } catch (Exception x) {
+                    String errMsg = "execute event script error: {}";
+                    log.error(errMsg, ExceptionUtil.stacktraceToString(x, Integer.MAX_VALUE));
+                }
+            });
+        } else {
+            try {
+                ScriptExecutor.execute(dbName, qlScript.getCodes(), args);
+            } catch (Exception x) {
+                String errMsg = "execute event script error: {}";
+                log.error(errMsg, ExceptionUtil.stacktraceToString(x, Integer.MAX_VALUE));
+            }
+        }
     }
 
     public void searchIfEnter(KeyEvent keyEvent) {
@@ -317,6 +325,36 @@ public class MainController implements BaseViewController {
         } else {
             FxUtils.chooseFile(this::openFile);
         }
+    }
+
+    private void addCron(String uuid, String cron) {
+        if (StrUtil.isBlank(uuid) || StrUtil.isBlank(cron)) {
+            return;
+        }
+
+        CronUtil.remove(uuid);
+        CronUtil.schedule(uuid, cron, new Task() {
+
+            private final String innerUuid = uuid;
+
+            @Override
+            public void execute() {
+                QlScript qlScript = getScript(innerUuid);
+                if (Objects.isNull(qlScript) || qlScript.getType() != ExecuteTypeEnum.CRON) {
+                    CronUtil.remove(uuid);
+                    return;
+                }
+                executeByEventCall(qlScript, Map.of("cron", qlScript.getEventKey(), "date", new Date()));
+            }
+        });
+
+        if (!CronUtil.getScheduler().isStarted()) {
+            CronUtil.start();
+        }
+    }
+
+    private QlScript getScript(String uuid) {
+        return SCRIPTS.getObject(uuid, QlScript.class);
     }
 
     private boolean importQl(String str) {

@@ -36,7 +36,7 @@ public class QlScript {
     private ExecuteTypeEnum type;
 
     /**
-     * 如果是由事件触发，此字段必填
+     * 如果是由事件触发和CRON表达式，此字段必填
      */
     private String eventKey;
 

@@ -17,18 +17,15 @@ import org.code4everything.wetool.plugin.support.event.EventCenter;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
-import java.util.Map;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author pantao
  * @since 2020/11/11
  */
 public class ScriptEditController {
-
-    public static final Map<String, String> TYPE_2_TIP = Map.of("HANDY", "手动触发", "EVENT", "事件触发");
-
-    private static final Map<String, String> TIP_2_TYPE = Map.of("手动触发", "HANDY", "事件触发", "EVENT");
 
     @FXML
     public TextField nameText;
@@ -58,8 +55,8 @@ public class ScriptEditController {
 
     @FXML
     private void initialize() {
-        typeBox.getItems().addAll(TIP_2_TYPE.keySet());
-        typeBox.getSelectionModel().selectLast();
+        typeBox.getItems().addAll(Arrays.stream(ExecuteTypeEnum.values()).map(ExecuteTypeEnum::getDesc).collect(Collectors.toList()));
+        typeBox.getSelectionModel().selectFirst();
 
         dbNameBox.getItems().add("");
         dbNameBox.getItems().addAll(DruidSource.listAllNames());
@@ -75,7 +72,7 @@ public class ScriptEditController {
 
         qlScript.setName(nameText.getText());
         qlScript.setComment(commentText.getText());
-        qlScript.setType(ExecuteTypeEnum.valueOf(TIP_2_TYPE.get(typeBox.getValue())));
+        qlScript.setType(ExecuteTypeEnum.parseByDesc(typeBox.getValue()));
         qlScript.setEventKey(eventKeyBox.getValue());
         qlScript.setSpecifyDbName(dbNameBox.getValue());
         qlScript.setCodes(qlScriptText.getText());
@@ -91,7 +88,7 @@ public class ScriptEditController {
         }
 
         this.qlScript = qlScript;
-        typeBox.getSelectionModel().select(TYPE_2_TIP.get(qlScript.getType().name()));
+        typeBox.getSelectionModel().select(qlScript.getType().getDesc());
         dbNameBox.getSelectionModel().select(qlScript.getSpecifyDbName());
 
         nameText.setText(qlScript.getName());

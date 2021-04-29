@@ -15,4 +15,5 @@ module org.code4everything.wetool.plugin.test {
     requires jnativehook;
     requires hutool.extra;
     requires io.netty.codec.http;
+    requires hutool.cron;
 }

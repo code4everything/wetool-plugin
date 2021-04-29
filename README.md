@@ -10,7 +10,7 @@
 - [简易FTP服务器](wetool-plugin-repository/ease-ftp-server/readme.md)
 - [开发工具](wetool-plugin-repository/ease-devtool/readme.md)
 - [Everywhere文件检索工具](wetool-plugin-repository/ease-everywhere/readme.md)
-- [数据库小应用](wetool-plugin-repository/ease-dbops/readme.md)
+- [JavaQL脚本小程序](wetool-plugin-repository/ease-dbops/readme.md)
 
 ### 本仓库说明
 

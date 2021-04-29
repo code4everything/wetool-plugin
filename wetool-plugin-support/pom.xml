@@ -216,6 +216,11 @@
             <artifactId>hutool-extra</artifactId>
             <version>${hutool.version}</version>
         </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-cron</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
         <!--系统工具-->
         <dependency>
             <groupId>cn.hutool</groupId>
