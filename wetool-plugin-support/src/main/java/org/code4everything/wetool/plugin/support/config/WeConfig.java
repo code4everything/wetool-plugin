@@ -41,7 +41,7 @@ public class WeConfig implements BaseBean, Serializable {
 
     private String currentPath;
 
-    private boolean debug = false;
+    private boolean debug = BootConfig.isDebug();
 
     // start------------------------------------------------------------------------------------------------------------
 
