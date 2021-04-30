@@ -69,6 +69,13 @@ public class ScriptExecutor {
             return null;
         }
 
+        if (codes.length() < 500 && codes.startsWith("file:")) {
+            File file = FileUtil.file(StrUtil.removeSuffix(codes.substring(5), ";").trim());
+            if (FileUtil.exist(file)) {
+                return execute(dbName, FileUtil.readUtf8String(file), args);
+            }
+        }
+
         DefaultContext<String, Object> context = new DefaultContext<>();
         context.putAll(GLOBAL_VARS);
         if (MapUtil.isNotEmpty(args)) {
@@ -284,8 +291,7 @@ public class ScriptExecutor {
 
     @SneakyThrows
     public static List<File> chooseMultiFile() {
-        FutureTask<List<File>> task =
-                new FutureTask<>(() -> FxUtils.getFileChooser().showOpenMultipleDialog(FxUtils.getStage()));
+        FutureTask<List<File>> task = new FutureTask<>(() -> FxUtils.getFileChooser().showOpenMultipleDialog(FxUtils.getStage()));
         FxDialogs.execFxFutureTask(task);
         List<File> files = task.get();
         FxUtils.handleFileListCallable(files, null);
@@ -415,8 +421,7 @@ public class ScriptExecutor {
                     @SneakyThrows
                     public ObservableValue<String> call(TableColumn.CellDataFeatures<Map<String, Object>, String> param) {
                         Object value = param.getValue().get(k);
-                        return new SimpleObjectProperty<>(Objects.isNull(value) ? StrUtil.EMPTY :
-                                ObjectUtil.toString(value));
+                        return new SimpleObjectProperty<>(Objects.isNull(value) ? StrUtil.EMPTY : ObjectUtil.toString(value));
                     }
                 });
                 tableView.getColumns().add(tableColumn);
