@@ -1,10 +1,7 @@
 package org.code4everything.wetool.plugin.test;
 
-import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.system.SystemUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -14,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.config.BootConfig;
 import org.code4everything.wetool.WeApplication;
 import org.code4everything.wetool.plugin.PluginLoader;
-import org.code4everything.wetool.plugin.support.WePluginSupporter;
 import org.code4everything.wetool.plugin.support.config.WeConfig;
 import org.code4everything.wetool.plugin.support.config.WeInitialize;
 import org.code4everything.wetool.plugin.support.config.WePluginInfo;
@@ -34,8 +30,6 @@ import java.util.Objects;
 @Slf4j
 public class WetoolTester extends WeApplication {
 
-    private static WePluginSupporter supporter;
-
     private static WePluginInfo info;
 
     private static WeConfig weConfig;
@@ -54,30 +48,15 @@ public class WetoolTester extends WeApplication {
     }
 
     public static void runTest(WePluginInfo info, WeConfig config, String[] args) {
-        // 加载插件支持类
         BootConfig.setDebug(true);
         HttpService.setDefaultPort(58189);
-        Class<WePluginSupporter> clazz = ClassUtil.loadClass(info.getSupportedClass());
-        try {
-            supporter = ReflectUtil.newInstance(clazz);
-        } catch (Exception e) {
-            log.error(ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
-            return;
-        }
+
         // 启动WeTool
         log.info("starting wetool on os: {}", SystemUtil.getOsInfo().getName());
         WetoolTester.info = info;
         BeanFactory.register(config);
         WeApplication.initApp();
         launch(args);
-    }
-
-    public static void setConfig(String jsonPath) {
-        setConfig(JSON.parseObject(FileUtil.readUtf8String(jsonPath), WeConfig.class, Feature.OrderedField));
-    }
-
-    public static void setConfig(WeConfig weConfig) {
-        WetoolTester.weConfig = weConfig;
     }
 
     public static WeConfig getConfig() {
@@ -109,11 +88,18 @@ public class WetoolTester extends WeApplication {
         return weConfig;
     }
 
+    public static void setConfig(String jsonPath) {
+        setConfig(JSON.parseObject(FileUtil.readUtf8String(jsonPath), WeConfig.class, Feature.OrderedField));
+    }
+
+    public static void setConfig(WeConfig weConfig) {
+        WetoolTester.weConfig = weConfig;
+    }
+
     @Override
     public void start(Stage stage) {
         super.start(stage);
         Objects.requireNonNull(info);
-        Objects.requireNonNull(supporter);
-        WeUtils.execute(() -> PluginLoader.registerPlugin(info, supporter));
+        WeUtils.execute(() -> PluginLoader.loadPluginForTest(info));
     }
 }
