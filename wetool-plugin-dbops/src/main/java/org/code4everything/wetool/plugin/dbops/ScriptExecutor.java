@@ -72,7 +72,13 @@ public class ScriptExecutor {
         if (codes.length() < 500 && codes.startsWith("file:")) {
             File file = FileUtil.file(StrUtil.removeSuffix(codes.substring(5), ";").trim());
             if (FileUtil.exist(file)) {
-                return execute(dbName, FileUtil.readUtf8String(file), args);
+                String fileContent = FileUtil.readUtf8String(file);
+                if (codes.equals(fileContent)) {
+                    // 处理循环引用
+                    FxDialogs.showError("非法调用");
+                    return null;
+                }
+                return execute(dbName, fileContent, args);
             }
         }
 

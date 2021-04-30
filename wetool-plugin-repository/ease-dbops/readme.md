@@ -124,6 +124,10 @@ EventCenter.publishEventFromRemote(body);
 pushThisEvent2Remote("http://192.168.1.130:8189/api/event/remote");
 ```
 
+### 引用脚本文件
+
+支持引用QL脚本文件，在脚本内容框直接填入使用QL语法编写的脚本文件全路径即可，格式如：`file:/home/user/java/script/test.txt`，`file:c:\project\test.ql`。
+
 ### 例子1：存储剪贴板历史并添加查询按钮
 
 首先，我们需要创建用于存储剪贴板内容的数据表
@@ -258,6 +262,7 @@ FxUtils.multiDesktopOnWindows();
 #### [v1.5.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.5.0.jar)
 
 - 支持CRON表达式
+- 支持引用脚本文件
 
 #### [v1.5.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.5.0.jar)
 
