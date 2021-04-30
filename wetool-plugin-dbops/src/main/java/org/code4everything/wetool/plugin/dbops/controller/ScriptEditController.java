@@ -100,7 +100,7 @@ public class ScriptEditController {
     }
 
     public void testScript() {
-        String text = qlScriptText.getText();
+        String text = ScriptExecutor.handleScriptCode(qlScriptText.getText());
         try {
             ScriptExecutor.getExpressRunner("").parseInstructionSet(text);
         } catch (Exception e) {

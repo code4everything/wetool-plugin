@@ -124,9 +124,9 @@ EventCenter.publishEventFromRemote(body);
 pushThisEvent2Remote("http://192.168.1.130:8189/api/event/remote");
 ```
 
-### 引用脚本文件
+### 脚本引用
 
-支持引用QL脚本文件，在脚本内容框直接填入使用QL语法编写的脚本文件全路径即可，格式如：`file:/home/user/java/script/test.txt`，`file:c:\project\test.ql`。
+支持引用QL脚本文件和HTTP内容，在脚本内容框直接填入使用QL语法编写的脚本文件或HTTP全路径即可，格式如：`http://share.qiniu.easepan.xyz/text/script/dbops_hello.ql` ，`file:/home/user/java/script/test.txt`，`file:c:\project\test.ql`。
 
 ### 例子1：存储剪贴板历史并添加查询按钮
 

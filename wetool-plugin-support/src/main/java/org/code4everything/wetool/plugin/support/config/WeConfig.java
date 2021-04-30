@@ -93,8 +93,7 @@ public class WeConfig implements BaseBean, Serializable {
     /**
      * windows虚拟桌面触发角
      */
-    private MouseCornerEventMessage.LocationTypeEnum winVirtualDesktopHotCorner =
-            MouseCornerEventMessage.LocationTypeEnum.NONE;
+    private MouseCornerEventMessage.LocationTypeEnum winVirtualDesktopHotCorner = MouseCornerEventMessage.LocationTypeEnum.NONE;
 
     /**
      * 自定义重启脚本文件名，只能位于WeTool工作目录
@@ -146,6 +145,11 @@ public class WeConfig implements BaseBean, Serializable {
         }
         filterPattern = null;
         BootConfig.setDebug(debug);
+    }
+
+    public void setDebug(boolean debug) {
+        BootConfig.setDebug(debug);
+        this.debug = debug;
     }
 
     /**

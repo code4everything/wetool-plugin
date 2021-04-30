@@ -1,9 +1,11 @@
 package org.code4everything.wetool.plugin.dbops;
 
+import cn.hutool.cache.Cache;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
@@ -27,7 +29,9 @@ import javafx.stage.DirectoryChooser;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.code4everything.boot.config.BootConfig;
 import org.code4everything.wetool.plugin.dbops.controller.MainController;
+import org.code4everything.wetool.plugin.support.cache.WeTimedCache;
 import org.code4everything.wetool.plugin.support.constant.AppConsts;
 import org.code4everything.wetool.plugin.support.control.cell.UnmodifiableTextFieldTableCell;
 import org.code4everything.wetool.plugin.support.druid.JdbcExecutor;
@@ -43,6 +47,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -63,25 +68,16 @@ public class ScriptExecutor {
 
     private static final ThreadLocal<DefaultContext<String, Object>> CONTEXT_THREAD_LOCAL = new ThreadLocal<>();
 
+    private static Cache<String, String> CODE_CACHE = new WeTimedCache<>(24_60_60_000);
+
     @SneakyThrows
+
     public static Object execute(String dbName, String codes, Map<String, Object> args) {
         if (StrUtil.isBlank(codes)) {
             return null;
         }
 
-        if (codes.length() < 500 && codes.startsWith("file:")) {
-            File file = FileUtil.file(StrUtil.removeSuffix(codes.substring(5), ";").trim());
-            if (FileUtil.exist(file)) {
-                String fileContent = FileUtil.readUtf8String(file);
-                if (codes.equals(fileContent)) {
-                    // 处理循环引用
-                    FxDialogs.showError("非法调用");
-                    return null;
-                }
-                return execute(dbName, fileContent, args);
-            }
-        }
-
+        codes = handleScriptCode(codes);
         DefaultContext<String, Object> context = new DefaultContext<>();
         context.putAll(GLOBAL_VARS);
         if (MapUtil.isNotEmpty(args)) {
@@ -104,6 +100,45 @@ public class ScriptExecutor {
             TEMP_VARS.remove();
             CONTEXT_THREAD_LOCAL.remove();
         }
+    }
+
+    public static String handleScriptCode(String codes) {
+        if (codes.length() > 500) {
+            return codes;
+        }
+
+        if (codes.startsWith("file:")) {
+            File file = FileUtil.file(StrUtil.removeSuffix(codes.substring(5), ";"));
+            if (FileUtil.exist(file)) {
+                return getCodeFromResource(BootConfig.isDebug(), file.getAbsolutePath(), s -> FileUtil.readUtf8String(file));
+            }
+        } else if (codes.startsWith("http:") || codes.startsWith("https:")) {
+            String url = StrUtil.removeSuffix(codes, ";");
+            return getCodeFromResource(BootConfig.isDebug(), url, s -> {
+                try {
+                    return HttpUtil.get(s);
+                } catch (Exception e) {
+                    log.error("get script error: {}", ExceptionUtil.stacktraceToString(e));
+                    return "";
+                }
+            });
+        }
+
+        return codes;
+    }
+
+    private static String getCodeFromResource(boolean forceGet, String resourceName, Function<String, String> resourceSupplier) {
+        if (forceGet) {
+            String codes = resourceSupplier.apply(resourceName);
+            CODE_CACHE.put(resourceName, codes);
+            return codes;
+        }
+
+        String codes = CODE_CACHE.get(resourceName);
+        if (Objects.nonNull(codes)) {
+            return codes;
+        }
+        return getCodeFromResource(true, resourceName, resourceSupplier);
     }
 
     public static ExpressRunner getExpressRunner(String dbName) {
