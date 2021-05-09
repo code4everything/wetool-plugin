@@ -32,6 +32,7 @@ import org.code4everything.wetool.plugin.support.event.handler.BaseKeyboardEvent
 import org.code4everything.wetool.plugin.support.event.handler.BaseNoMessageEventHandler;
 import org.code4everything.wetool.plugin.support.event.message.KeyboardListenerEventMessage;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
+import org.code4everything.wetool.plugin.support.func.FunctionCenter;
 import org.jnativehook.keyboard.NativeKeyEvent;
 
 import java.awt.*;
@@ -71,7 +72,7 @@ public class FxUtils {
 
     private static Method unregisterActionMethod;
 
-    private static  Robot robot;
+    private static Robot robot;
 
     static {
         try {
@@ -123,6 +124,15 @@ public class FxUtils {
             return;
         }
         ReflectUtil.invokeStatic(searchActionMethod, name, eventHandler);
+    }
+
+    /**
+     * 执行搜索框命令
+     *
+     * @since 1.6.0
+     */
+    public static void executeAction(String action) {
+        FunctionCenter.callFunc("execute-wetool-action", List.of(action));
     }
 
     /**

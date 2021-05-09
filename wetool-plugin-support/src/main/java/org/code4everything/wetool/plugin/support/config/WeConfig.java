@@ -93,7 +93,8 @@ public class WeConfig implements BaseBean, Serializable {
     /**
      * windows虚拟桌面触发角
      */
-    private MouseCornerEventMessage.LocationTypeEnum winVirtualDesktopHotCorner = MouseCornerEventMessage.LocationTypeEnum.NONE;
+    private MouseCornerEventMessage.LocationTypeEnum winVirtualDesktopHotCorner =
+            MouseCornerEventMessage.LocationTypeEnum.NONE;
 
     /**
      * 自定义重启脚本文件名，只能位于WeTool工作目录
@@ -121,6 +122,16 @@ public class WeConfig implements BaseBean, Serializable {
      * 自动移除未加载的插件
      */
     private Boolean autoRemoveUnloadedPlugin = true;
+
+    /**
+     * 网页工具列表
+     */
+    private LinkedHashMap<String, String> webTools = new LinkedHashMap<>();
+
+    /**
+     * 代理，格式：127.0.0.1:7889
+     */
+    private String proxy = "";
 
     // end--------------------------------------------------------------------------------------------------------------
 
