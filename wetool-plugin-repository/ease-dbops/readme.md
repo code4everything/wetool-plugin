@@ -6,6 +6,8 @@ dbops，之前中文名为数据库小应用，现在正式更名为 `JavaQL脚�
 
 最新版下载地址：[wetool-plugin-dbops-1.5.0.jar](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.5.0.jar)
 
+在wetool搜索框中查看全局变量：`dbops global name`。
+
 > 如需配置数据库，[请点击此处查看](https://gitee.com/code4everything/wetool) 。本插件使用的脚本解析库 [QLExpress](https://github.com/alibaba/QLExpress), 语法基本和java一致，几乎没有学习成本，了解语法点击链接即可。
 
 ### 运行截图
@@ -263,6 +265,7 @@ FxUtils.multiDesktopOnWindows();
 
 - 支持CRON表达式
 - 支持引用脚本文件
+- 新增内置方法
 
 #### [v1.5.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.5.0.jar)
 

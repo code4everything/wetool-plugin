@@ -28,6 +28,8 @@
 |FTP服务器|EASE|[文档](ease-ftp-server/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-ftpserver-1.5.0.jar)|
 |七牛对象存储管理|EASE|[文档](ease-qiniu/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-qiniu-1.5.0.jar)|
 |JavaQL脚本小程序|EASE|[文档](ease-dbops/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.5.0.jar)|
+|倒计时|EASE|[文档](https://gitee.com/easepan/countdown-wetool-plugin)|暂无（需自行打包）|
+|命令助记器|EASE|[文档](https://gitee.com/easepan/cmdassist-wetool-plugin)|暂无（需自行打包）|
 
 ### 第三方工具封装
 
