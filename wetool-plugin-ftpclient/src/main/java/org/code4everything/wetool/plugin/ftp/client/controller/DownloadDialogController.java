@@ -6,6 +6,7 @@ import javafx.scene.input.DragEvent;
 import org.code4everything.wetool.plugin.ftp.client.FtpManager;
 import org.code4everything.wetool.plugin.ftp.client.constant.FtpConsts;
 import org.code4everything.wetool.plugin.ftp.client.model.LastUsedInfo;
+import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
@@ -39,14 +40,12 @@ public class DownloadDialogController extends AbstractDialogController {
 
     public void download() {
         if (FtpManager.isFtpNotSelected(ftpName)) {
-            FxDialogs.showError(FtpConsts.SELECT_FTP);
-            return;
+            throw ToDialogException.ofError(FtpConsts.SELECT_FTP);
         }
         downloadButton.setDisable(true);
         if (!FtpManager.getFtp(ftpName).exist(remotePath.getValue())) {
-            FxDialogs.showError(FtpConsts.FILE_NOT_EXISTS);
             downloadButton.setDisable(false);
-            return;
+            throw ToDialogException.ofError(FtpConsts.FILE_NOT_EXISTS);
         }
         downloadButton.setText("下载中。。。");
         FtpManager.download(ftpName, remotePath.getValue(), new File(localPath.getText()));

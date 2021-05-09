@@ -12,6 +12,7 @@ import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.UserManager;
 import org.apache.ftpserver.listener.ListenerFactory;
 import org.code4everything.wetool.plugin.ftp.server.config.FtpServerConfig;
+import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 
@@ -35,8 +36,7 @@ class FtpServerManager {
                 // 读取配置
                 FtpServerConfig config = loadConfig();
                 if (Objects.isNull(config) || CollUtil.isEmpty(config.getUsers())) {
-                    FxDialogs.showError("FTP启动失败：请完善配置文件！");
-                    return;
+                    throw ToDialogException.ofError("FTP启动失败：请完善配置文件！");
                 }
 
                 // 创建FTP

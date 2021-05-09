@@ -34,6 +34,7 @@ import org.code4everything.wetool.plugin.dbops.script.QlScript;
 import org.code4everything.wetool.plugin.support.BaseViewController;
 import org.code4everything.wetool.plugin.support.druid.DruidSource;
 import org.code4everything.wetool.plugin.support.event.EventCenter;
+import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.DialogWinnable;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
@@ -226,13 +227,12 @@ public class MainController implements BaseViewController {
         fxmlLoader.setClassLoader(WetoolSupporter.class.getClassLoader());
         fxmlLoader.setLocation(MainController.class.getResource("/ease/dbops/ScriptEditView.fxml"));
 
-        Node node;
+        Node node = null;
         try {
             node = fxmlLoader.load();
         } catch (IOException e) {
             log.error(ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
-            FxDialogs.showError("加载视图发生异常");
-            return;
+            throw ToDialogException.ofError("加载视图发生异常");
         }
 
         ScriptEditController controller = fxmlLoader.getController();

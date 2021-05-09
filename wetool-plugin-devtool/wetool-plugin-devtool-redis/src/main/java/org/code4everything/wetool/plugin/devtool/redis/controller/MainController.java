@@ -23,10 +23,12 @@ import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
 import org.code4everything.wetool.plugin.devtool.redis.model.RedisKeyValue;
 import org.code4everything.wetool.plugin.devtool.redis.util.RedisTabUtils;
 import org.code4everything.wetool.plugin.support.BaseViewController;
+import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.DialogWinnable;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -192,13 +194,11 @@ public class MainController implements BaseViewController {
         }
         String curr = currentServerDb.getText();
         if (!serverDbPattern.matcher(curr).matches()) {
-            FxDialogs.showError("输入格式不正确！");
-            return;
+            throw ToDialogException.ofError("输入格式不正确");
         }
         int idx = curr.lastIndexOf(':');
         if (!JedisUtils.containsServer(curr.substring(0, idx))) {
-            FxDialogs.showError("找不到对应的连接信息，请前往配置文件添加！");
-            return;
+            throw ToDialogException.ofError("找不到对应的连接信息，请前往配置文件添加！");
         }
         openTab();
     }

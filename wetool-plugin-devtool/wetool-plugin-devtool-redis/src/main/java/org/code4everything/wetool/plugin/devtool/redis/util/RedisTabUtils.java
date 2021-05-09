@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.function.VoidFunction;
 import org.code4everything.wetool.plugin.devtool.redis.controller.MainController;
 import org.code4everything.wetool.plugin.devtool.redis.controller.ValueController;
+import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
+import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -59,8 +61,7 @@ public class RedisTabUtils {
             fxmlLoader.load();
         } catch (IOException e) {
             log.error(ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
-            FxDialogs.showError(errMsg);
-            return;
+            throw ToDialogException.ofError(errMsg);
         }
         ValueController controller = fxmlLoader.getController();
         consumer.accept(controller);

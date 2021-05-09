@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import org.code4everything.wetool.plugin.devtool.utilities.constant.CommonConsts;
 import org.code4everything.wetool.plugin.support.BaseViewController;
+import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
@@ -103,8 +104,7 @@ public class MainController implements BaseViewController {
         try {
             dateTime = DateUtil.parseDateTime(dateTimeField.getText());
         } catch (Exception e) {
-            FxDialogs.showError("解析日期格式错误，请输入标准日期格式！");
-            return;
+            throw ToDialogException.ofError("解析日期格式错误，请输入标准日期格式！");
         }
         timestampField.setText(String.valueOf(dateTime.getTime()));
     }

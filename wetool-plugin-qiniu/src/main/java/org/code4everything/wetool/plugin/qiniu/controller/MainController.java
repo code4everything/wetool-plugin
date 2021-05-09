@@ -35,6 +35,7 @@ import org.code4everything.wetool.plugin.qiniu.util.ConfigUtils;
 import org.code4everything.wetool.plugin.qiniu.util.DialogUtils;
 import org.code4everything.wetool.plugin.qiniu.util.QiniuDialog;
 import org.code4everything.wetool.plugin.qiniu.util.QiniuUtils;
+import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
@@ -596,8 +597,7 @@ public class MainController extends BaseQiniuController {
     public void uploadFile() {
         if (StrUtil.isEmpty(zoneTF.getText()) || StrUtil.isEmpty(selectedFileTA.getText())) {
             // 没有选择存储空间或文件，不能上传文件
-            DialogUtils.showWarning(QiniuConsts.NEED_CHOOSE_BUCKET_OR_FILE);
-            return;
+            throw ToDialogException.ofWarn(QiniuConsts.NEED_CHOOSE_BUCKET_OR_FILE);
         }
         // 新建一个线程上传文件的线程
         WeUtils.execute(() -> {

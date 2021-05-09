@@ -7,7 +7,7 @@ import javafx.scene.input.DragEvent;
 import org.code4everything.wetool.plugin.ftp.client.FtpManager;
 import org.code4everything.wetool.plugin.ftp.client.constant.FtpConsts;
 import org.code4everything.wetool.plugin.ftp.client.model.LastUsedInfo;
-import org.code4everything.wetool.plugin.support.util.FxDialogs;
+import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
 import java.io.File;
@@ -34,13 +34,11 @@ public class UploadDialogController extends AbstractDialogController {
 
     public void upload() {
         if (FtpManager.isFtpNotSelected(ftpName)) {
-            FxDialogs.showError(FtpConsts.SELECT_FTP);
-            return;
+            throw ToDialogException.ofError(FtpConsts.SELECT_FTP);
         }
         File file = new File(StrUtil.nullToEmpty(localPath.getText()));
         if (!file.exists()) {
-            FxDialogs.showError(FtpConsts.FILE_NOT_EXISTS);
-            return;
+            throw ToDialogException.ofError(FtpConsts.FILE_NOT_EXISTS);
         }
         uploadButton.setDisable(true);
         uploadButton.setText("上传中。。。");

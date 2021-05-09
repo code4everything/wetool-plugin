@@ -12,6 +12,7 @@ import org.code4everything.wetool.plugin.ftp.client.FtpManager;
 import org.code4everything.wetool.plugin.ftp.client.constant.FtpConsts;
 import org.code4everything.wetool.plugin.ftp.client.model.LastUsedInfo;
 import org.code4everything.wetool.plugin.support.BaseViewController;
+import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 
@@ -62,8 +63,7 @@ public abstract class AbstractDialogController implements BaseViewController {
     public void listChildren(KeyEvent keyEvent) {
         FxUtils.enterDo(keyEvent, () -> {
             if (FtpManager.isFtpNotSelected(ftpName)) {
-                FxDialogs.showError(FtpConsts.SELECT_FTP);
-                return;
+                throw ToDialogException.ofError(FtpConsts.SELECT_FTP);
             }
             endCaretPosition();
             String path = StrUtil.emptyToDefault(remotePath.getValue(), StringConsts.Sign.SLASH);

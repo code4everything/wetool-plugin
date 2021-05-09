@@ -13,6 +13,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.support.constant.AppConsts;
 import org.code4everything.wetool.plugin.support.control.EditableChoiceDialog;
+import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -29,10 +30,18 @@ import java.util.function.Consumer;
 public class FxDialogs {
 
     /**
+     * @since 1.6.0
+     */
+    public static void showDialog(ToDialogException toDialogException) {
+        showAlert(toDialogException.getTitle(), toDialogException.getMsg(), toDialogException.getType());
+    }
+
+    /**
      * 弹出文本框
      *
      * @param header 标题
-     * @param text   内容
+     * @param text 内容
+     *
      * @since 1.5.0
      */
     public static void showTextAreaDialog(String header, String text) {
@@ -46,7 +55,7 @@ public class FxDialogs {
     /**
      * 弹出对话框
      *
-     * @param header     头部，可为Null
+     * @param header 头部，可为Null
      * @param dialogPane 对话框的视图内容
      */
     public static void showDialog(String header, Node dialogPane) {
@@ -56,10 +65,10 @@ public class FxDialogs {
     /**
      * 弹出对话框
      *
-     * @param header     头部，可为Null
+     * @param header 头部，可为Null
      * @param dialogPane 对话框的视图内容
-     * @param winnable   对话框的结果处理回调，可为Null
-     * @param <R>        结果类型
+     * @param winnable 对话框的结果处理回调，可为Null
+     * @param <R> 结果类型
      */
     public static <R> void showDialog(String header, Node dialogPane, DialogWinnable<R> winnable) {
         showDialog(header, dialogPane, winnable, null);
@@ -68,11 +77,11 @@ public class FxDialogs {
     /**
      * 弹出对话框
      *
-     * @param header     头部，可为Null
+     * @param header 头部，可为Null
      * @param dialogPane 对话框的视图内容
-     * @param winnable   对话框的结果处理回调，可为Null
-     * @param defaultR   默认结果，可为Null
-     * @param <R>        结果类型
+     * @param winnable 对话框的结果处理回调，可为Null
+     * @param defaultR 默认结果，可为Null
+     * @param <R> 结果类型
      */
     public static <R> void showDialog(String header, Node dialogPane, DialogWinnable<R> winnable, R defaultR) {
         execFxFutureTask(() -> {
@@ -103,9 +112,9 @@ public class FxDialogs {
     /**
      * 弹出Choice选择框
      *
-     * @param header  头部，可为Null
+     * @param header 头部，可为Null
      * @param content 提示内容，可为Null
-     * @param items   Choice可有的选项
+     * @param items Choice可有的选项
      */
     public static void showChoice(String header, String content, Consumer<String> consumer, Collection<String> items) {
         execFxFutureTask(() -> {
@@ -152,8 +161,8 @@ public class FxDialogs {
     /**
      * 弹出文本输入框
      *
-     * @param header   头部，可为Null
-     * @param content  提示内容，可为Null
+     * @param header 头部，可为Null
+     * @param content 提示内容，可为Null
      * @param consumer 处理结果的回调
      */
     public static void showTextInput(String header, String content, Consumer<String> consumer) {
@@ -169,7 +178,7 @@ public class FxDialogs {
     /**
      * 弹出文本输入框
      *
-     * @param header  头部，可为Null
+     * @param header 头部，可为Null
      * @param content 提示内容，可为Null
      */
     public static Future<String> showTextInput(String header, String content) {

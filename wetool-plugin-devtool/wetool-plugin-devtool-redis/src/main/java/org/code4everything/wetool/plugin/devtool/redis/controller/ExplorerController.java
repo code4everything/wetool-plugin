@@ -25,6 +25,7 @@ import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisVO;
 import org.code4everything.wetool.plugin.devtool.redis.model.RedisKeyValue;
 import org.code4everything.wetool.plugin.devtool.redis.util.RedisTabUtils;
+import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import redis.clients.jedis.GeoRadiusResponse;
 import redis.clients.jedis.GeoUnit;
@@ -212,8 +213,7 @@ public class ExplorerController implements Comparator<JedisVO> {
             list = list.stream().filter(jedisVO -> "zset".equals(jedisVO.getType())).collect(Collectors.toList());
         }
         if (CollUtil.isEmpty(list)) {
-            FxDialogs.showInformation("GEO", "非法的数据结构");
-            return;
+            throw ToDialogException.ofInfo("非法的数据结构").setTitle("GEO");
         }
 
         JedisVO jedisVO = list.get(0);

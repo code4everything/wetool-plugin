@@ -18,6 +18,7 @@ import org.code4everything.boot.config.BootConfig;
 import org.code4everything.wetool.plugin.support.config.WeConfig;
 import org.code4everything.wetool.plugin.support.druid.DruidSource;
 import org.code4everything.wetool.plugin.support.event.EventCenter;
+import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
 import java.io.File;
@@ -47,8 +48,14 @@ public class WeUtils {
 
         private final AtomicInteger threadNumber = new AtomicInteger(1);
 
-        private final Thread.UncaughtExceptionHandler exceptionHandler =
-                (t, e) -> log.error(ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
+        private final Thread.UncaughtExceptionHandler exceptionHandler = (t, e) -> {
+            ToDialogException dialogCaused = getDialogCaused(e);
+            if (Objects.isNull(dialogCaused)) {
+                log.error(ExceptionUtil.stacktraceToString(e), Integer.MAX_VALUE);
+            } else {
+                FxDialogs.showDialog(dialogCaused);
+            }
+        };
 
         @Override
         public Thread newThread(Runnable r) {
@@ -63,6 +70,24 @@ public class WeUtils {
             TimeUnit.SECONDS, new LinkedBlockingQueue<>(512), THREAD_FACTORY);
 
     private static int compressLen = 0;
+
+    public static ToDialogException getDialogCaused(Throwable ex) {
+        return getDialogCaused(ex, 0);
+    }
+
+    private static ToDialogException getDialogCaused(Throwable ex, int recursionCount) {
+        if (recursionCount > IntegerConsts.SIXTEEN) {
+            // 避免堆栈过深
+            return null;
+        }
+        if (Objects.isNull(ex)) {
+            return null;
+        }
+        if (ex instanceof ToDialogException) {
+            return (ToDialogException) ex;
+        }
+        return getDialogCaused(ex.getCause(), recursionCount + 1);
+    }
 
     /**
      * 获取当前进程id

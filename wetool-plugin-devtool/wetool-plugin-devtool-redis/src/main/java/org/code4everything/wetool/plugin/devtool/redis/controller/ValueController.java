@@ -15,6 +15,7 @@ import lombok.Setter;
 import org.code4everything.wetool.plugin.devtool.redis.constant.CommonConsts;
 import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
 import org.code4everything.wetool.plugin.devtool.redis.model.RedisKeyValue;
+import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
 import redis.clients.jedis.Jedis;
@@ -120,8 +121,7 @@ public class ValueController {
 
     public void format2Json() {
         if (typeStringRadio.isSelected()) {
-            FxDialogs.showInformation("该类型无法转换为JSON！", null);
-            return;
+            throw ToDialogException.ofInfo("该类型无法转换为JSON！");
         }
         // 分割所有参数
         List<String> list = StrUtil.splitTrim(jsonFormatText.getText(), '\n');
@@ -173,13 +173,11 @@ public class ValueController {
 
     public void update(boolean successTip) {
         if (StrUtil.isEmpty(keyText.getText())) {
-            FxDialogs.showInformation("Key不能为空！", null);
-            return;
+            throw ToDialogException.ofInfo("Key不能为空！");
         }
 
         if (StrUtil.isEmpty(valueText.getText())) {
-            FxDialogs.showInformation("Value不能为空！", null);
-            return;
+            throw ToDialogException.ofInfo("Value不能为空！");
         }
 
         int expire = -1;
