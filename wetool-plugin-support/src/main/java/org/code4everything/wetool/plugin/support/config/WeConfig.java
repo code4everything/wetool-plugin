@@ -13,7 +13,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.parser.Feature;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Generated;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.bean.BaseBean;
 import org.code4everything.boot.config.BootConfig;
@@ -23,7 +27,14 @@ import org.code4everything.wetool.plugin.support.util.Callable;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -93,8 +104,7 @@ public class WeConfig implements BaseBean, Serializable {
     /**
      * windows虚拟桌面触发角
      */
-    private MouseCornerEventMessage.LocationTypeEnum winVirtualDesktopHotCorner =
-            MouseCornerEventMessage.LocationTypeEnum.NONE;
+    private MouseCornerEventMessage.LocationTypeEnum winVirtualDesktopHotCorner = MouseCornerEventMessage.LocationTypeEnum.NONE;
 
     /**
      * 自定义重启脚本文件名，只能位于WeTool工作目录
@@ -132,6 +142,11 @@ public class WeConfig implements BaseBean, Serializable {
      * 代理，格式：127.0.0.1:7889
      */
     private String proxy = "";
+
+    /**
+     * HTTP文件浏览服务配置
+     */
+    private List<String> httpFiles = new ArrayList<>();
 
     // end--------------------------------------------------------------------------------------------------------------
 
