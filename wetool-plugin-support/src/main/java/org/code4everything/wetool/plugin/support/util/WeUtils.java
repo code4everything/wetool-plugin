@@ -9,15 +9,12 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.OsInfo;
 import cn.hutool.system.SystemUtil;
-import com.alibaba.druid.pool.DruidDataSource;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.FileUtils;
 import org.code4everything.boot.base.constant.IntegerConsts;
 import org.code4everything.boot.config.BootConfig;
 import org.code4everything.wetool.plugin.support.config.WeConfig;
-import org.code4everything.wetool.plugin.support.druid.DruidSource;
-import org.code4everything.wetool.plugin.support.event.EventCenter;
 import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 
@@ -27,7 +24,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
-import java.util.concurrent.*;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -66,8 +67,11 @@ public class WeUtils {
         }
     };
 
-    private static final ThreadPoolExecutor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(16, 32, 60L,
-            TimeUnit.SECONDS, new LinkedBlockingQueue<>(512), THREAD_FACTORY);
+    private static final ThreadPoolExecutor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(16, 32, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(512), THREAD_FACTORY);
+
+    public static ThreadPoolExecutor getThreadPoolExecutor() {
+        return THREAD_POOL_EXECUTOR;
+    }
 
     private static int compressLen = 0;
 
@@ -171,8 +175,7 @@ public class WeUtils {
      *
      * @since 1.0.1
      */
-    public static String parsePathByOs(String parentDir, String winFile, String macFile, String linFile,
-                                       String defaultFile) {
+    public static String parsePathByOs(String parentDir, String winFile, String macFile, String linFile, String defaultFile) {
         OsInfo osInfo = SystemUtil.getOsInfo();
         parentDir = StrUtil.addSuffixIfNot(parentDir, File.separator);
         // Windows配置文件
@@ -304,10 +307,6 @@ public class WeUtils {
      * 退出系统
      */
     public static void exitSystem() {
-        EventCenter.publishEvent(EventCenter.EVENT_WETOOL_EXIT, DateUtil.date());
-        DruidSource.listAllDataSources().forEach(DruidDataSource::close);
-        THREAD_POOL_EXECUTOR.shutdown();
-        log.info("wetool exited");
         System.exit(IntegerConsts.ZERO);
     }
 
