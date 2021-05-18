@@ -36,6 +36,16 @@ public class SftpUtils {
         SFTP_MAP.clear();
     }
 
+    public static void closeConnections() {
+        SFTP_MAP.forEach((k, v) -> {
+            Sftp sftp = ReferenceUtils.unwrap(v);
+            if (Objects.isNull(sftp)) {
+                return;
+            }
+            sftp.close();
+        });
+    }
+
     public static Sftp getSftp(String alias) {
         Sftp sftp = ReferenceUtils.unwrap(SFTP_MAP.get(alias));
         if (Objects.isNull(sftp)) {

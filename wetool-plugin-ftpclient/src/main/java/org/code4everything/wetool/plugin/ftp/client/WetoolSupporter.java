@@ -55,6 +55,7 @@ public class WetoolSupporter implements WePluginSupporter {
         return menu;
     }
 
+    @Override
     public void initBootIfConfigured() {
         Node node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/ftpclient/FtpTabView.fxml", true);
         FxUtils.openTab(node, FtpConsts.TAB_ID, FtpConsts.TAB_NAME);

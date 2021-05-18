@@ -21,6 +21,8 @@ import org.code4everything.wetool.plugin.ftp.client.config.FtpInfo;
 import org.code4everything.wetool.plugin.ftp.client.constant.FtpConsts;
 import org.code4everything.wetool.plugin.ftp.client.model.LastUsedInfo;
 import org.code4everything.wetool.plugin.support.BaseViewController;
+import org.code4everything.wetool.plugin.support.event.EventCenter;
+import org.code4everything.wetool.plugin.support.event.handler.BaseNoMessageEventHandler;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
@@ -83,6 +85,14 @@ public class FtpController implements BaseViewController {
         ftpName.getSelectionModel().select(info.getFtpName());
 
         listLocalFiles(new File(getLocalPath()));
+
+        EventCenter.onWetoolExit(new BaseNoMessageEventHandler() {
+            @Override
+            public void handleEvent0(String eventKey, Date eventTime) {
+                log.info("close ftp connections");
+                FtpManager.closeConnection();
+            }
+        });
     }
 
     public void updateUploadStatus(String status, Object... params) {

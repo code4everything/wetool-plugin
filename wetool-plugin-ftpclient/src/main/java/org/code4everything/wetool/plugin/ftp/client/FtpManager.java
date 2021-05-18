@@ -1,6 +1,7 @@
 package org.code4everything.wetool.plugin.ftp.client;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -43,6 +44,20 @@ public class FtpManager {
     private static final LastUsedInfo USED_INFO = LastUsedInfo.getInstance();
 
     private static final int RETRIES = 3;
+
+    public static void closeConnection() {
+        LastUsedInfo.getInstance().getFtpNames().forEach(e -> {
+            Ftp ftp = BeanFactory.get(generateFtpKey(e));
+            if (Objects.isNull(ftp)) {
+                return;
+            }
+            try {
+                ftp.close();
+            } catch (Exception exception) {
+                log.error(ExceptionUtil.stacktraceToString(exception, Integer.MAX_VALUE));
+            }
+        });
+    }
 
     public static boolean delete(ComboBox<String> ftpName, String file, boolean isDir) {
         try {
@@ -214,7 +229,7 @@ public class FtpManager {
     }
 
     public static String generateConfigKey(String ftpName) {
-        return "config:" + FtpConsts.AUTHOR + FtpConsts.NAME + ftpName;
+        return "config:" + FtpConsts.AUTHOR + "-" + FtpConsts.NAME + ":" + ftpName;
     }
 
     private static void retry(BooleanFunction func) {
@@ -259,6 +274,6 @@ public class FtpManager {
     }
 
     private String generateFtpKey(String name) {
-        return "ftp:" + FtpConsts.AUTHOR + FtpConsts.NAME + name;
+        return "ftp:" + FtpConsts.AUTHOR + "-" + FtpConsts.NAME + ":" + name;
     }
 }

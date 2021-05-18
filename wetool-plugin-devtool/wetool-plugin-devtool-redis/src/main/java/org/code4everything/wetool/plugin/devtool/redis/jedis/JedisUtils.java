@@ -36,6 +36,16 @@ public class JedisUtils {
 
     private static KeyExplorer keyExplorer;
 
+    public static void closeConnection() {
+        JEDIS_MAP.forEach((k, v) -> {
+            Jedis jedis = ReferenceUtils.unwrap(v);
+            if (Objects.isNull(jedis)) {
+                return;
+            }
+            jedis.close();
+        });
+    }
+
     public static void clearRedis() {
         CONF_MAP.clear();
         JEDIS_MAP.clear();

@@ -140,6 +140,70 @@ public class EventCenter {
 
     private static final Semaphore EVENT_SEMAPHORE = new Semaphore(16);
 
+    public static boolean onAllPluginLoaded(BaseNoMessageEventHandler eventHandler) {
+        return subscribeEvent(EVENT_ALL_PLUGIN_LOADED, eventHandler);
+    }
+
+    public static boolean onMouseReleased(BaseMouseEventHandler eventHandler) {
+        return subscribeEvent(EVENT_MOUSE_RELEASED, eventHandler);
+    }
+
+    public static boolean onMousePressed(BaseMouseEventHandler eventHandler) {
+        return subscribeEvent(EVENT_MOUSE_PRESSED, eventHandler);
+    }
+
+    public static boolean onMouseMotion(BaseMouseEventHandler eventHandler) {
+        return subscribeEvent(EVENT_MOUSE_MOTION, eventHandler);
+    }
+
+    public static boolean onKeyReleased(BaseKeyboardEventHandler eventHandler) {
+        return subscribeEvent(EVENT_KEYBOARD_RELEASED, eventHandler);
+    }
+
+    public static boolean onKeyPressed(BaseKeyboardEventHandler eventHandler) {
+        return subscribeEvent(EVENT_KEYBOARD_PRESSED, eventHandler);
+    }
+
+    public static boolean onSysCornerTrigger(BaseMouseCornerEventHandler eventHandler) {
+        return subscribeEvent(EVENT_MOUSE_CORNER_TRIGGER, eventHandler);
+    }
+
+    public static boolean onClipboardChanged(BaseClipboardChangedEventHandler eventHandler) {
+        return subscribeEvent(EVENT_CLIPBOARD_CHANGED, eventHandler);
+    }
+
+    public static boolean onWetoolHidden(BaseNoMessageEventHandler eventHandler) {
+        return subscribeEvent(EVENT_WETOOL_HIDDEN, eventHandler);
+    }
+
+    public static boolean onWetoolShow(BaseNoMessageEventHandler eventHandler) {
+        return subscribeEvent(EVENT_WETOOL_SHOW, eventHandler);
+    }
+
+    public static boolean onWetoolExit(BaseNoMessageEventHandler eventHandler) {
+        return subscribeEvent(EVENT_WETOOL_EXIT, eventHandler);
+    }
+
+    public static boolean onWetoolRestart(BaseNoMessageEventHandler eventHandler) {
+        return subscribeEvent(EVENT_WETOOL_RESTART, eventHandler);
+    }
+
+    public static boolean onFxmlCacheClear(BaseNoMessageEventHandler eventHandler) {
+        return subscribeEvent(EVENT_CLEAR_FXML_CACHE, eventHandler);
+    }
+
+    public static boolean onQuickStartClicked(BaseQuickStartClickedEventHandler eventHandler) {
+        return subscribeEvent(EVENT_QUICK_START_CLICKED, eventHandler);
+    }
+
+    public static boolean on100MsTimer(BaseNoMessageEventHandler eventHandler) {
+        return subscribeEvent(EVENT_100_MS_TIMER, eventHandler);
+    }
+
+    public static boolean onSecondTimer(BaseNoMessageEventHandler eventHandler) {
+        return subscribeEvent(EVENT_SECONDS_TIMER, eventHandler);
+    }
+
     /**
      * 获取所有注册时事件KEY
      *

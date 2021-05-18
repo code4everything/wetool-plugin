@@ -126,7 +126,7 @@ public class HttpService {
             b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).handler(new LoggingHandler(LogLevel.INFO)).childHandler(new HttpServiceInitializer(port));
 
             Channel ch = b.bind(port).sync().channel();
-            EventCenter.subscribeEvent(EventCenter.EVENT_WETOOL_EXIT, new BaseNoMessageEventHandler() {
+            EventCenter.onWetoolExit(new BaseNoMessageEventHandler() {
                 @Override
                 public void handleEvent0(String eventKey, Date eventTime) {
                     log.info("shutdown http service, port: {}", port);

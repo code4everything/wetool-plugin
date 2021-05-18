@@ -209,7 +209,7 @@ public class FxUtils {
             return;
         }
         KEY_EVENT_SUBSCRIBED.set(true);
-        EventCenter.subscribeEvent(EventCenter.EVENT_KEYBOARD_PRESSED, new BaseKeyboardEventHandler() {
+        EventCenter.onKeyPressed(new BaseKeyboardEventHandler() {
             @Override
             public void handleEvent0(String eventKey, Date eventTime, KeyboardListenerEventMessage eventMessage) {
                 int keyCode = eventMessage.getKeyEvent().getKeyCode();
@@ -226,7 +226,7 @@ public class FxUtils {
                 }
             }
         });
-        EventCenter.subscribeEvent(EventCenter.EVENT_KEYBOARD_RELEASED, new BaseKeyboardEventHandler() {
+        EventCenter.onKeyReleased(new BaseKeyboardEventHandler() {
             @Override
             public void handleEvent0(String eventKey, Date eventTime, KeyboardListenerEventMessage eventMessage) {
                 PRESSING_KEY_CODE.remove(eventMessage.getKeyEvent().getKeyCode());
@@ -239,8 +239,8 @@ public class FxUtils {
                 PRESSING_KEY_CODE.clear();
             }
         };
-        EventCenter.subscribeEvent(EventCenter.EVENT_WETOOL_SHOW, eventHandler);
-        EventCenter.subscribeEvent(EventCenter.EVENT_WETOOL_HIDDEN, eventHandler);
+        EventCenter.onWetoolShow(eventHandler);
+        EventCenter.onWetoolHidden(eventHandler);
     }
 
     private static void handleShortcuts(Pair<List<Integer>, Runnable> pair) {

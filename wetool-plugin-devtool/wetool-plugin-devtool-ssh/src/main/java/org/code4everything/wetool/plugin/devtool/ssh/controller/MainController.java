@@ -16,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.devtool.ssh.config.PullingConfiguration;
 import org.code4everything.wetool.plugin.devtool.ssh.config.ServerConfiguration;
 import org.code4everything.wetool.plugin.devtool.ssh.config.SftpFile;
@@ -41,6 +42,7 @@ import java.util.stream.Collectors;
  * @author pantao
  * @since 2019/11/24
  */
+@Slf4j
 public class MainController implements BaseViewController {
 
     private static final EventHandler<Event> NO_ACTION = e -> {};
@@ -78,9 +80,17 @@ public class MainController implements BaseViewController {
         fileList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         reloadConfig();
 
+        EventCenter.onWetoolExit(new BaseNoMessageEventHandler() {
+            @Override
+            public void handleEvent0(String eventKey, Date eventTime) {
+                log.info("close sftp connections");
+                SftpUtils.closeConnections();
+            }
+        });
+
         // 文件同步
         if (SftpUtils.listConf().stream().anyMatch(server -> CollUtil.isNotEmpty(server.getPullingList()) && server.getPullingList().stream().anyMatch(PullingConfiguration::getEnable))) {
-            EventCenter.subscribeEvent(EventCenter.EVENT_SECONDS_TIMER, new BaseNoMessageEventHandler() {
+            EventCenter.onSecondTimer(new BaseNoMessageEventHandler() {
                 @Override
                 public void handleEvent0(String eventKey, Date eventTime) {
                     pull();

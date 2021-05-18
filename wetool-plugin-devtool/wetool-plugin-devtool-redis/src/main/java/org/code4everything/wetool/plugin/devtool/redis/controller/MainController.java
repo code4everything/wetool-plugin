@@ -23,12 +23,13 @@ import org.code4everything.wetool.plugin.devtool.redis.jedis.JedisUtils;
 import org.code4everything.wetool.plugin.devtool.redis.model.RedisKeyValue;
 import org.code4everything.wetool.plugin.devtool.redis.util.RedisTabUtils;
 import org.code4everything.wetool.plugin.support.BaseViewController;
+import org.code4everything.wetool.plugin.support.event.EventCenter;
+import org.code4everything.wetool.plugin.support.event.handler.BaseNoMessageEventHandler;
 import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
 import org.code4everything.wetool.plugin.support.util.DialogWinnable;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.FxUtils;
-import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -62,6 +63,13 @@ public class MainController implements BaseViewController {
     private void initialize() {
         BeanFactory.registerView(CommonConsts.APP_ID, CommonConsts.APP_NAME, this);
         redisExplorer.setRoot(rootTree);
+        EventCenter.onWetoolExit(new BaseNoMessageEventHandler() {
+            @Override
+            public void handleEvent0(String eventKey, Date eventTime) {
+                log.info("close jedis connections");
+                JedisUtils.closeConnection();
+            }
+        });
         reloadConfig();
     }
 

@@ -6,23 +6,28 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.UserManager;
 import org.apache.ftpserver.listener.ListenerFactory;
 import org.code4everything.wetool.plugin.ftp.server.config.FtpServerConfig;
+import org.code4everything.wetool.plugin.support.event.EventCenter;
+import org.code4everything.wetool.plugin.support.event.handler.BaseNoMessageEventHandler;
 import org.code4everything.wetool.plugin.support.exception.ToDialogException;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.File;
+import java.util.Date;
 import java.util.Objects;
 
 /**
  * @author pantao
  * @since 2019/9/23
  */
+@Slf4j
 @UtilityClass
 class FtpServerManager {
 
@@ -31,6 +36,14 @@ class FtpServerManager {
     private static FtpServer server;
 
     static void start() {
+        EventCenter.onWetoolExit(new BaseNoMessageEventHandler() {
+            @Override
+            public void handleEvent0(String eventKey, Date eventTime) {
+                log.info("stop ftp server");
+                server.stop();
+            }
+        });
+
         try {
             if (Objects.isNull(server) || server.isStopped()) {
                 // 读取配置
