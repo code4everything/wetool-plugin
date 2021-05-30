@@ -56,6 +56,19 @@ public class HttpService {
     }
 
     /**
+     * 暴露http文件上传接口
+     *
+     * @param port 端口
+     * @param api 请求接口
+     * @param dir 文件上传目录
+     *
+     * @since 1.6.0
+     */
+    public static void exportHttpFileUpload(int port, String api, String dir) {
+        exportHttp(port, api, new FileUploadHttpApiHandler() {}.setDir(dir));
+    }
+
+    /**
      * 暴露http服务
      *
      * @param port 端口
