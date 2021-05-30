@@ -6,7 +6,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author pantao
@@ -22,12 +21,13 @@ public class WeFullHttpResponse extends DefaultFullHttpResponse {
         super(version, status);
     }
 
-    public void setContent(ByteBuf content) {
+    public WeFullHttpResponse setContent(ByteBuf content) {
         this.content = content;
+        return this;
     }
 
-    public void setContent(String content) {
-        setContent(Https.str2buf(content));
+    public WeFullHttpResponse setContent(String content) {
+        return setContent(Https.str2buf(content));
     }
 
     @Override

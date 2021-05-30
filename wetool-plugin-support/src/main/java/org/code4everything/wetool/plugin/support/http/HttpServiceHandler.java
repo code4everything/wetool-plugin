@@ -8,17 +8,25 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.code4everything.wetool.plugin.support.exception.HttpBadReqException;
 import org.code4everything.wetool.plugin.support.exception.HttpException;
 
 import java.util.Map;
@@ -82,7 +90,8 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
     private JSONObject parseReqBody(HttpRequest request) {
         if (request instanceof FullHttpRequest) {
             ByteBuf content = ((FullHttpRequest) request).content();
-            if (content.isReadable()) {
+            String contentType = request.headers().get("content-type");
+            if (StrUtil.startWith(contentType, "application/json") && content.isReadable()) {
                 String json = content.toString(CharsetUtil.CHARSET_UTF_8);
                 try {
                     return JSON.parseObject(json);
@@ -123,7 +132,7 @@ public class HttpServiceHandler extends SimpleChannelInboundHandler<HttpObject> 
             JSONObject params = parseParams(decoder.rawQuery());
             params.put(HttpService.REQ_API_KEY, api);
             JSONObject body = parseReqBody(req);
-            response = new WeFullHttpResponse(httpVersion, HttpResponseStatus.OK);
+            response = new WeFullHttpResponse(httpVersion, HttpResponseStatus.OK).setContent("");
 
             try {
                 Object responseObject = apiHandler.handleApi(req, response, params, body);

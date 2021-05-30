@@ -3,7 +3,6 @@ package org.code4everything.wetool.plugin.support.http;
 import com.alibaba.fastjson.JSONObject;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpResponse;
 
 /**
  * 响应JSON

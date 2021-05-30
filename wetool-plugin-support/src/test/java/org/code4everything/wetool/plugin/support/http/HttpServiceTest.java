@@ -1,18 +1,20 @@
 package org.code4everything.wetool.plugin.support.http;
 
 import cn.hutool.core.thread.ThreadUtil;
-import com.alibaba.fastjson.JSONObject;
+import io.netty.handler.codec.http.multipart.FileUpload;
+
+import java.util.Map;
 
 public class HttpServiceTest {
 
     public static void main(String[] args) {
         HttpService.setDefaultPort(58189);
-        HttpService.exportHttp("get/api/hello", (req, resp, params, body) -> {
-            ArgRequires.notEmpty(params, "a");
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("a", params.getInteger("a"));
-            jsonObject.put("b", params.getInteger("b"));
-            return jsonObject;
+        HttpService.exportHttp("post/api/hello", (req, resp, params, body) -> {
+            Map<String, FileUpload> map = Https.getMultipartFiles(req);
+            map.forEach((k, v) -> {
+                Https.writeMultipartFile(v, "D:\\Projects\\Java\\wetool-plugin");
+            });
+            return null;
         });
 
         while (true) {

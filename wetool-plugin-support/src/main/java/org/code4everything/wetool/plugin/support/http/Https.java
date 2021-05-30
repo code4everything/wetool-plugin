@@ -9,10 +9,22 @@ import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;
+import io.netty.handler.codec.http.multipart.FileUpload;
+import io.netty.handler.codec.http.multipart.HttpDataFactory;
+import io.netty.handler.codec.http.multipart.HttpPostMultipartRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpData;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
+import org.code4everything.boot.base.FileUtils;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author pantao
@@ -39,6 +51,31 @@ public class Https {
         FILE_TYPE_MAP.put("mp2", "audio/mp2");
         FILE_TYPE_MAP.put("exe", "application/x-msdownload");
         FILE_TYPE_MAP.put("css", "text/css");
+    }
+
+    public static Map<String, FileUpload> getMultipartFiles(HttpRequest request) {
+        Objects.requireNonNull(request);
+        HttpDataFactory factory = new DefaultHttpDataFactory(true);
+        HttpPostMultipartRequestDecoder decoder = new HttpPostMultipartRequestDecoder(factory, request);
+        Map<String, FileUpload> fileUploads = new HashMap<>(8);
+        while (decoder.hasNext()) {
+            InterfaceHttpData data = decoder.next();
+            if (data != null && InterfaceHttpData.HttpDataType.FileUpload.equals(data.getHttpDataType())) {
+                FileUpload fileUpload = (FileUpload) data;
+                fileUploads.put(data.getName(), fileUpload);
+            }
+        }
+        return fileUploads;
+    }
+
+    @SneakyThrows
+    public static File writeMultipartFile(FileUpload fileUpload, String dir) {
+        Objects.requireNonNull(fileUpload);
+        return FileUtil.rename(fileUpload.getFile(), FileUtils.getPath(dir, fileUpload.getFilename()), true);
+    }
+
+    public static List<File> writeMultipartFiles(HttpRequest request, String dir) {
+        return getMultipartFiles(request).values().stream().map(fileUpload -> writeMultipartFile(fileUpload, dir)).collect(Collectors.toList());
     }
 
     /**
@@ -86,11 +123,11 @@ public class Https {
      * 对象转JSON
      */
     public static String objectToJsonString(Object object) {
-        return JSON.toJSONString(object, SerializerFeature.QuoteFieldNames,
-                SerializerFeature.WriteMapNullValue, SerializerFeature.WriteEnumUsingToString,
-                SerializerFeature.WriteNullListAsEmpty, SerializerFeature.WriteNullStringAsEmpty,
-                SerializerFeature.WriteNullNumberAsZero, SerializerFeature.WriteNullBooleanAsFalse,
-                SerializerFeature.SkipTransientField, SerializerFeature.WriteNonStringKeyAsString);
+        return JSON.toJSONString(object, SerializerFeature.QuoteFieldNames, SerializerFeature.WriteMapNullValue,
+                SerializerFeature.WriteEnumUsingToString, SerializerFeature.WriteNullListAsEmpty,
+                SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.WriteNullNumberAsZero,
+                SerializerFeature.WriteNullBooleanAsFalse, SerializerFeature.SkipTransientField,
+                SerializerFeature.WriteNonStringKeyAsString);
     }
 
     private static FullHttpResponse setContent(FullHttpResponse response, ByteBuf content) {
