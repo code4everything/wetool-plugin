@@ -104,7 +104,8 @@ public class WeConfig implements BaseBean, Serializable {
     /**
      * windows虚拟桌面触发角
      */
-    private MouseCornerEventMessage.LocationTypeEnum winVirtualDesktopHotCorner = MouseCornerEventMessage.LocationTypeEnum.NONE;
+    private MouseCornerEventMessage.LocationTypeEnum winVirtualDesktopHotCorner =
+            MouseCornerEventMessage.LocationTypeEnum.NONE;
 
     /**
      * 自定义重启脚本文件名，只能位于WeTool工作目录
@@ -147,6 +148,11 @@ public class WeConfig implements BaseBean, Serializable {
      * HTTP文件浏览服务配置
      */
     private List<String> httpFiles = new ArrayList<>();
+
+    /**
+     * 文件上传目录
+     */
+    private String fileUploadDir = "";
 
     // end--------------------------------------------------------------------------------------------------------------
 
