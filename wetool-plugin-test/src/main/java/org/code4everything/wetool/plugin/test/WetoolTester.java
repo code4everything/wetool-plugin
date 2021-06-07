@@ -14,6 +14,7 @@ import org.code4everything.wetool.plugin.PluginLoader;
 import org.code4everything.wetool.plugin.support.config.WeConfig;
 import org.code4everything.wetool.plugin.support.config.WeInitialize;
 import org.code4everything.wetool.plugin.support.config.WePluginInfo;
+import org.code4everything.wetool.plugin.support.config.WeStatus;
 import org.code4everything.wetool.plugin.support.config.WeTab;
 import org.code4everything.wetool.plugin.support.event.message.MouseCornerEventMessage;
 import org.code4everything.wetool.plugin.support.factory.BeanFactory;
@@ -48,6 +49,7 @@ public class WetoolTester extends WeApplication {
     }
 
     public static void runTest(WePluginInfo info, WeConfig config, String[] args) {
+        BeanFactory.register(new WeStatus().setState(WeStatus.State.STARTING));
         BootConfig.setDebug(true);
         HttpService.setDefaultPort(58189);
 

@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.code4everything.boot.base.FileUtils;
 import org.code4everything.boot.base.function.VoidFunction;
 import org.code4everything.wetool.plugin.support.BaseViewController;
+import org.code4everything.wetool.plugin.support.config.WeStatus;
 import org.code4everything.wetool.plugin.support.constant.AppConsts;
 import org.code4everything.wetool.plugin.support.event.EventCenter;
 import org.code4everything.wetool.plugin.support.event.handler.BaseKeyboardEventHandler;
@@ -635,6 +636,7 @@ public class FxUtils {
      * @since 1.3.0
      */
     public static void restart(String jarName) {
+        BeanFactory.get(WeStatus.class).setState(WeStatus.State.TERMINATING);
         EventCenter.publishEvent(EventCenter.EVENT_WETOOL_RESTART, DateUtil.date());
         String batchFile = WeUtils.getConfig().getRestartBatch();
         if (StrUtil.isEmpty(batchFile)) {
