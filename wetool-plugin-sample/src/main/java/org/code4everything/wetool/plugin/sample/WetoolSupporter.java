@@ -63,8 +63,8 @@ public class WetoolSupporter implements WePluginSupporter {
         // 注意保证fxml文件的url路径唯一性
         Pane node = FxUtils.loadFxml(WetoolSupporter.class, "/ease/sample/Sample.fxml", true);
         FxDialogs.showInformation(SampleController.TAB_NAME, "welcome to wetool plugin");
-        //FxUtils.openTab(node, SampleController.TAB_ID, SampleController.TAB_NAME);
-        FxUtils.getStage().setTitle("插件示例");
-        FxUtils.getStage().getScene().setRoot(node);
+        FxUtils.openTab(node, SampleController.TAB_ID, SampleController.TAB_NAME);
+        //FxUtils.getStage().setTitle("插件示例");
+        //FxUtils.getStage().getScene().setRoot(node);
     }
 }

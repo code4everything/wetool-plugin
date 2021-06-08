@@ -71,7 +71,6 @@ public class ScriptExecutor {
     private static Cache<String, String> CODE_CACHE = new WeTimedCache<>(24_60_60_000);
 
     @SneakyThrows
-
     public static Object execute(String dbName, String codes, Map<String, Object> args) {
         if (StrUtil.isBlank(codes)) {
             return null;

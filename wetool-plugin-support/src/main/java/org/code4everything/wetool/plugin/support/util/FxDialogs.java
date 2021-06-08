@@ -4,7 +4,13 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import javafx.application.Platform;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
@@ -133,8 +139,7 @@ public class FxDialogs {
         return dialog;
     }
 
-    public static EditableChoiceDialog getEditableChoiceDialog(String header, String content,
-                                                               Collection<String> items) {
+    public static EditableChoiceDialog getEditableChoiceDialog(String header, String content, Collection<String> items) {
         EditableChoiceDialog dialog = new EditableChoiceDialog(null, items);
         buildDialog(dialog, header, content);
         return dialog;
@@ -260,7 +265,7 @@ public class FxDialogs {
     }
 
     public void execFxFutureTask(Runnable runnable) {
-        if (Thread.currentThread().getName().equals("JavaFX Application Thread")) {
+        if (Thread.currentThread().getName().equals("javafx")) {
             runnable.run();
         } else {
             Platform.runLater(runnable);

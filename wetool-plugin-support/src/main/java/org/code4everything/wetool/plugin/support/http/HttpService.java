@@ -1,5 +1,6 @@
 package org.code4everything.wetool.plugin.support.http;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -25,6 +26,11 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author pantao
@@ -37,6 +43,23 @@ public class HttpService {
     public static final String REQ_API_KEY = "wetool-http-request-api";
 
     static final Map<Integer, Map<String, HttpApiHandler>> HTTP_SERVICE = new ConcurrentHashMap<>(8);
+
+    private static final ThreadFactory THREAD_FACTORY = new ThreadFactory() {
+
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+
+        private final Thread.UncaughtExceptionHandler exceptionHandler = (t, e) -> log.error(ExceptionUtil.stacktraceToString(e), Integer.MAX_VALUE);
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r, "http-" + threadNumber.getAndIncrement());
+            thread.setDaemon(true);
+            thread.setUncaughtExceptionHandler(exceptionHandler);
+            return thread;
+        }
+    };
+
+    private static final ThreadPoolExecutor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(4, 16, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(32), THREAD_FACTORY);
 
     private static Integer defaultPort = null;
 
@@ -131,8 +154,8 @@ public class HttpService {
 
     @SneakyThrows
     private static void runHttpService(int port) {
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1, THREAD_POOL_EXECUTOR);
+        EventLoopGroup workerGroup = new NioEventLoopGroup(1, THREAD_POOL_EXECUTOR);
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.option(ChannelOption.SO_BACKLOG, 1024);
