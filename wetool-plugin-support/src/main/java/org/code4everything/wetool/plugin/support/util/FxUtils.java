@@ -5,7 +5,12 @@ import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.*;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
 import com.google.common.base.Preconditions;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -14,8 +19,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.*;
-import javafx.scene.input.*;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextInputControl;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -44,8 +55,13 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -134,6 +150,18 @@ public class FxUtils {
      */
     public static void executeAction(String action) {
         FunctionCenter.callFunc("execute-wetool-action", List.of(action));
+    }
+
+    /**
+     * 添加日志应用名称映射
+     *
+     * @param packageName 顶层包名
+     * @param appName 应用名
+     *
+     * @since 1.6.0
+     */
+    public static void addLogNameMapping(String packageName, String appName) {
+        FunctionCenter.callFunc("add-package-to-app-name-mapping", List.of(packageName, appName));
     }
 
     /**
@@ -245,8 +273,7 @@ public class FxUtils {
     }
 
     private static void handleShortcuts(Pair<List<Integer>, Runnable> pair) {
-        if (pair.getKey().size() == PRESSING_KEY_CODE.size() && CollUtil.containsAll(PRESSING_KEY_CODE,
-                pair.getKey())) {
+        if (pair.getKey().size() == PRESSING_KEY_CODE.size() && CollUtil.containsAll(PRESSING_KEY_CODE, pair.getKey())) {
             // 触发快捷键
             Platform.runLater(pair.getValue());
         }
