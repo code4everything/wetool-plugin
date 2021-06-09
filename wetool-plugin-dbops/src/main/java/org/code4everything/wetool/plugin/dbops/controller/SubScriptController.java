@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
+import lombok.extern.slf4j.Slf4j;
 import org.code4everything.wetool.plugin.dbops.ScriptExecutor;
 import org.code4everything.wetool.plugin.support.util.FxDialogs;
 
@@ -14,6 +15,7 @@ import org.code4everything.wetool.plugin.support.util.FxDialogs;
  * @author pantao
  * @since 2020/12/6
  */
+@Slf4j
 public class SubScriptController {
 
     private final JSONObject subScript = new JSONObject();
@@ -42,6 +44,7 @@ public class SubScriptController {
         if (StrUtil.isBlank(varKey) || StrUtil.isBlank(script)) {
             return;
         }
+        log.info("save script");
         subScript.put(varKey, script);
         FileUtil.writeUtf8String(JSON.toJSONString(subScript, true), MainController.subScriptFile);
         if (!globalVarName.getItems().contains(varKey)) {

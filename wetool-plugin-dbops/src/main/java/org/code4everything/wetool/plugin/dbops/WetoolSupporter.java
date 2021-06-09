@@ -4,11 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.cron.CronUtil;
-import com.jfoenix.controls.JFXDatePicker;
 import com.ql.util.express.DynamicParamsUtil;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import lombok.extern.slf4j.Slf4j;
@@ -37,14 +33,15 @@ public class WetoolSupporter implements WePluginSupporter {
 
     @Override
     public boolean initialize() {
+        log.info("put global value");
         DynamicParamsUtil.supportDynamicParams = true;
-
         ScriptExecutor.GLOBAL_VARS.put("currDir", FileUtils.currentWorkDir());
         ScriptExecutor.GLOBAL_VARS.put("lineSep", FileUtil.getLineSeparator());
         ScriptExecutor.GLOBAL_VARS.put("fileSep", File.separator);
         ScriptExecutor.GLOBAL_VARS.put("userHome", FileUtil.getUserHomePath());
 
         // 初始化时加载视图，让监听事件的脚本可以后台运行
+        log.info("load fxml at initializer, to allow event listener script can run in background");
         FxUtils.loadFxml(WetoolSupporter.class, "/ease/dbops/MainView.fxml", true);
 
         Optional<EventPublisher> optional = EventCenter.registerEvent("wetool_dbops_initialized", EventMode.MULTI_SUB);

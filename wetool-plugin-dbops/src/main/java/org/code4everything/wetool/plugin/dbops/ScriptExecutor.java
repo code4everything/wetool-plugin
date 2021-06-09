@@ -9,7 +9,11 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
-import cn.hutool.core.util.*;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.system.oshi.OshiUtil;
@@ -42,12 +46,17 @@ import org.code4everything.wetool.plugin.support.util.WeUtils;
 import oshi.software.os.OSProcess;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 /**
@@ -87,6 +96,7 @@ public class ScriptExecutor {
         context.put("now", DateUtil.date());
         context.put("dbName", dbName);
 
+        log.info("execute script with context: {}", JSON.toJSONString(context));
         ExpressRunner expressRunner = getExpressRunner(dbName);
 
         Map<String, Object> tempMap = new HashMap<>(8);
@@ -109,12 +119,14 @@ public class ScriptExecutor {
         if (codes.startsWith("file:")) {
             File file = FileUtil.file(StrUtil.removeSuffix(codes.substring(5), ";"));
             if (FileUtil.exist(file)) {
+                log.info("get script from file: {}", file.getAbsolutePath());
                 return getCodeFromResource(BootConfig.isDebug(), file.getAbsolutePath(), s -> FileUtil.readUtf8String(file));
             }
         } else if (codes.startsWith("http:") || codes.startsWith("https:")) {
             String url = StrUtil.removeSuffix(codes, ";");
             return getCodeFromResource(BootConfig.isDebug(), url, s -> {
                 try {
+                    log.info("get script from remote: {}", s);
                     return HttpUtil.get(s);
                 } catch (Exception e) {
                     log.error("get script error: {}", ExceptionUtil.stacktraceToString(e));
@@ -126,7 +138,7 @@ public class ScriptExecutor {
         return codes;
     }
 
-    private static String getCodeFromResource(boolean forceGet, String resourceName, Function<String, String> resourceSupplier) {
+    private static String getCodeFromResource(boolean forceGet, String resourceName, UnaryOperator<String> resourceSupplier) {
         if (forceGet) {
             String codes = resourceSupplier.apply(resourceName);
             CODE_CACHE.put(resourceName, codes);

@@ -20,7 +20,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -43,7 +47,13 @@ import org.code4everything.wetool.plugin.support.util.WeUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author pantao
@@ -102,6 +112,7 @@ public class MainController implements BaseViewController {
             }
         }
         SCRIPTS.clear();
+        log.info("reload script");
         String json = FileUtil.readUtf8String(scriptJsonFile);
         JSONObject jsonObject = JSON.parseObject(StrUtil.blankToDefault(json, "{}"), Feature.OrderedField, Feature.AllowComment);
         SCRIPTS.putAll(jsonObject);
@@ -116,6 +127,7 @@ public class MainController implements BaseViewController {
     }
 
     private void renderScripts(String search) {
+        log.info("render script");
         parentPane.getChildren().clear();
 
         Insets bottom = new Insets(10, 0, 10, 0);
@@ -227,7 +239,7 @@ public class MainController implements BaseViewController {
         fxmlLoader.setClassLoader(WetoolSupporter.class.getClassLoader());
         fxmlLoader.setLocation(MainController.class.getResource("/ease/dbops/ScriptEditView.fxml"));
 
-        Node node = null;
+        Node node;
         try {
             node = fxmlLoader.load();
         } catch (IOException e) {
@@ -358,6 +370,7 @@ public class MainController implements BaseViewController {
     }
 
     private boolean importQl(String str) {
+        log.info("import script");
         try {
             QlScript qlScript = JSON.parseObject(str, QlScript.class);
             if (StrUtil.isNotBlank(qlScript.getUuid())) {
@@ -380,6 +393,7 @@ public class MainController implements BaseViewController {
     }
 
     public void export() {
+        log.info("export script");
         FxUtils.saveFile(this::saveFile);
     }
 

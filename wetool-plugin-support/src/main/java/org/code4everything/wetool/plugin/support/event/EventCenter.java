@@ -9,10 +9,22 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.code4everything.wetool.plugin.support.event.handler.*;
+import org.code4everything.wetool.plugin.support.event.handler.BaseClipboardChangedEventHandler;
+import org.code4everything.wetool.plugin.support.event.handler.BaseKeyboardEventHandler;
+import org.code4everything.wetool.plugin.support.event.handler.BaseMouseCornerEventHandler;
+import org.code4everything.wetool.plugin.support.event.handler.BaseMouseEventHandler;
+import org.code4everything.wetool.plugin.support.event.handler.BaseNoMessageEventHandler;
+import org.code4everything.wetool.plugin.support.event.handler.BaseQuickStartClickedEventHandler;
 import org.code4everything.wetool.plugin.support.util.WeUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 
@@ -261,12 +273,13 @@ public class EventCenter {
         Objects.requireNonNull(eventTime);
 
         if (!EVENT_MAP.containsKey(eventKey)) {
-            log.debug("please register event '{}' first!", eventKey);
+            log.debug("event '{}' not register!", eventKey);
             return false;
         }
 
         List<EventHandler> list = HANDLER_MAP.get(eventKey);
         if (CollUtil.isEmpty(list)) {
+            log.debug("event '{}' published, but no subscriber execution", eventKey);
             return true;
         }
 
@@ -333,8 +346,7 @@ public class EventCenter {
                 return false;
             }
             try {
-                Class<? extends EventMessage> messageClazz =
-                        (Class<? extends EventMessage>) Class.forName(messageClass);
+                Class<? extends EventMessage> messageClazz = (Class<? extends EventMessage>) Class.forName(messageClass);
                 eventMessage = JSON.parseObject(messageString, messageClazz);
             } catch (Exception e) {
                 log.error("event '{}' msg class cast to event message error", eventKey);

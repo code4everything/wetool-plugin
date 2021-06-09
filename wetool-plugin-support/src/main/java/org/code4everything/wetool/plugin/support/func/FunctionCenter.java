@@ -2,8 +2,13 @@ package org.code4everything.wetool.plugin.support.func;
 
 import cn.hutool.core.lang.Pair;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -14,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author pantao
  * @since 2021/1/16
  */
+@Slf4j
 @UtilityClass
 public class FunctionCenter {
 
@@ -31,6 +37,7 @@ public class FunctionCenter {
         if (METHOD_CALLBACK_MAP.containsKey(methodCallback.getUniqueMethodName())) {
             return false;
         }
+        log.info("register function: {}", methodCallback.getUniqueMethodName());
         METHOD_CALLBACK_MAP.put(methodCallback.getUniqueMethodName(), methodCallback);
         return true;
     }
@@ -77,6 +84,7 @@ public class FunctionCenter {
     public static Object callFunc(String methodName, List<Object> params) {
         MethodCallback methodCallback = METHOD_CALLBACK_MAP.get(methodName);
         Objects.requireNonNull(methodCallback, "method name is not registered yet");
+        log.info("execute function: {}", methodName);
         return methodCallback.checkAndCallMethod(params);
     }
 
@@ -93,6 +101,7 @@ public class FunctionCenter {
         if (Objects.isNull(methodCallback)) {
             return new Pair<>(false, null);
         }
+        log.info("execute function: {}", methodName);
         Object result = methodCallback.checkAndCallMethod(params);
         return new Pair<>(true, result);
     }
