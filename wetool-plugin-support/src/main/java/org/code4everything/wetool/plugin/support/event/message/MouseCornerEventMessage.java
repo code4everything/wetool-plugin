@@ -49,7 +49,27 @@ public class MouseCornerEventMessage implements EventMessage {
         RIGHT_BOTTOM,
 
         /**
-         * 非触发角
+         * 左侧
+         */
+        LEFT_SIDE,
+
+        /**
+         * 右侧
+         */
+        RIGHT_SIDE,
+
+        /**
+         * 顶部
+         */
+        TOP_LINE,
+
+        /**
+         * 底部
+         */
+        BOTTOM_LINE,
+
+        /**
+         * 非边缘情况
          */
         NONE;
     }
