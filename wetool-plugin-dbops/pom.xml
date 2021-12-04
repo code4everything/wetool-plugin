@@ -13,7 +13,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <wetool.version>1.5.0</wetool.version>
+        <wetool.version>1.6.0</wetool.version>
         <junit.version>4.13.1</junit.version>
         <ql.express.version>3.2.4</ql.express.version>
         <lombok.version>1.18.16</lombok.version>

@@ -10,7 +10,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <wetool.version>1.5.0</wetool.version>
+        <wetool.version>1.6.0</wetool.version>
         <junit.version>4.13.1</junit.version>
         <lombok.version>1.18.16</lombok.version>
     </properties>
@@ -215,8 +215,8 @@
     {
         "author": "ease",
         "name": "sample",
-        "version": "1.5.0",
-        "requireWetoolVersion": "1.5.0",
+        "version": "1.6.0",
+        "requireWetoolVersion": "1.6.0",
         "supportedClass": "org.code4everything.wetool.plugin.sample.WetoolSupporter"
     }
     ```

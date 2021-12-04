@@ -1,6 +1,6 @@
 ### 开发工具
 
-最新下载地址：[wetool-plugin-devtool-1.5.0.zip](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-devtool-1.5.0.zip)
+最新下载地址：[wetool-plugin-devtool-1.6.0.zip](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-devtool-1.6.0.zip)
 
 #### 1. Java工具
 
@@ -59,6 +59,12 @@
 ![sftp](images/sftp.png)
 
 ### 更新历史
+
+#### [v1.6.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-devtool-1.6.0.zip)
+
+- 支持运行时启动本插件
+- 合并了工具
+- 移除了SSH工具
 
 #### [v1.5.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-devtool-1.5.0.zip)
 

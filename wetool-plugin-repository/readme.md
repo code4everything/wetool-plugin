@@ -22,12 +22,12 @@
 
 |名称|作者|说明文档|下载地址|
 |---|---|---|---|
-|开发工具集合（含Redis客户端）|EASE|[文档](ease-devtool/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-devtool-1.5.0.zip)|
-|文件检索工具|EASE|[文档](ease-everywhere/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-everywhere-1.5.0.jar)|
-|FTP客户端|EASE|[文档](ease-ftp-client/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-ftpclient-1.5.0.jar)|
-|FTP服务器|EASE|[文档](ease-ftp-server/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-ftpserver-1.5.0.jar)|
-|七牛对象存储管理|EASE|[文档](ease-qiniu/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-qiniu-1.5.0.jar)|
-|JavaQL脚本小程序|EASE|[文档](ease-dbops/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.5.0.jar)|
+|开发工具集合（含Redis客户端）|EASE|[文档](ease-devtool/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-devtool-1.6.0.zip)|
+|文件检索工具|EASE|[文档](ease-everywhere/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-everywhere-1.6.0.jar)|
+|FTP客户端|EASE|[文档](ease-ftp-client/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-ftpclient-1.6.0.jar)|
+|FTP服务器|EASE|[文档](ease-ftp-server/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-ftpserver-1.6.0.jar)|
+|七牛对象存储管理|EASE|[文档](ease-qiniu/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-qiniu-1.6.0.jar)|
+|JavaQL脚本小程序|EASE|[文档](ease-dbops/readme.md)|[最新版](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.6.0.jar)|
 |倒计时|EASE|[文档](https://gitee.com/easepan/countdown-wetool-plugin)|暂无（需自行打包）|
 |命令助记器|EASE|[文档](https://gitee.com/easepan/cmdassist-wetool-plugin)|暂无（需自行打包）|
 
@@ -35,4 +35,4 @@
 
 |名称|原作者|项目地址|插件下载地址|
 |---|---|---|---|
-|蜗牛下载工具|ACGIST|[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)|[最新插件下载](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-thirdparty-downloader-1.5.0.jar)|
+|蜗牛下载工具|ACGIST|[https://gitee.com/acgist/snail](https://gitee.com/acgist/snail)|[最新插件下载](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-thirdparty-downloader-1.6.0.jar)|

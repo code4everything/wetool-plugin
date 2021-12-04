@@ -58,7 +58,7 @@
 <dependency>
     <groupId>org.code4everything</groupId>
     <artifactId>wetool-plugin-support</artifactId>
-    <version>1.5.0</version>
+    <version>1.6.0</version>
 </dependency>
 ```
 
@@ -68,7 +68,7 @@
 <dependency>
     <groupId>org.code4everything</groupId>
     <artifactId>wetool-plugin-test</artifactId>
-    <version>1.5.0</version>
+    <version>1.6.0</version>
     <scope>test</scope>
 </dependency>
 ```

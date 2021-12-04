@@ -4,7 +4,7 @@ dbops，之前中文名为数据库小应用，现在正式更名为 `JavaQL脚�
 
 为什么叫之前数据库小应用？因为原本这款插件是为了将一系列SQL操作封装成小应用而设计的，而考虑到执行这一系列的SQL可能会用到参数的注入，变量的定义，绑定方法，那这一系列操作肯定会绕到脚本的执行上去，自然就不仅限于SQL了，只要符合语法的脚本都是能够被执行的，这也是现在改名的原因。
 
-最新版下载地址：[wetool-plugin-dbops-1.5.0.jar](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.5.0.jar)
+最新版下载地址：[wetool-plugin-dbops-1.6.0.jar](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.6.0.jar)
 
 在wetool搜索框中查看全局变量：`dbops global name`。
 
@@ -260,6 +260,12 @@ FxUtils.multiDesktopOnWindows();
 ```
 
 ### 更新历史
+
+#### [v1.6.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.6.0.jar)
+
+- 支持引用脚本文件
+- 支持运行时启动本插件
+- 新增内置方法
 
 #### [v1.5.0](http://share.qiniu.easepan.xyz/tool/wetool/plugin/wetool-plugin-dbops-1.5.0.jar)
 
